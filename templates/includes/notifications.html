@@ -1,0 +1,29 @@
+{% load static %}
+
+<div class="fixed right-5 space-y-4 z-200">
+  {% if form.non_field_errors %}
+    {% for error in form.non_field_errors %}
+      <div class="toast flex items-center w-full max-w-xs p-4 bg-altbackgound rounded-lg shadow-lg transition-all duration-600">
+        <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg">
+          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z" />
+          </svg>
+        </div>
+        <span class="ms-3 text-sm font-semibold text-gray-500">{{ error }}</span>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="toast flex items-center w-full max-w-xs p-4 bg-altbackgound rounded-lg shadow-lg transition-all duration-600">
+        <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
+          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+          </svg>
+        </div>
+        <span class="ms-3 text-sm font-semibold text-gray-500">{{ message }}</span>
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>

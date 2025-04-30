@@ -1,13 +1,22 @@
+# Python / Django
 venv/
+.venv/
 __pycache__/
-node_modules/
-
 db.sqlite3
 media/
 cache/
 
-.vscode
-.idea
-.venv
-build.css
+# Node.js
 node_modules/
+package-lock.json
+
+# Tailwind output
+static/css/output.css
+
+# Editors / IDEs
+.vscode/
+.idea/
+
+# Logs / Temp
+*.log
+*.tmp

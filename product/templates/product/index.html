@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-Hello world
+  <p>Hello world</p>
+  <a href="{% url 'product:upload_products' %}">Добавить товар через CSV файл</a>
 {% endblock %}

@@ -1,13 +1,107 @@
+{% load static %}
+{% load carts_tags %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    {% block content %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <title>
+      {% block title %}
 
-    {% endblock %}
+      {% endblock %}
+    </title>
+  </head>
+  <body class="">
+    <nav class="bg-gray-800">
+      <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div class="relative flex h-16 items-center justify-between">
+          <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+            <!-- Mobile menu button -->
+            <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset" aria-controls="mobile-menu" aria-expanded="false">
+              <span class="absolute -inset-0.5"></span>
+              <span class="sr-only">Open main menu</span>
+              <!--   
+                Icon when menu is closed.
+    
+                Menu open: "hidden", Menu closed: "block"
+                 -->
+              <svg class="block size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+              <!--   
+                Icon when menu is open.
+    
+                Menu open: "block", Menu closed: "hidden"
+                 -->
+              <svg class="hidden size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+            <div class="hidden sm:block">
+              <div class="flex gap-5">
+                <a href="{% url 'product:catalog' %}"
+                  class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 {% if 'catalog' in request.path %}bg-gray-900  text-white{% else %}hover:bg-gray-700{% endif %}">
+                  Каталог
+                </a>
+
+                {% if user.is_staff %}
+                  <a href="{% url 'admin:index' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700">Админ</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <button class="cursor-pointer drawer-trigger hover:bg-gray-700 rounded-full p-2 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM208-800h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Z"/></svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <aside class="drawer drawer-end" id="drawer" tabindex="-1">
+      <div class="offcanvas-header">
+        <h5 class="font-bold text-2xl">Кошик</h5>
+        <button type="button" class="btn-close" id="drawer-close" aria-label="Close">&times;</button>
+      </div>
+      <div class="offcanvas-body">
+        
+        <div id="cart-items-container">
+          {% comment %}Разметка корзины{% endcomment %}
+          {% include 'cart/includes/included_cart.html' %}
+          {% comment %}Закончилась разметка корзины{% endcomment %}
+        </div>
+      </div>
+    </aside>
+
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+
+    <main class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 mt-8">
+      {% block content %}
+
+      {% endblock %}
+    </main>
   </body>
+
+  <!-- Подключение jQuery (CDN) -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="{% static 'js/ajax.js' %}"></script>
+  <script src="{% static 'js/drawer-cart.js' %}"></script>
+
+  <script>
+    function scrollSlider(direction) {
+      const slider = document.getElementById('slider')
+      const scrollAmount = slider.clientWidth
+      slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' })
+    }
+  </script>
+  <script src="{% static 'js/toats.js' %}"></script>
+
+  {% block js %}
+
+  {% endblock %}
 </html>

@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from product.models import Category, CategoryChild, Product, ProductAttribute
+from product.models import (Category, CategoryChild, Color, Product,
+                            ProductAttribute, ProductVariation)
 
 
 @admin.register(CategoryChild)
@@ -13,6 +14,11 @@ class CategoryChildInline(admin.StackedInline):
     model = CategoryChild
     extra = 1
     prepopulated_fields = {"slug": ["title"]}
+
+
+class ProductVariationInline(admin.StackedInline):
+    model = ProductVariation
+    extra = 1
 
 
 @admin.register(Category)
@@ -34,7 +40,11 @@ class ProductAttributeInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "price", "description", "article", "slug", "quantity"]
+    list_display = ["title", "description", "slug", "quantity"]
     prepopulated_fields = {"slug": ["title"]}
 
-    inlines = [ProductAttributeInline]
+    inlines = [ProductVariationInline, ProductAttributeInline]
+
+
+admin.site.register(ProductVariation)
+admin.site.register(Color)
