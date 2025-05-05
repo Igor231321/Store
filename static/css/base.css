@@ -63,3 +63,62 @@
 .drawer-backdrop.show {
   display: block;
 }
+
+.accordion {
+  background: none;
+  color: #111827;
+  cursor: pointer;
+  padding: 16px 0;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: color 0.3s;
+}
+
+.accordion:hover {
+  color: #2563eb; /* синий при наведении */
+}
+
+.accordion.active {
+  color: #2563eb; /* синий при открытии */
+  border-color: transparent;
+}
+
+.icon {
+  transition: transform 0.3s;
+  font-size: 14px;
+}
+
+.accordion.active .icon {
+  transform: rotate(90deg);
+}
+
+.panel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.4s ease;
+  background-color: white;
+  padding-left: 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.panel-content {
+  padding: 10px 5px;
+  padding-top: 0;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  color: #4b5563;
+  font-size: 16px;
+}
+
+.panel.show .panel-content {
+  opacity: 1;
+  transform: translateY(0);
+}

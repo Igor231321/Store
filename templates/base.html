@@ -1,12 +1,13 @@
 {% load static %}
 {% load carts_tags %}
-
 <!DOCTYPE html>
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{% static 'css/output.css' %}" />
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <title>
@@ -17,7 +18,7 @@
   </head>
   <body class="">
     <nav class="bg-gray-800">
-      <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between">
           <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
             <!-- Mobile menu button -->
@@ -49,16 +50,20 @@
                   class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 {% if 'catalog' in request.path %}bg-gray-900  text-white{% else %}hover:bg-gray-700{% endif %}">
                   Каталог
                 </a>
-
                 {% if user.is_staff %}
                   <a href="{% url 'admin:index' %}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700">Админ</a>
                 {% endif %}
               </div>
             </div>
           </div>
-          <button class="cursor-pointer drawer-trigger hover:bg-gray-700 rounded-full p-2 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM208-800h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Z"/></svg>
-          </button>
+
+          <div class="flex">
+            <button class="cursor-pointer drawer-trigger hover:bg-gray-700 rounded-full p-2 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM208-800h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Z"/></svg>
+            </button>
+            {% user_carts request as carts %}
+            <span id="products-in-cart-count" class="w-5 h-5 flex items-center justify-center rounded-full bg-white text-black font-bold">{{ carts.total_quantity }}</span>
+          </div>
         </div>
       </div>
     </nav>
@@ -66,7 +71,7 @@
     <aside class="drawer drawer-end" id="drawer" tabindex="-1">
       <div class="offcanvas-header">
         <h5 class="font-bold text-2xl">Кошик</h5>
-        <button type="button" class="btn-close" id="drawer-close" aria-label="Close">&times;</button>
+        <button type="button" class="btn-close hover:bg-gray-300 rounded-full p-4:" id="drawer-close" aria-label="Close">x</button>
       </div>
       <div class="offcanvas-body">
         
@@ -77,10 +82,9 @@
         </div>
       </div>
     </aside>
-
     <div class="drawer-backdrop" id="drawer-backdrop"></div>
 
-    <main class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 mt-8">
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-20">
       {% block content %}
 
       {% endblock %}
@@ -92,14 +96,9 @@
   <script src="{% static 'js/ajax.js' %}"></script>
   <script src="{% static 'js/drawer-cart.js' %}"></script>
 
-  <script>
-    function scrollSlider(direction) {
-      const slider = document.getElementById('slider')
-      const scrollAmount = slider.clientWidth
-      slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' })
-    }
-  </script>
   <script src="{% static 'js/toats.js' %}"></script>
+  <script src="{% static 'js/accordions.js' %}"></script>
+  <script src="{% static 'js/dropdowns.js' %}"></script>
 
   {% block js %}
 

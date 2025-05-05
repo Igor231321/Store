@@ -1,21 +1,183 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
+
+
+{% block title %}Каталог{% endblock title %}
+
 
 {% block content %}
-  <section>
-    <h1 class="text-center font-bold text-4xl border-b pb-2 mb-4 text-gray-800">Каталог</h1>
-    <div class="grid grid-cols-4 gap-4">
-      {% for product in products %}
-        <div class="rounded-xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] transition p-4 group">
-          <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt="" class="w-full object-cover rounded-xl mb-4" /></a>
+  <div class="flex items-baseline justify-between border-b border-gray-200 pb-6">
+    <h1 class="text-4xl font-bold tracking-tight text-gray-900">Каталог</h1>
 
-          <div class="text-center">
-            <a href="{{ product.get_absolute_url }}"><h2 class="text-xl font-semibold text-gray-900 group-hover:text-blue-500">{{ product.title }}</h2></a>
-            <p class="text-lg font-semibold text-blue-400 mt-3">{{ product.variations.first.price|floatformat }} грн.</p>
-            <hr class="mt-4 group-hover:opacity-0 text-gray-300" />
+    <div class="flex items-center">
+      <div class="relative">
+        <button id="dropdownButton" class="font-medium flex gap-1 border border-transparent px-3 py-2 transition-colors rounded-xl cursor-pointer focus:border-gray-300 hover:border-gray-300">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/></svg>
+          </span>
+          Сортувати
+        </button>
+
+        <ul class="absolute hidden border border-gray-300 w-48 right-0 mt-1 bg-white shadow-xl rounded-lg overflow-y-auto max-h-60 transition-all duration-300 opacity-0 transform scale-95" id="dropdownMenu">
+          <li>
+            <a href="?{% change_params order_by='default' %}" class="block px-4 py-2 text-sm text-gray-800 font-semibold 
+              {% if request.GET.order_by == 'default' or not request.GET.order_by %}bg-blue-500 text-white{% else%}hover:bg-gray-200{% endif %}">За популярністю</a>
+          </li>
+          <li>
+            <a href="?{% change_params order_by='-min_price' %}" class="block px-4 py-2 text-sm text-gray-800 font-semibold
+              {% if request.GET.order_by == '-min_price' %}bg-blue-500 text-white{% else%}hover:bg-gray-200{% endif %}">Від більшої цени</a>
+          </li>
+          <li>
+            <a href="?{% change_params order_by='min_price' %}" class="block px-4 py-2 text-sm text-gray-800 font-semibold
+              {% if request.GET.order_by == 'min_price' %}bg-blue-500 text-white{% else%}hover:bg-gray-200{% endif %}">Від меншої цени</a>
+          </li>
+        </ul>
+      </div>
+
+      <button type="button" class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden">
+        <span class="sr-only">Filters</span>
+        <svg class="size-5" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" data-slot="icon">
+          <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <section class="pt-6 pb-24">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+      <!-- Filters -->
+      <div class="hidden lg:block">
+        <div class="sticky top-10">
+          <form action="{% url 'product:catalog' %}" method="get">
+            <div class="accordion">
+              Колір <span class="icon"><img src="{% static 'images/right.svg' %}" alt="" /></span>
+            </div>
+            <div class="panel">
+              <div class="panel-content">
+                {% for color in colors %}
+                  <div class="flex items-center mb-3">
+                    <input type="checkbox" id="color_{{ color.slug }}" value="{{ color.slug }}" name="color" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500"
+                      {% if color.slug in selected_colors %}checked{% endif %} />
+                    <label for="color_{{ color.slug }}" class="ml-2 ms-2 font-medium text-gray-900 dark:text-gray-300">{{ color.name }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Другие фильтры (например, по цене) -->
+            <div class="accordion">
+              Ціна<span class="icon"><img src="{% static 'images/right.svg' %}" alt="" /></span>
+            </div>
+            <div class="panel">
+              <div class="panel-content">
+                
+               <!-- Диапазон с двумя инпутами -->
+                <div class="grid grid-cols-2 gap-x-4">
+                  <!-- Инпут для минимальной цены -->
+                  <div class="flex flex-col">
+                    <label for="min-price" class="text-sm font-medium text-gray-700 pl-1">Від</label>
+                    <input type="number" id="min-price" name="min_price" min="0" step="1" value="{{ min_price|floatformat }}"
+                      class=" p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                  </div>
+
+                  <!-- Инпут для максимальной цены -->
+                  <div class="flex flex-col">
+                    <label for="max-price" class="text-sm font-medium text-gray-700 pl-1">До</label>
+                    <input type="number" id="max-price" name="max_price" min="{{ min_price|floatformat }}" step="1" value="{{ max_price|floatformat }}" max="{{ max_price|floatformat }}"
+                      class=" p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                  </div>
+                </div>
+                                        
+              </div>
+            </div>
+
+            <button id="filter-btn" type="submit"
+              class="opacity-0 scale-95 pointer-events-none mt-4 w-full py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all duration-300 ease-out focus:outline-none cursor-pointer">
+              Фільтрувати
+            </button>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- Product grid -->
+      <div class="lg:col-span-3">
+        <div class="grid grid-cols-2 md:grid-cols-3">
+          {% for product in products %}
+            <div class="rounded-xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] transition p-4 group">
+              {% if product.variations.first.image %}
+                <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt="" class="w-full object-cover rounded-xl mb-4" /></a>
+              {% endif %}
+
+              <div class="text-center">
+                <a href="{{ product.get_absolute_url }}"><h2 class="text-xl font-semibold text-gray-900 group-hover:text-blue-500">{{ product.title }}</h2></a>
+                {% if product.min_price != product.max_price %}
+                  <p class="text-lg font-semibold text-blue-400 mt-3">{{ product.min_price|floatformat }} грн - {{ product.max_price|floatformat }} грн.</p>
+                {% else %}
+                  <p class="text-lg font-semibold text-blue-400 mt-3">{{ product.min_price|floatformat }} грн</p>
+                {% endif %}
+                <hr class="mt-4 group-hover:opacity-0 text-gray-300" />
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        
+        <div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 mt-5 sm:px-6">
+          <div class="flex flex-1 justify-between sm:hidden">
+            {% if page_obj.has_previous %}
+              <a href="?{% change_params page=page_obj.previous_page_number %}" class="relative shadow-xs inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Попередня</a>
+            {% endif %}
+        
+            {% if page_obj.has_next %}
+              <a href="?{% change_params page=page_obj.next_page_number %}" class="relative shadow-xs inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Наступна</a>
+            {% endif %}
+          </div>
+          <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+            <div>
+              <p class="text-sm text-gray-700">
+                Сторінка 
+                <span class="font-medium">{{ page_obj.number }}</span>
+                з
+                <span class="font-medium">{{ page_obj.paginator.num_pages }}</span>
+              </p>
+            </div>
+            <div>
+              <nav class="inline-flex -space-x-px  gap-4">
+                {% if page_obj.has_previous %}
+                  <a href="?{% change_params page=page_obj.previous_page_number %}" class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Попередня</a>
+                {% endif %}
+            
+                {% if page_obj.has_next %}
+                  <a href="?{% change_params page=page_obj.next_page_number %}" class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Наступна</a>
+                {% endif %}
+              </nav>
+            </div>
           </div>
         </div>
-      {% endfor %}
+
+        
+      </div>
     </div>
   </section>
 {% endblock %}
+
+
+{% block js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector('form');
+    const button = document.getElementById('filter-btn');
+
+    const inputs = form.querySelectorAll('input');
+
+    inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        button.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+        button.classList.add('opacity-100', 'scale-100');
+      });
+    });
+  });
+</script>
+{% endblock js %}

@@ -28,11 +28,6 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = [CategoryChildInline]
 
 
-@admin.register(ProductAttribute)
-class ProductAttributeAdmin(admin.ModelAdmin):
-    list_display = ["name", "value"]
-
-
 class ProductAttributeInline(admin.StackedInline):
     model = ProductAttribute
     extra = 1
@@ -40,11 +35,16 @@ class ProductAttributeInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "description", "slug", "quantity"]
+    list_display = ["title", "quantity"]
     prepopulated_fields = {"slug": ["title"]}
 
     inlines = [ProductVariationInline, ProductAttributeInline]
 
 
 admin.site.register(ProductVariation)
-admin.site.register(Color)
+
+
+@admin.register(Color)
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ["name"]
+    prepopulated_fields = {"slug": ["name"]}

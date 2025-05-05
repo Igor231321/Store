@@ -4,6 +4,11 @@ from django.urls import reverse
 
 class Color(models.Model):
     name = models.CharField("Цвет", unique=True)
+    slug = models.SlugField("SLUG_URL", unique=True)
+
+    class Meta:
+        verbose_name = "Цвет"
+        verbose_name_plural = "Цвета"
 
     def __str__(self):
         return self.name
@@ -76,7 +81,7 @@ class Product(models.Model):
 
 class ProductVariation(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variations")
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, blank=True, null=True)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="variations")
     price = models.DecimalField("Цена", max_digits=10, decimal_places=2)
     image = models.ImageField(
         "Изображение", upload_to="product_images/", blank=True, null=True
@@ -86,7 +91,7 @@ class ProductVariation(models.Model):
     class Meta:
         db_table = "product_variations"
         verbose_name = "Вариации товара"
-        verbose_name = "Вариации товара"
+        verbose_name_plural = "Вариации товара"
 
     def __str__(self):
         return f"{self.product.title} - {self.color}"

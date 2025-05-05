@@ -9,13 +9,16 @@ $(document).ready(function () {
         e.preventDefault();
 
         // Берем элемент счетчика в значке корзины и берем оттуда значение
-        var goodsInCartCount = $("#cart-items-container");
-        var cartCount = parseInt(goodsInCartCount.text() || 0);
+        var productsInCartCount = $("#products-in-cart-count");
+        var cartCount = parseInt(productsInCartCount.text() || 0);
 
         // Получаем id товара из атрибута data-product-id
         var product_id = $(this).data("product-id");
         var variation_id = $('input[name="color"]:checked').val();
-      
+
+        // Получаем количество товара, которое пользователь хочет добавить
+        var quantity = parseInt($('.product__quantity').val());
+
         // Из атрибута href берем ссылку на контроллер django
         var add_to_cart_url = $(this).attr("href");
 
@@ -25,14 +28,16 @@ $(document).ready(function () {
             url: add_to_cart_url,
             data: {
                 product_id: product_id,
-                variation_id:variation_id,
+                quantity: quantity,
+                variation_id: variation_id,
                 csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
             },
             success: function (data) {
                 // Увеличиваем количество товаров в корзине (отрисовка в шаблоне)
-                cartCount++;
-                goodsInCartCount.text(cartCount);
+                cartCount += quantity;
 
+                // Обновляем отображение количества товаров в корзине
+                productsInCartCount.text(cartCount);
                 // Меняем содержимое корзины на ответ от django (новый отрисованный фрагмент разметки корзины)
                 var cartItemsContainer = $("#cart-items-container");
                 cartItemsContainer.html(data.cart_items_html);
@@ -40,7 +45,7 @@ $(document).ready(function () {
             },
 
             error: function (data) {
-                console.log("Ошибка при добавлении товара в корзину ", data);
+                console.log("Ошибка при добавлении товара в корзину", data);
             },
         });
     });
@@ -54,8 +59,8 @@ $(document).ready(function () {
         e.preventDefault();
 
         // Берем элемент счетчика в значке корзины и берем оттуда значение
-        var goodsInCartCount = $("#cart-items-container");
-        var cartCount = parseInt(goodsInCartCount.text() || 0);
+        var productsInCartCount = $("#products-in-cart-count");
+        var cartCount = parseInt(productsInCartCount.text() || 0);
 
         // Получаем id корзины из атрибута data-cart-id
         var cart_id = $(this).data("cart-id");
@@ -72,17 +77,9 @@ $(document).ready(function () {
                 csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
             },
             success: function (data) {
-                // // Сообщение
-                // successMessage.html(data.message);
-                // successMessage.fadeIn(400);
-                // // Через 7сек убираем сообщение
-                // setTimeout(function () {
-                //     successMessage.fadeOut(400);
-                // }, 7000);
-
                 // Уменьшаем количество товаров в корзине (отрисовка)
                 cartCount -= data.quantity_deleted;
-                goodsInCartCount.text(cartCount);
+                productsInCartCount.text(cartCount);
 
                 // Меняем содержимое корзины на ответ от django (новый отрисованный фрагмент разметки корзины)
                 var cartItemsContainer = $("#cart-items-container");
@@ -97,7 +94,19 @@ $(document).ready(function () {
     });
 
 
+    // Обработчик клика на кнопки увеличения и уменьшения количества товара
+    $(document).on("click", '.minus, .plus', function () {
+        var $input = $(this).siblings('input.product__quantity');
+        var quantity = parseInt($input.val());
 
+        if ($(this).hasClass('plus')) {
+            quantity += 1;
+        } else if ($(this).hasClass('minus') && quantity > 1) {
+            quantity -= 1;
+        }
+
+        $input.val(quantity);
+    });
 
     // Теперь + - количества товара 
     // Обработчик события для уменьшения значения

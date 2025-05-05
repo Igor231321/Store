@@ -8,6 +8,7 @@ from product.models import ProductVariation
 
 def cart_add(request):
     variation_id = request.POST.get("variation_id")
+    quantity = int(request.POST.get("quantity"))
 
     product_variation = ProductVariation.objects.get(id=variation_id)
 
@@ -15,11 +16,11 @@ def cart_add(request):
 
     if carts.exists():
         cart = carts.first()
-        cart.quantity += 1
+        cart.quantity += quantity
         cart.save()
     else:
         Cart.objects.create(
-            user=request.user, product_variation=product_variation, quantity=1
+            user=request.user, product_variation=product_variation, quantity=quantity
         )
 
     carts = Cart.objects.filter(user=request.user)
