@@ -85,3 +85,19 @@ class ProductDetail(generic.DetailView):
 
     def get_object(self, queryset=None):
         return get_object_or_404(Product, slug=self.kwargs["slug"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        variations = {}
+
+        for variation in self.get_object().variations.all():
+            attr_name = variation.attribute.name
+            attr_value = variation.attribute_value
+
+            if attr_name not in variations:
+                variations[attr_name] = []
+            variations[attr_name].append(attr_value)
+
+        context['variations'] = variations
+        return context

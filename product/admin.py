@@ -1,50 +1,36 @@
+from django import forms
 from django.contrib import admin
+from flat_json_widget.widgets import FlatJsonWidget
 
-from product.models import (Category, CategoryChild, Color, Product,
-                            ProductAttribute, ProductVariation)
-
-
-@admin.register(CategoryChild)
-class CategoryChildAdmin(admin.ModelAdmin):
-    list_display = ["title"]
-    prepopulated_fields = {"slug": ["title"]}
-
-
-class CategoryChildInline(admin.StackedInline):
-    model = CategoryChild
-    extra = 1
-    prepopulated_fields = {"slug": ["title"]}
+from product.models import (Attribute, Brand, Category, Color, Product,
+                            ProductVariation)
 
 
 class ProductVariationInline(admin.StackedInline):
     model = ProductVariation
-    extra = 1
+    extra = 0
 
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["title"]
-    prepopulated_fields = {"slug": ["title"]}
-    inlines = [CategoryChildInline]
-
-
-class ProductAttributeInline(admin.StackedInline):
-    model = ProductAttribute
-    extra = 1
+class ProductForm(forms.ModelForm):
+    class Meta:
+        widgets = {"characteristics": FlatJsonWidget}
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "quantity"]
+    form = ProductForm
+    list_display = ("title", "category")
     prepopulated_fields = {"slug": ["title"]}
 
-    inlines = [ProductVariationInline, ProductAttributeInline]
-
-
-admin.site.register(ProductVariation)
+    inlines = [ProductVariationInline]
 
 
 @admin.register(Color)
 class ColorAdmin(admin.ModelAdmin):
     list_display = ["name"]
     prepopulated_fields = {"slug": ["name"]}
+
+
+admin.site.register(Category)
+admin.site.register(Attribute)
+admin.site.register(Brand)

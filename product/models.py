@@ -2,9 +2,21 @@ from django.db import models
 from django.urls import reverse
 
 
+class Brand(models.Model):
+    name = models.CharField("Название бренда", max_length=50)
+
+    class Meta:
+        db_table = "brand"
+        verbose_name = "Бренд"
+        verbose_name_plural = "Бренды"
+
+    def __str__(self):
+        return self.name
+
+
 class Color(models.Model):
     name = models.CharField("Цвет", unique=True)
-    slug = models.SlugField("SLUG_URL", unique=True)
+    slug = models.SlugField("SLUG_URL", unique=True, null=True)
 
     class Meta:
         verbose_name = "Цвет"
@@ -28,30 +40,10 @@ class Category(models.Model):
         return self.title
 
 
-class CategoryChild(models.Model):
-    title = models.CharField("Название", max_length=255)
-    slug = models.SlugField("SLUG_URL", max_length=255, unique=True)
-    image = models.ImageField("Изображение", upload_to="category-child_images")
-    category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, verbose_name="Категория"
-    )
-
-    class Meta:
-        db_table = "category_child"
-        verbose_name = "Подкатегория"
-        verbose_name_plural = "Подкатегории"
-
-    def __str__(self):
-        return self.title
-
-
 class Product(models.Model):
     title = models.CharField("Название", max_length=255, unique=True)
     description = models.TextField("Описание")
-    slug = models.SlugField(
-        "SLUG_URL", max_length=255, unique=True, blank=True, null=True
-    )
-    quantity = models.PositiveIntegerField("Количество товара", default=0)
+    slug = models.SlugField("SLUG_URL", max_length=255, unique=True, null=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -59,13 +51,9 @@ class Product(models.Model):
         blank=True,
         null=True,
     )
-    category_child = models.ForeignKey(
-        CategoryChild,
-        on_delete=models.CASCADE,
-        verbose_name="Подкатегория",
-        blank=True,
-        null=True,
-    )
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True)
+
+    characteristics = models.JSONField("Характеристики", blank=True, null=True)
 
     class Meta:
         db_table = "product"
@@ -79,14 +67,39 @@ class Product(models.Model):
         return reverse("product:detail", kwargs={"slug": self.slug})
 
 
+class Attribute(models.Model):
+    name = models.CharField("Название атрибута", max_length=50, unique=True)
+
+    class Meta:
+        db_table = "attribute"
+        verbose_name = "Атрибут"
+        verbose_name_plural = "Атрибуты"
+
+    def __str__(self):
+        return self.name
+
+
 class ProductVariation(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="variations")
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="variations")
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="variations"
+    )
+    attribute = models.ForeignKey(
+        Attribute, on_delete=models.CASCADE, null=True, verbose_name="Атрибут"
+    )
+    attribute_value = models.CharField("Значение атрибута", max_length=50, null=True)
+    color = models.ForeignKey(
+        Color,
+        on_delete=models.CASCADE,
+        related_name="variations",
+        null=True,
+        verbose_name="Цвет",
+    )
     price = models.DecimalField("Цена", max_digits=10, decimal_places=2)
     image = models.ImageField(
         "Изображение", upload_to="product_images/", blank=True, null=True
     )
     article = models.CharField("Артикул", max_length=255, blank=True, null=True)
+    quantity = models.PositiveIntegerField("Количество товара", default=0)
 
     class Meta:
         db_table = "product_variations"
@@ -95,19 +108,3 @@ class ProductVariation(models.Model):
 
     def __str__(self):
         return f"{self.product.title} - {self.color}"
-
-
-class ProductAttribute(models.Model):
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, verbose_name="Атрибут", related_name="attributes"
-    )
-    name = models.CharField("Название атрибута", max_length=100)
-    value = models.CharField("Значение", max_length=100)
-
-    class Meta:
-        db_table = "product_attribute"
-        verbose_name = "Атрибут товара"
-        verbose_name_plural = "Атрибуты товара"
-
-    def __str__(self):
-        return f"Товар ({self.product.title}), Аттрибут ({self.name} - {self.value})"
