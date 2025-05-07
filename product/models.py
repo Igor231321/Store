@@ -79,14 +79,29 @@ class Attribute(models.Model):
         return self.name
 
 
+class AttributeValue(models.Model):
+    attribute = models.ForeignKey(
+        Attribute, on_delete=models.CASCADE, null=True, verbose_name="Атрибут"
+    )
+    value = models.CharField("Значение", max_length=50)
+
+    class Meta:
+        db_table = "attribute_value"
+        verbose_name = "Значение атрибута"
+        verbose_name_plural = "Значения атрибутов"
+
+    def __str__(self):
+        return f'{self.attribute.name} - {self.value}'
+
+
 class ProductVariation(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="variations"
     )
-    attribute = models.ForeignKey(
-        Attribute, on_delete=models.CASCADE, null=True, verbose_name="Атрибут"
+    attribute_value = models.ForeignKey(
+        AttributeValue, on_delete=models.CASCADE, null=True, verbose_name="Атрибут"
     )
-    attribute_value = models.CharField("Значение атрибута", max_length=50, null=True)
+    # attribute_value = models.CharField("Значение атрибута", max_length=50, null=True)
     color = models.ForeignKey(
         Color,
         on_delete=models.CASCADE,
@@ -100,6 +115,7 @@ class ProductVariation(models.Model):
     )
     article = models.CharField("Артикул", max_length=255, blank=True, null=True)
     quantity = models.PositiveIntegerField("Количество товара", default=0)
+    characteristics = models.JSONField("Характеристики", blank=True, null=True)
 
     class Meta:
         db_table = "product_variations"

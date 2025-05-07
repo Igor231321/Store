@@ -92,8 +92,8 @@ class ProductDetail(generic.DetailView):
         variations = {}
 
         for variation in self.get_object().variations.all():
-            attr_name = variation.attribute.name
-            attr_value = variation.attribute_value
+            attr_name = variation.attribute_value.attribute.name
+            attr_value = variation.attribute_value.value
 
             if attr_name not in variations:
                 variations[attr_name] = []
