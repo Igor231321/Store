@@ -18,7 +18,7 @@ class ProductForm(forms.ModelForm):
         widgets = {"characteristics": FlatJsonWidget}
 
 
-class ProductVariationInline(admin.TabularInline):
+class ProductVariationInline(admin.StackedInline):
     model = ProductVariation
     extra = 0
     autocomplete_fields = ("attribute_value",)
@@ -27,8 +27,8 @@ class ProductVariationInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     form = ProductForm
-    list_display = ("title", "category")
-    prepopulated_fields = {"slug": ["title"]}
+    list_display = ["name", "category"]
+    prepopulated_fields = {"slug": ["name"]}
 
     inlines = [ProductVariationInline]
 
@@ -46,7 +46,7 @@ class AttributeValueAdmin(admin.ModelAdmin):
     search_fields = ["attribute__name", "value"]
 
 
-class AttributeValueInline(admin.TabularInline):
+class AttributeValueInline(admin.StackedInline):
     model = AttributeValue
     extra = 0
 
@@ -61,3 +61,4 @@ class AttributeAdmin(admin.ModelAdmin):
 
 admin.site.register(Category)
 admin.site.register(Brand)
+admin.site.register(ProductVariation)

@@ -3,16 +3,23 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 
 from cart.models import Cart
-from product.models import ProductVariation
+from product.models import Product, ProductVariation
 
 
 def cart_add(request):
     variation_id = request.POST.get("variation_id")
+    product_id = request.POST.get("product_id")
     quantity = int(request.POST.get("quantity"))
 
-    product_variation = ProductVariation.objects.get(id=variation_id)
+    carts = Cart.objects.filter(user=request.user)
 
-    carts = Cart.objects.filter(user=request.user, product_variation=product_variation)
+    if variation_id:
+        product_variation = ProductVariation.objects.get(id=variation_id)
+    else:
+        product = Product.objects.get(id=product_id)
+        product_variation = product.variations.first()
+
+    carts = carts.filter(product_variation=product_variation)
 
     if carts.exists():
         cart = carts.first()

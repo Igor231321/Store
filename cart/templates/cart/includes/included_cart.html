@@ -8,33 +8,38 @@
       {% for cart in user_carts %}
         <div class="flex border-b border-gray-400 pb-3 gap-2">
           {% if cart.product_variation.image %}
-            <img src="{{ cart.product_variation.image.url }}" alt="{{ cart.product_variation.product.title }}" class="w-32 h-32 object-cover rounded-md" />
+            <img src="{{ cart.product_variation.image.url }}" alt="{{ cart.product_variation.product.name }}" class="w-32 h-32 object-cover rounded-md" />
           {% endif %}
 
           <div class="flex-1 relative">
-            <a href="{{ cart.product_variation.product.get_absolute_url }}"><h2 class="font-semibold text-lg hover:text-blue-400 transition-colors mb-3">{{ cart.product_variation.product.title }}</h2></a>
+            <a href="{{ cart.product_variation.product.get_absolute_url }}"><h2 class="font-semibold text-lg hover:text-blue-400 transition-colors mb-3">{{ cart.product_variation.product.name }}</h2></a>
             <div class="flex gap-2 text-sm font-semibold">
               <span class="text-gray-400">Кількість:</span>
               <span>{{ cart.quantity }}</span>
             </div>
 
-            <div class="flex gap-2 text-sm font-semibold">
-              <span class="text-gray-400">Колір:</span>
-              <span>{{ cart.product_variation.color }}</span>
-            </div>
+            {% if cart.product_variation.color %}
+              <div class="flex gap-2 text-sm font-semibold">
+                <span class="text-gray-400">Колір:</span>
+                <span>{{ cart.product_variation.color }}</span>
+              </div>
+            {% endif %}
+
+            {% if cart.product_variation.attribute_value %}
+              <div class="flex gap-2 text-sm font-semibold">
+                <span class="text-gray-400">{{ cart.product_variation.attribute_value.attribute }}:</span>
+                <span>{{ cart.product_variation.attribute_value.value }}</span>
+              </div>
+            {% endif %}
             <p class="mt-2 font-bold">{{ cart.quantity }} x {{ cart.product_variation.price|floatformat }} грн</p>
-            <a href="{% url 'cart:cart_remove' %}" 
-              data-cart-id="{{ cart.id }}" 
-              class="remove-from-cart float-end text-sm border-b-2 border-gray-400 hover:border-red-600 font-semibold transition-all">
-              {% csrf_token %}
-              Удалить корзину</a>
+            <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}" class="remove-from-cart float-end text-sm border-b-2 border-gray-400 hover:border-red-600 font-semibold transition-all">{% csrf_token %}Удалить корзину</a>
           </div>
         </div>
       {% endfor %}
     </div>
 
-    <div class="mt-8 grid ">
-      <p class="text-xl font-semibold">Сума: {{ user_carts.total_sum }}₽</p>
+    <div class="mt-8 grid">
+      <p class="text-xl font-semibold">Сума: {{ user_carts.total_sum }} грн.</p>
       <a href="" class="inline-block mt-4 text-center font-semibold bg-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-600">Перейти до оформлення</a>
     </div>
   {% else %}

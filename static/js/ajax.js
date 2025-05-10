@@ -5,45 +5,43 @@ $(document).ready(function () {
 
     // Ловим собыитие клика по кнопке добавить в корзину
     $(document).on("click", ".add-to-cart", function (e) {
-        // Блокируем его базовое действие
         e.preventDefault();
 
-        // Берем элемент счетчика в значке корзины и берем оттуда значение
         var productsInCartCount = $("#products-in-cart-count");
         var cartCount = parseInt(productsInCartCount.text() || 0);
 
-        // Получаем id товара из атрибута data-product-id
         var product_id = $(this).data("product-id");
-        var variation_id = $('input[name="color"]:checked').val();
 
-        // Получаем количество товара, которое пользователь хочет добавить
+        // Проверяем наличие radio-кнопок
+        var variation_id = null;
+        if ($('input[name="color"]').length > 0) {
+            variation_id = $('input[name="color"]:checked').val();
+        }
+
         var quantity = parseInt($('.product__quantity').val());
-
-        // Из атрибута href берем ссылку на контроллер django
         var add_to_cart_url = $(this).attr("href");
 
-        // делаем post запрос через ajax не перезагружая страницу
+        // Формируем данные для отправки
+        var postData = {
+            product_id: product_id,
+            quantity: quantity,
+            csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+        };
+
+        // Если выбран цвет — добавляем variation_id
+        if (variation_id) {
+            postData.variation_id = variation_id;
+        }
+
         $.ajax({
             type: "POST",
             url: add_to_cart_url,
-            data: {
-                product_id: product_id,
-                quantity: quantity,
-                variation_id: variation_id,
-                csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
-            },
+            data: postData,
             success: function (data) {
-                // Увеличиваем количество товаров в корзине (отрисовка в шаблоне)
                 cartCount += quantity;
-
-                // Обновляем отображение количества товаров в корзине
                 productsInCartCount.text(cartCount);
-                // Меняем содержимое корзины на ответ от django (новый отрисованный фрагмент разметки корзины)
-                var cartItemsContainer = $("#cart-items-container");
-                cartItemsContainer.html(data.cart_items_html);
-
+                $("#cart-items-container").html(data.cart_items_html);
             },
-
             error: function (data) {
                 console.log("Ошибка при добавлении товара в корзину", data);
             },

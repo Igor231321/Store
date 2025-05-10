@@ -26,7 +26,7 @@ class UploadData(generic.FormView):
         for row in reader:
 
             Product.objects.create(
-                title=row["name"],
+                name=row["name"],
                 description=row["description"],
                 slug=row["slug"],
                 # price=row['price'],
@@ -89,15 +89,6 @@ class ProductDetail(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        variations = {}
-
-        for variation in self.get_object().variations.all():
-            attr_name = variation.attribute_value.attribute.name
-            attr_value = variation.attribute_value.value
-
-            if attr_name not in variations:
-                variations[attr_name] = []
-            variations[attr_name].append(attr_value)
-
-        context['variations'] = variations
+        context["has_color"] = self.get_object().variations.filter(color__isnull=False).exists()
+        context["has_attribute"] = self.get_object().variations.filter(attribute_value__isnull=False).exists()
         return context

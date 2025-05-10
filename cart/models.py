@@ -17,7 +17,7 @@ class Cart(models.Model):
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
     product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE, blank=True, null=True)
-    quantity = models.PositiveIntegerField("Количество", default=0)
+    quantity = models.PositiveIntegerField("Кількість", default=1)
     created_at = models.DateTimeField("Дата добавления", auto_now_add=True)
 
     class Meta:
@@ -30,7 +30,7 @@ class Cart(models.Model):
 
     def __str__(self):
         return (
-            f"Корзина для {self.user.username}: {self.product_variation.product.title} (x{self.quantity})"
+            f"Корзина для {self.user.username}: {self.product_variation.product.name} (x{self.quantity})"
         )
 
     def products_sum(self):

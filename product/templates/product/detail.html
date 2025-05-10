@@ -7,27 +7,24 @@
       <!-- Sticky блок -->
       <div class="">
         <div class="sticky top-10">
-          <div class="relative">
+          <div class="relative flex">
+            <div id="custom-prev" class="self-center cursor-pointer">
+              <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#000000">
+                <path d="M560.67-240 320-480.67l240.67-240.66L608-674 414.67-480.67 608-287.33 560.67-240Z" />
+              </svg>
+            </div>
             <!-- Слайдер -->
             <div class="swiper mySwiper rounded-xl shadow-lg">
               <div class="swiper-wrapper">
                 {% for product_variation in product.variations.all %}
                   <div class="swiper-slide">
-                    <img src="{{ product_variation.image.url }}" alt="" class="object-cover rounded-xl" />
+                    <img src="{{ product_variation.image.url }}" alt="{{ product_variation.product.name }}" class="object-cover rounded-xl" />
                   </div>
                 {% endfor %}
               </div>
             </div>
 
-            <!-- Кнопка назад (слева вне слайдера) -->
-            <div id="custom-prev" class="absolute top-1/2 -left-10 -translate-y-1/2 z-10 cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#000000">
-                <path d="M560.67-240 320-480.67l240.67-240.66L608-674 414.67-480.67 608-287.33 560.67-240Z" />
-              </svg>
-            </div>
-
-            <!-- Кнопка вперёд (справа вне слайдера) -->
-            <div id="custom-next" class="absolute top-1/2 -right-10 -translate-y-1/2 z-10 cursor-pointer mx-auto">
+            <div id="custom-next" class="self-center cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#000000">
                 <path d="M521.33-480.67 328-674l47.33-47.33L616-480.67 375.33-240 328-287.33l193.33-193.34Z" />
               </svg>
@@ -37,44 +34,57 @@
       </div>
 
       <!-- Контент -->
-      <div class="mt-5">
-        <h1 class="text-4xl text-slate-600 font-semibold mb-2">{{ product.title }}</h1>
+      <div class="mt-5 text-slate-600">
+        <h1 class="text-4xl font-semibold mb-2">{{ product.name }}</h1>
         <p class="mt-4 text-2xl font-semibold text-blue-400">
           <span id="price">{{ product.variations.first.price }}</span> грн
         </p>
 
-        <p class="font-semibold mt-5 text-slate-600">
-          Виробник:
-          <a href="#" class="text-blue-400 hover:text-slate-500 transition-colors">Mirater</a>
-        </p>
+        <div class="mt-5 mb-3">
+          <p class="font-semibold">
+            Виробник:
+            <a href="#" class="text-blue-400 hover:text-slate-600 transition-colors">Mirater</a>
+          </p>
+          <p class="font-semibold">Артикул: {{ product.variations.first.article }}</p>
+        </div>
 
-        <div class="">
-          {% for variation_key, variation_values in variations.items %}
-            <h4 class="font-medium text-xl mb-2 mt-4">{{ variation_key }}</h4>
-            {% for attr_value in variation_values %}
-              <span class="px-4 py-2 border border-gray-400 rounded-2xl">{{ attr_value }}</span>
+        {% if has_attribute %}
+          <div class="">
+            {% regroup product.variations.all by attribute_value.attribute.name as grouped_variations %}
+
+            {% for group in grouped_variations %}
+              <h4 class="text-lg font-medium mb-2">{{ group.grouper }}</h4>
+              <ul class="flex flex-wrap gap-2">
+                {% for variation in group.list %}
+                  <label class="cursor-pointer">
+                    <input type="radio" name="color" class="hidden peer" value="{{ variation.id }}" data-price="{{ variation.price }}" />
+                    <span class="color-button inline-block border border-gray-300 bg-white rounded-lg px-3 py-1 text-lg font-semibold transition-colors peer-checked:bg-black peer-checked:text-white peer-checked:border-gray-800 hover:border-gray-800" data-variation-id="{{ variation.id }}" data-price="{{ variation.price }}">{{ variation.attribute_value.value }}</span>
+                  </label>
+                {% endfor %}
+              </ul>
             {% endfor %}
-          {% endfor %}
-        </div>
+          </div>
+        {% endif %}
 
-        <p class="font-semibold mt-5 text-slate-600">Артикул: {{ product.variations.first.article }}</p>
-        <p class="font-semibold text-lg mt-5 text-slate-600">Колір</p>
-        <div class="mt-3 flex flex-wrap gap-2" id="color-options">
-          {% for variation in product.variations.all %}
-            <label class="cursor-pointer">
-              <input type="radio" name="color" class="hidden peer" value="{{ variation.id }}" data-price="{{ variation.price }}" />
-              <span class="color-button inline-block border border-gray-300 bg-white rounded-lg px-3 py-2 text-lg font-semibold transition-colors peer-checked:bg-black peer-checked:text-white peer-checked:border-gray-800 hover:border-gray-800" data-variation-id="{{ variation.id }}" data-slide-index="{{ forloop.counter0 }}" data-price="{{ variation.price }}">{{ variation.color }}</span>
-            </label>
-          {% endfor %}
-        </div>
+        {% if has_color %}
+          <p class="font-semibold text-lg mt-5 text-slate-600">Колір</p>
+          <div class="mt-3 flex flex-wrap gap-2" id="color-options">
+            {% for variation in product.variations.all %}
+              <label class="cursor-pointer">
+                <input type="radio" name="color" class="hidden peer" value="{{ variation.id }}" data-price="{{ variation.price }}" />
+                <span class="color-button inline-block border border-gray-300 bg-white rounded-lg px-3 py-2 text-lg font-semibold transition-colors peer-checked:bg-black peer-checked:text-white peer-checked:border-gray-800 hover:border-gray-800" data-variation-id="{{ variation.id }}" data-slide-index="{{ forloop.counter0 }}" data-price="{{ variation.price }}">{{ variation.color }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        {% endif %}
 
         <div class="my-5">
-          <div class="flex items-center space-x-4">
-            <button type="button" class="minus w-10 h-10 font-bold flex items-center justify-center rounded-full bg-gray-100 text-xl text-gray-700 hover:bg-gray-200 cursor-pointer">−</button>
+          <div class="flex items-center gap-x-4">
+            <button type="button" class="minus w-10 h-10 font-bold flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">−</button>
 
             <input type="text" readonly class="product__quantity w-14 text-center border border-gray-300 rounded-lg text-lg font-semibold focus:outline-none" value="1" />
 
-            <button type="button" class="plus w-10 h-10 font-bold flex items-center justify-center rounded-full bg-gray-100 text-xl text-gray-700 hover:bg-gray-200 cursor-pointer">+</button>
+            <button type="button" class="plus w-10 h-10 font-bold flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">+</button>
           </div>
         </div>
 
@@ -117,40 +127,41 @@
     
       // Инициализация слайдера
       const swiper = new Swiper('.mySwiper', {
-        loop: true, // Для бесконечного цикличного прокручивания слайдов
-        spaceBetween: 10, // Отступ между слайдами
-        slidesPerView: 1, // Показываем по одному слайду
-        speed: 500 // Плавный переход между слайдами
+        loop: true,
+        spaceBetween: 10,
+        slidesPerView: 1,
+        speed: 500
       })
     
-      // Стрелки с плавным переходом
-      document.getElementById('custom-next').addEventListener('click', function () {
-        swiper.slideNext() // Переход на следующий слайд
+      // Стрелки слайдера
+      document.getElementById('custom-next')?.addEventListener('click', function () {
+        swiper.slideNext()
       })
     
-      document.getElementById('custom-prev').addEventListener('click', function () {
-        swiper.slidePrev() // Переход на предыдущий слайд
+      document.getElementById('custom-prev')?.addEventListener('click', function () {
+        swiper.slidePrev()
       })
+    
+      // ✅ Если радиокнопок нет — сразу активировать кнопку
+      if (radios.length === 0) {
+        addToCartButton.classList.remove('bg-gray-300', 'text-white', 'cursor-not-allowed', 'pointer-events-none')
+        addToCartButton.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600', 'hover:text-white', 'hover:shadow-3xl')
+      }
     
       // Обработчик изменения цвета
       radios.forEach((radio) => {
         radio.addEventListener('change', function () {
           const variationId = this.value
           const price = this.dataset.price
-          const slideIndex = this.nextElementSibling.getAttribute('data-slide-index') // Получаем индекс слайда для текущего цвета
+          const slideIndex = this.nextElementSibling.getAttribute('data-slide-index')
     
-          // Обновить цену
           priceSpan.textContent = price
-    
-          // Обновить data-variation-id на кнопке
           addToCartButton.setAttribute('data-variation-id', variationId)
     
-          // Активировать кнопку
           addToCartButton.classList.remove('bg-gray-300', 'text-white', 'cursor-not-allowed', 'pointer-events-none')
           addToCartButton.classList.add('bg-blue-500', 'text-white', 'hover:bg-blue-600', 'hover:text-white', 'hover:shadow-3xl')
     
-          // Переключить слайдер на соответствующую картинку
-          swiper.slideTo(slideIndex, 500) // Переход на слайд с выбранным цветом
+          swiper.slideTo(slideIndex, 500)
         })
       })
     })

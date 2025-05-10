@@ -50,20 +50,22 @@
       <div class="hidden lg:block">
         <div class="sticky top-10">
           <form action="{% url 'product:catalog' %}" method="get">
-            <div class="accordion">
-              Колір <span class="icon"><img src="{% static 'images/right.svg' %}" alt="" /></span>
-            </div>
-            <div class="panel">
-              <div class="panel-content">
-                {% for color in colors %}
-                  <div class="flex items-center mb-3">
-                    <input type="checkbox" id="color_{{ color.slug }}" value="{{ color.slug }}" name="color" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500"
-                      {% if color.slug in selected_colors %}checked{% endif %} />
-                    <label for="color_{{ color.slug }}" class="ml-2 ms-2 font-medium text-gray-900 dark:text-gray-300">{{ color.name }}</label>
-                  </div>
-                {% endfor %}
+            {% if colors %}
+              <div class="accordion">
+                Колір <span class="icon"><img src="{% static 'images/right.svg' %}" alt="" /></span>
               </div>
-            </div>
+              <div class="panel">
+                <div class="panel-content">
+                  {% for color in colors %}
+                    <div class="flex items-center mb-3">
+                      <input type="checkbox" id="color_{{ color.slug }}" value="{{ color.slug }}" name="color" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500"
+                        {% if color.slug in selected_colors %}checked{% endif %} />
+                      <label for="color_{{ color.slug }}" class="ml-2 ms-2 font-medium text-gray-900 dark:text-gray-300">{{ color.name }}</label>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
 
             <!-- Другие фильтры (например, по цене) -->
             <div class="accordion">
@@ -77,14 +79,14 @@
                   <!-- Инпут для минимальной цены -->
                   <div class="flex flex-col">
                     <label for="min-price" class="text-sm font-medium text-gray-700 pl-1">Від</label>
-                    <input type="number" id="min-price" name="min_price" min="0" step="1" value="{{ min_price|floatformat }}"
+                    <input type="number" id="min-price" name="min_price" min="0" step="1" placeholder="{{ min_price|floatformat }}"
                       class=" p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
                   </div>
 
                   <!-- Инпут для максимальной цены -->
                   <div class="flex flex-col">
                     <label for="max-price" class="text-sm font-medium text-gray-700 pl-1">До</label>
-                    <input type="number" id="max-price" name="max_price" min="{{ min_price|floatformat }}" step="1" value="{{ max_price|floatformat }}" max="{{ max_price|floatformat }}"
+                    <input type="number" id="max-price" name="max_price" min="{{ min_price|floatformat }}" step="1" placeholder="{{ max_price|floatformat }}" max="{{ max_price|floatformat }}"
                       class=" p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
                   </div>
                 </div>
@@ -111,18 +113,34 @@
               {% endif %}
 
               <div class="text-center">
-                <a href="{{ product.get_absolute_url }}"><h2 class="text-xl font-semibold text-gray-900 group-hover:text-blue-500">{{ product.title }}</h2></a>
+                <a href="{{ product.get_absolute_url }}">
+                  <h2 class="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-blue-500">
+                    {{ product.name }}
+                  </h2>
+                </a>
+        
+                {% if product.min_price != product.max_price %}
+                  <p class="text-base sm:text-lg font-semibold text-blue-400 mt-2">
+                    {{ product.min_price|floatformat }} грн – {{ product.max_price|floatformat }} грн
+                  </p>
+                {% else %}
+                  <p class="text-base sm:text-lg font-semibold text-blue-400 mt-2">
+                    {{ product.min_price|floatformat }} грн
+                  </p>
+                {% endif %}
+        
+                <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300" />
+                {% comment %} <a href="{{ product.get_absolute_url }}"><h2 class="text-xl font-semibold text-gray-900 group-hover:text-blue-500">{{ product.name }}</h2></a>
                 {% if product.min_price != product.max_price %}
                   <p class="text-lg font-semibold text-blue-400 mt-3">{{ product.min_price|floatformat }} грн - {{ product.max_price|floatformat }} грн.</p>
                 {% else %}
                   <p class="text-lg font-semibold text-blue-400 mt-3">{{ product.min_price|floatformat }} грн</p>
                 {% endif %}
-                <hr class="mt-4 group-hover:opacity-0 text-gray-300" />
+                <hr class="mt-4 group-hover:opacity-0 text-gray-300" /> {% endcomment %}
               </div>
             </div>
           {% endfor %}
         </div>
-
         
         <div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 mt-5 sm:px-6">
           <div class="flex flex-1 justify-between sm:hidden">
