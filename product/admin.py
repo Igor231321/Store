@@ -1,15 +1,16 @@
-from django import forms
 from django.contrib import admin
-from flat_json_widget.widgets import FlatJsonWidget
+
 from mptt.admin import DraggableMPTTAdmin
 
-from product.models import (Attribute, AttributeValue, Brand, Category, Color,
-                            Product, ProductVariation)
-
-
-class ProductForm(forms.ModelForm):
-    class Meta:
-        widgets = {"characteristics": FlatJsonWidget}
+from product.models import (
+    Attribute,
+    AttributeValue,
+    Brand,
+    Category,
+    Product,
+    ProductCharacteristics,
+    ProductVariation,
+)
 
 
 class ProductVariationInline(admin.StackedInline):
@@ -20,18 +21,10 @@ class ProductVariationInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    form = ProductForm
     list_display = ["name", "category"]
     prepopulated_fields = {"slug": ["name"]}
-
+    list_editable = ["category"]
     inlines = [ProductVariationInline]
-
-
-@admin.register(Color)
-class ColorAdmin(admin.ModelAdmin):
-    list_display = ["name"]
-    prepopulated_fields = {"slug": ["name"]}
-    search_fields = ["name"]
 
 
 @admin.register(AttributeValue)
@@ -57,3 +50,9 @@ admin.site.register(Brand)
 admin.site.register(ProductVariation)
 
 admin.site.register(Category, DraggableMPTTAdmin)
+
+
+@admin.register(ProductCharacteristics)
+class ProductCharacteristicsAdmin(admin.ModelAdmin):
+    list_display = ["name", "value", "product_variation"]
+    exclude = ["slug"]

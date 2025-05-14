@@ -16,7 +16,7 @@ class Cart(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name="Пользователь"
     )
-    product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE, blank=True, null=True)
+    product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField("Кількість", default=1)
     created_at = models.DateTimeField("Дата добавления", auto_now_add=True)
 

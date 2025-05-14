@@ -21,12 +21,6 @@ class Brand(AbstractNamedModel):
         verbose_name_plural = "Бренды"
 
 
-class Color(AbstractNamedModel):
-    class Meta:
-        verbose_name = "Цвет"
-        verbose_name_plural = "Цвета"
-
-
 class Category(MPTTModel):
     name = models.CharField("Название", max_length=50, unique=True)
     parent = TreeForeignKey(
@@ -81,8 +75,6 @@ class Product(AbstractNamedModel):
     )
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
-    characteristics = models.JSONField("Характеристики", blank=True, null=True)
-
     class Meta:
         db_table = "product"
         verbose_name = "Товар"
@@ -106,21 +98,12 @@ class ProductVariation(models.Model):
         null=True,
         verbose_name="Атрибут",
     )
-    color = models.ForeignKey(
-        Color,
-        on_delete=models.CASCADE,
-        related_name="variations",
-        blank=True,
-        null=True,
-        verbose_name="Цвет",
-    )
     price = models.DecimalField("Цена", max_digits=10, decimal_places=2)
     image = models.ImageField(
         "Изображение", upload_to="product_images/", blank=True, null=True
     )
     article = models.CharField("Артикул", max_length=255)
     quantity = models.PositiveIntegerField("Количество товара", default=0)
-    characteristics = models.JSONField("Характеристики", blank=True, null=True)
 
     class Meta:
         db_table = "product_variations"
@@ -130,3 +113,13 @@ class ProductVariation(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - {self.article}"
+
+
+class ProductCharacteristics(AbstractNamedModel):
+    product_variation = models.ForeignKey("ProductVariation", on_delete=models.CASCADE, related_name="characteristics")
+    value = models.CharField("Значение", max_length=50)
+
+    class Meta:
+        db_table = "product_characteristics"
+        verbose_name = "Характеристика"
+        verbose_name_plural = "Характеристики"

@@ -50,23 +50,6 @@
       <div class="hidden lg:block">
         <div class="sticky top-10">
           <form action="{% url 'product:catalog' %}" method="get">
-            {% if colors %}
-              <div class="accordion">
-                Колір <span class="icon"><img src="{% static 'images/right.svg' %}" alt="" /></span>
-              </div>
-              <div class="panel">
-                <div class="panel-content">
-                  {% for color in colors %}
-                    <div class="flex items-center mb-3">
-                      <input type="checkbox" id="color_{{ color.slug }}" value="{{ color.slug }}" name="color" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500"
-                        {% if color.slug in selected_colors %}checked{% endif %} />
-                      <label for="color_{{ color.slug }}" class="ml-2 ms-2 font-medium text-gray-900 dark:text-gray-300">{{ color.name }}</label>
-                    </div>
-                  {% endfor %}
-                </div>
-              </div>
-            {% endif %}
-
             <!-- Другие фильтры (например, по цене) -->
             <div class="accordion">
               Ціна<span class="icon"><img src="{% static 'images/right.svg' %}" alt="" /></span>
@@ -167,8 +150,6 @@
             </div>
           </div>
         </div>
-
-        
       </div>
     </div>
   </section>

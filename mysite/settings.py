@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     "cart",
     "order",
 
-    "flat_json_widget",
     "mptt",
 ]
 

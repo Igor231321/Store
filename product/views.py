@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from product.forms import UploadDataForm
-from product.models import Color, Product, ProductVariation
+from product.models import Product, ProductVariation
 
 
 def home(request):
@@ -24,14 +24,11 @@ class UploadData(generic.FormView):
         reader = csv.DictReader(decoded_file)
 
         for row in reader:
-
             Product.objects.create(
                 name=row["name"],
                 description=row["description"],
                 slug=row["slug"],
-                # price=row['price'],
                 quantity=row["stock"],
-                # article=row['article'],
             )
         return super().form_valid(form)
 
@@ -40,16 +37,12 @@ class Catalog(generic.ListView):
     template_name = "product/catalog.html"
     context_object_name = "products"
     model = Product
-    paginate_by = 99
+    paginate_by = 6
 
     def get_queryset(self):
         products = Product.objects.annotate(
             min_price=Min("variations__price"), max_price=Max("variations__price")
         )
-
-        selected_colors = self.request.GET.getlist("color")
-        if selected_colors:
-            products = products.filter(variations__color__slug__in=selected_colors)
 
         min_price = self.request.GET.get("min_price", None)
         if min_price:
@@ -67,12 +60,6 @@ class Catalog(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        products = Product.objects.all()
-        context["colors"] = Color.objects.filter(
-            variations__product__in=products
-        ).distinct()
-        context["selected_colors"] = self.request.GET.getlist("color")
-
         product_prices = ProductVariation.objects.aggregate(Min("price"), Max("price"))
         context["min_price"] = product_prices["price__min"]
         context["max_price"] = product_prices["price__max"]
@@ -89,6 +76,14 @@ class ProductDetail(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["has_color"] = self.get_object().variations.filter(color__isnull=False).exists()
-        context["has_attribute"] = self.get_object().variations.filter(attribute_value__isnull=False).exists()
+        context["has_attribute"] = (
+            self.get_object().variations.filter(attribute_value__isnull=False).exists()
+        )
+        context["products_brand"] = (
+            Product.objects.filter(brand=self.get_object().brand)
+            .exclude(pk=self.get_object().pk)
+            .annotate(
+                min_price=Min("variations__price"), max_price=Max("variations__price")
+            )[:4]
+        )
         return context
