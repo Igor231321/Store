@@ -13,13 +13,7 @@
           {% endif %}
 
           <div class="flex-1 relative">
-            <a href="{{ cart.product_variation.product.get_absolute_url }}"><h2 class="inline-block font-semibold text-lg hover:text-teal-500 transition-colors mb-3">{{ cart.product_variation.product.name }}</h2></a>
-            {% if cart.product_variation.color %}
-              <div class="flex gap-2 text-sm font-semibold">
-                <span class="text-gray-400">Колір:</span>
-                <span>{{ cart.product_variation.color }}</span>
-              </div>
-            {% endif %}
+            <a href="{{ cart.product_variation.product.get_absolute_url }}"><h2 class="inline-block font-semibold text-lg hover:text-teal-500 transition-colors mb-2">{{ cart.product_variation.product.name }}</h2></a>
 
             {% if cart.product_variation.attribute_value %}
               <div class="flex gap-2 text-sm font-semibold">
@@ -27,11 +21,17 @@
                 <span>{{ cart.product_variation.attribute_value.value }}</span>
               </div>
             {% endif %}
-            <div class="flex gap-2 text-sm font-semibold">
-              <span class="text-gray-400">Кількість:</span>
-              <span>{{ cart.quantity }}</span>
-            </div>
-            
+
+            {% if not order %}
+              <div class="flex items-center gap-2 mt-2 input-group">
+                <button type="button" class="decrement px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition" data-cart-id="{{ cart.id }}" data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}-</button>
+
+                <input type="text" class="number w-12 text-center border border-gray-300 rounded" value="{{ cart.quantity }}" readonly />
+
+                <button type="button" class="increment px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition" data-cart-id="{{ cart.id }}" data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}+</button>
+              </div>
+            {% endif %}
+
             <p class="mt-2 font-medium">{{ cart.quantity }} x {{ cart.product_variation.price|floatformat }} грн</p>
             <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}" class="remove-from-cart float-end text-sm border-b-2 text-gray-500 border-gray-400 hover:text-black hover:border-red-600 font-semibold transition-all">{% csrf_token %}Видалити кошик</a>
           </div>

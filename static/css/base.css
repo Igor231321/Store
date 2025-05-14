@@ -78,15 +78,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: color 0.3s;
+  transition: color 0.2s ease;
 }
 
 .accordion:hover {
-  color: #2563eb; /* синий при наведении */
+  color: oklch(51.1% 0.096 186.391);
 }
 
 .accordion.active {
-  color: #2563eb; /* синий при открытии */
+  color: oklch(51.1% 0.096 186.391);
   border-color: transparent;
 }
 

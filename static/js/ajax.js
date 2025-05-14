@@ -156,18 +156,18 @@ $(document).ready(function () {
 
             success: function (data) {
                 // Сообщение
-                successMessage.html(data.message);
-                successMessage.fadeIn(400);
-                // Через 7сек убираем сообщение
-                setTimeout(function () {
-                    successMessage.fadeOut(400);
-                }, 7000);
+                // successMessage.html(data.message);
+                // successMessage.fadeIn(400);
+                // // Через 7сек убираем сообщение
+                // setTimeout(function () {
+                //     successMessage.fadeOut(400);
+                // }, 7000);
 
                 // Изменяем количество товаров в корзине
-                var goodsInCartCount = $("#goods-in-cart-count");
-                var cartCount = parseInt(goodsInCartCount.text() || 0);
+                var productsInCartCount = $("#products-in-cart-count");
+                var cartCount = parseInt(productsInCartCount.text() || 0);
                 cartCount += change;
-                goodsInCartCount.text(cartCount);
+                productsInCartCount.text(cartCount);
 
                 // Меняем содержимое корзины
                 var cartItemsContainer = $("#cart-items-container");
