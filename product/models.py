@@ -129,4 +129,4 @@ class ProductVariation(models.Model):
         ordering = ["price"]
 
     def __str__(self):
-        return f"{self.product.name}"
+        return f"{self.product.name} - {self.article}"

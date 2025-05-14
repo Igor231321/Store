@@ -17,6 +17,8 @@
     </title>
   </head>
   <body>
+    {% user_carts request as carts %}
+
     <nav class="bg-gray-900 shadow-xl">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
@@ -36,19 +38,35 @@
               <a href="{% url 'product:catalog' %}"
                 class="text-sm font-semibold px-4 py-2 rounded-md transition-all 
                 {% if 'catalog' in request.path %}
+                  
+                  
                   bg-gray-700 text-white
+
+
                 {% else %}
+                  
+                  
                   text-gray-300 hover:text-white hover:bg-gray-700
+
+
                 {% endif %}">
                 Каталог
               </a>
-              
+
               <a href="{% url 'order:orders' %}"
                 class="text-sm font-semibold px-4 py-2 rounded-md transition-all 
                 {% if 'orders' in request.path %}
+                  
+                  
                   bg-gray-700 text-white
+
+
                 {% else %}
+                  
+                  
                   text-gray-300 hover:text-white hover:bg-gray-700
+
+
                 {% endif %}">
                 Замовлення
               </a>
@@ -60,33 +78,36 @@
           </div>
 
           <!-- Правая часть: иконка корзины -->
-          <div class="flex">
-            <button class="drawer-trigger cursor-pointer hover:bg-gray-700 rounded-full p-2 transition">
-              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#FFFFFF">
-                <path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM208-800h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Z" />
-              </svg>
-            </button>
-            {% user_carts request as carts %}
-            <span id="products-in-cart-count" class="w-6 h-6 flex items-center justify-center rounded-full bg-white text-black text-xs font-bold">{{ carts.total_quantity }}</span>
-          </div>
+          {% if not order %}
+            <div class="flex">
+              <button class="drawer-trigger cursor-pointer hover:bg-gray-700 rounded-full p-2 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="#FFFFFF">
+                  <path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM208-800h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Z" />
+                </svg>
+              </button>
+              <span id="products-in-cart-count" class="w-6 h-6 flex items-center justify-center rounded-full bg-white text-black text-xs font-bold">{{ carts.total_quantity }}</span>
+            </div>
+          {% endif %}
         </div>
       </div>
     </nav>
 
-    <aside class="drawer drawer-end" id="drawer" tabindex="-1">
-      <div class="offcanvas-header">
-        <h5 class="font-bold text-2xl">Кошик</h5>
-        <button type="button" class="btn-close hover:bg-gray-300 rounded-full p-4:" id="drawer-close" aria-label="Close">x</button>
-      </div>
-      <div class="offcanvas-body">
-        <div id="cart-items-container">
-          {% comment %}Разметка корзины{% endcomment %}
-          {% include 'cart/includes/included_cart.html' %}
-          {% comment %}Закончилась разметка корзины{% endcomment %}
+    {% if not order %}
+      <aside class="drawer drawer-end" id="drawer" tabindex="-1">
+        <div class="offcanvas-header">
+          <h5 class="font-bold text-2xl">Кошик</h5>
+          <button type="button" class="btn-close hover:bg-gray-300 rounded-full p-4:" id="drawer-close" aria-label="Close">x</button>
         </div>
-      </div>
-    </aside>
-    <div class="drawer-backdrop" id="drawer-backdrop"></div>
+        <div class="offcanvas-body">
+          <div id="cart-items-container">
+            {% comment %}Разметка корзины{% endcomment %}
+            {% include 'cart/includes/included_cart.html' %}
+            {% comment %}Закончилась разметка корзины{% endcomment %}
+          </div>
+        </div>
+      </aside>
+      <div class="drawer-backdrop" id="drawer-backdrop"></div>
+    {% endif %}
 
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-20">
       {% block content %}

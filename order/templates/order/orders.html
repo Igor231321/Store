@@ -29,7 +29,7 @@
                 {{ order.get_status_display }}
               </span>
             </div>
-            <div class="text-lg font-semibold text-gray-900">3000 ₴</div>
+            <div class="text-lg font-semibold text-gray-900">{{ order.items.total_sum|floatformat }} грн.</div>
           </a>
         {% endfor %}
       </div>

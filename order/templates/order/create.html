@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 
+
 {% block title %}
   Оформлення замовлення
 {% endblock %}
 
 {% block content %}
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 pb-10">
+  <div id="order-page-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-10 pb-10">
     {% comment %}Форма{% endcomment %}
-    <div>
+    <div id="checkout-form">
       <h1 class="text-3xl font-bold text-gray-900 mb-8">Оформлення замовлення</h1>
 
       <form method="post" class="space-y-10">
@@ -87,11 +88,9 @@
     </div>
 
     {% comment %}Carts{% endcomment %}
-    <div>
-      <div class="border border-gray-400 rounded-xl p-6 sticky top-20">
-        <h2 class="text-lg font-semibold text-gray-900 mb-4">Ваше замовлення</h2>
-        {% include 'cart/includes/included_cart.html' with order_page=True %}
-      </div>
+    <div id="cart-items-container" class="border border-gray-300 p-8 rounded-2xl h-min shadow-sm">
+      {% include 'cart/includes/included_cart.html' %}
     </div>
   </div>
 {% endblock %}
+

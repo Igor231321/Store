@@ -1,14 +1,18 @@
 from django.urls import reverse_lazy
 from django.views import generic
 
+from cart.models import Cart
 from order.forms import OrderCreateForm
-from order.models import Order
+from order.models import Order, OrderItem
 
 
 class OrdersListView(generic.ListView):
     model = Order
     template_name = "order/orders.html"
     context_object_name = "orders"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
 
 
 class OrderDetailView(generic.DetailView):
@@ -23,5 +27,23 @@ class OrderCreateView(generic.CreateView):
     success_url = reverse_lazy("product:catalog")
 
     def form_valid(self, form):
-        form.instance.user = self.request.user
+        order = form.save(commit=False)
+        order.user = self.request.user
+        order.save()
+
+        user_carts = Cart.objects.filter(user=self.request.user)
+        for cart in user_carts:
+            OrderItem.objects.create(
+                order=order,
+                product_variation=cart.product_variation,
+                quantity=cart.quantity,
+            )
+
+        user_carts.delete()
+
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["order"] = True
+        return context

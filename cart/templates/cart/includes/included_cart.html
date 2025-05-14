@@ -1,23 +1,19 @@
 {% load static %}
-{% load carts_tags %}
 
 {% block content %}
-  {% user_carts request as user_carts %}
-  {% if user_carts %}
-    <div class="flex flex-col gap-y-3" id="cart-items-container">
-      {% for cart in user_carts %}
+  {% if carts %}
+    {% if order %}
+      <h2 class="text-center border-b pb-3 border-gray-400 text-2xl text-slate-800 mb-3 font-medium">Ваше замовлення</h2>
+    {% endif %}
+    <div class="flex flex-col gap-y-3">
+      {% for cart in carts %}
         <div class="flex border-b border-gray-400 pb-3 gap-2">
           {% if cart.product_variation.image %}
             <img src="{{ cart.product_variation.image.url }}" alt="{{ cart.product_variation.product.name }}" class="w-32 h-32 object-cover rounded-md" />
           {% endif %}
 
           <div class="flex-1 relative">
-            <a href="{{ cart.product_variation.product.get_absolute_url }}"><h2 class="font-semibold text-lg hover:text-blue-400 transition-colors mb-3">{{ cart.product_variation.product.name }}</h2></a>
-            <div class="flex gap-2 text-sm font-semibold">
-              <span class="text-gray-400">Кількість:</span>
-              <span>{{ cart.quantity }}</span>
-            </div>
-
+            <a href="{{ cart.product_variation.product.get_absolute_url }}"><h2 class="inline-block font-semibold text-lg hover:text-teal-500 transition-colors mb-3">{{ cart.product_variation.product.name }}</h2></a>
             {% if cart.product_variation.color %}
               <div class="flex gap-2 text-sm font-semibold">
                 <span class="text-gray-400">Колір:</span>
@@ -31,20 +27,36 @@
                 <span>{{ cart.product_variation.attribute_value.value }}</span>
               </div>
             {% endif %}
-            <p class="mt-2 font-bold">{{ cart.quantity }} x {{ cart.product_variation.price|floatformat }} грн</p>
-            <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}" class="remove-from-cart float-end text-sm border-b-2 border-gray-400 hover:border-red-600 font-semibold transition-all">{% csrf_token %}Удалить корзину</a>
+            <div class="flex gap-2 text-sm font-semibold">
+              <span class="text-gray-400">Кількість:</span>
+              <span>{{ cart.quantity }}</span>
+            </div>
+            
+            <p class="mt-2 font-medium">{{ cart.quantity }} x {{ cart.product_variation.price|floatformat }} грн</p>
+            <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}" class="remove-from-cart float-end text-sm border-b-2 text-gray-500 border-gray-400 hover:text-black hover:border-red-600 font-semibold transition-all">{% csrf_token %}Видалити кошик</a>
           </div>
         </div>
       {% endfor %}
     </div>
 
     <div class="mt-8 grid">
-      <p class="text-xl font-semibold">Сума: {{ user_carts.total_sum }} грн.</p>
-      {% if not order_page %}
-        <a href="{% url 'order:create' %}" class="inline-block mt-4 text-center font-semibold bg-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-600">Перейти до оформлення</a>
+      <p class="text-xl font-semibold">Сума: {{ carts.total_sum }} грн.</p>
+      {% if not order %}
+        <a href="{% url 'order:create' %}" class="inline-block mt-4 text-center font-medium bg-teal-600 text-white py-3 px-6 rounded-md hover:bg-teal-700 transition-all duration-200 ease-in-out shadow-sm hover:shadow-xl">Перейти до оформлення</a>
       {% endif %}
     </div>
   {% else %}
-    <p class="font-bold text-xl">Ваш кошик порожній</p>
+    <div class="text-center">
+      <p class="text-2xl font-semibold text-gray-700 mb-4">Ваш кошик порожній</p>
+      <a href="{% url 'product:catalog' %}" class="inline-block bg-teal-600 font-medium text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition">Повернутись до покупок</a>
+    </div>
+
+    <script>
+      const checkoutWrapper = document.getElementById('checkout-form')
+      if (checkoutWrapper) checkoutWrapper.remove()
+      
+      const cartContainer = document.getElementById('cart-items-container')
+      if (cartContainer) cartContainer.classList.add('col-span-2')
+    </script>
   {% endif %}
 {% endblock %}

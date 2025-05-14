@@ -22,15 +22,15 @@
         <ul class="absolute hidden border border-gray-300 w-48 right-0 mt-1 bg-white shadow-xl rounded-lg overflow-y-auto max-h-60 transition-all duration-300 opacity-0 transform scale-95" id="dropdownMenu">
           <li>
             <a href="?{% change_params order_by='default' %}" class="block px-4 py-2 text-sm text-gray-800 font-semibold 
-              {% if request.GET.order_by == 'default' or not request.GET.order_by %}bg-blue-500 text-white{% else%}hover:bg-gray-200{% endif %}">За популярністю</a>
+              {% if request.GET.order_by == 'default' or not request.GET.order_by %}bg-teal-600 text-white{% else%}hover:bg-gray-200{% endif %}">За популярністю</a>
           </li>
           <li>
             <a href="?{% change_params order_by='-min_price' %}" class="block px-4 py-2 text-sm text-gray-800 font-semibold
-              {% if request.GET.order_by == '-min_price' %}bg-blue-500 text-white{% else%}hover:bg-gray-200{% endif %}">Від більшої цени</a>
+              {% if request.GET.order_by == '-min_price' %}bg-teal-600 text-white{% else%}hover:bg-gray-200{% endif %}">Від більшої цени</a>
           </li>
           <li>
             <a href="?{% change_params order_by='min_price' %}" class="block px-4 py-2 text-sm text-gray-800 font-semibold
-              {% if request.GET.order_by == 'min_price' %}bg-blue-500 text-white{% else%}hover:bg-gray-200{% endif %}">Від меншої цени</a>
+              {% if request.GET.order_by == 'min_price' %}bg-teal-600 text-white{% else%}hover:bg-gray-200{% endif %}">Від меншої цени</a>
           </li>
         </ul>
       </div>
@@ -95,7 +95,7 @@
             </div>
 
             <button id="filter-btn" type="submit"
-              class="opacity-0 scale-95 pointer-events-none mt-4 w-full py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all duration-300 ease-out focus:outline-none cursor-pointer">
+              class="opacity-0 scale-95 pointer-events-none mt-4 w-full py-3 hover:bg-teal-700 text-white font-semibold rounded-xl shadow-mdtransition-all duration-300 ease-out focus:outline-none cursor-pointer">
               Фільтрувати
             </button>
 
@@ -114,29 +114,22 @@
 
               <div class="text-center">
                 <a href="{{ product.get_absolute_url }}">
-                  <h2 class="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-blue-500">
+                  <h2 class="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-teal-500">
                     {{ product.name }}
                   </h2>
                 </a>
         
                 {% if product.min_price != product.max_price %}
-                  <p class="text-base sm:text-lg font-semibold text-blue-400 mt-2">
+                  <p class="text-base sm:text-lg font-semibold text-teal-500 mt-2">
                     {{ product.min_price|floatformat }} грн – {{ product.max_price|floatformat }} грн
                   </p>
                 {% else %}
-                  <p class="text-base sm:text-lg font-semibold text-blue-400 mt-2">
+                  <p class="text-base sm:text-lg font-semibold text-teal-500 mt-2">
                     {{ product.min_price|floatformat }} грн
                   </p>
                 {% endif %}
         
                 <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300" />
-                {% comment %} <a href="{{ product.get_absolute_url }}"><h2 class="text-xl font-semibold text-gray-900 group-hover:text-blue-500">{{ product.name }}</h2></a>
-                {% if product.min_price != product.max_price %}
-                  <p class="text-lg font-semibold text-blue-400 mt-3">{{ product.min_price|floatformat }} грн - {{ product.max_price|floatformat }} грн.</p>
-                {% else %}
-                  <p class="text-lg font-semibold text-blue-400 mt-3">{{ product.min_price|floatformat }} грн</p>
-                {% endif %}
-                <hr class="mt-4 group-hover:opacity-0 text-gray-300" /> {% endcomment %}
               </div>
             </div>
           {% endfor %}

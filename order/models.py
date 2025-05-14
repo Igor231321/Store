@@ -1,6 +1,13 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+from product.models import ProductVariation
+
+
+class OrderItemQuerySet(models.QuerySet):
+    def total_sum(self):
+        return sum(item.products_sum() for item in self)
+
 
 class Order(models.Model):
     class Status(models.TextChoices):
@@ -29,3 +36,22 @@ class Order(models.Model):
 
     def __str__(self):
         return f'Заказ №{self.pk})'
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Заказ", related_name="items")
+    product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE, verbose_name="Вариация товара")
+    quantity = models.PositiveIntegerField("Количество", default=1)
+
+    class Meta:
+        db_table = "order_item"
+        verbose_name = "Проданный товар"
+        verbose_name_plural = "Проданные товары"
+
+    objects = OrderItemQuerySet.as_manager()
+
+    def __str__(self):
+        return self.product_variation.product.name
+
+    def products_sum(self):
+        return self.quantity * self.product_variation.price

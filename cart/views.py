@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.urls import reverse
 
 from cart.models import Cart
 from product.models import Product, ProductVariation
@@ -31,8 +32,16 @@ def cart_add(request):
         )
 
     carts = Cart.objects.filter(user=request.user)
+
+    context = {"carts": carts}
+
+    # if referer page is create_order add key orders: True to context
+    referer = request.META.get("HTTP_REFERER")
+    if reverse("order:create") in referer:
+        context["order"] = True
+
     cart_items_html = render_to_string(
-        "cart/includes/included_cart.html", {"carts": carts}, request=request
+        "cart/includes/included_cart.html", context, request=request
     )
 
     response_data = {
@@ -48,9 +57,16 @@ def cart_remove(request):
     quantity = cart.quantity
     cart.delete()
 
-    user_cart = Cart.objects.filter(user=request.user)
+    carts = Cart.objects.filter(user=request.user)
+    context = {"carts": carts}
+
+    # if referer page is create_order add key orders: True to context
+    referer = request.META.get("HTTP_REFERER")
+    if reverse("order:create") in referer:
+        context["order"] = True
+
     cart_items_html = render_to_string(
-        "cart/includes/included_cart.html", {"carts": user_cart}, request=request
+        "cart/includes/included_cart.html", context, request=request
     )
 
     response_data = {"cart_items_html": cart_items_html, "quantity_deleted": quantity}
