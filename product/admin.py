@@ -3,15 +3,8 @@ from django.contrib import admin
 from flat_json_widget.widgets import FlatJsonWidget
 from mptt.admin import DraggableMPTTAdmin
 
-from product.models import (
-    Attribute,
-    AttributeValue,
-    Brand,
-    Category,
-    Color,
-    Product,
-    ProductVariation,
-)
+from product.models import (Attribute, AttributeValue, Brand, Category, Color,
+                            Product, ProductVariation)
 
 
 class ProductForm(forms.ModelForm):

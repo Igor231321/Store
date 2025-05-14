@@ -40,7 +40,9 @@
 
     <div class="mt-8 grid">
       <p class="text-xl font-semibold">Сума: {{ user_carts.total_sum }} грн.</p>
-      <a href="" class="inline-block mt-4 text-center font-semibold bg-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-600">Перейти до оформлення</a>
+      {% if not order_page %}
+        <a href="{% url 'order:create' %}" class="inline-block mt-4 text-center font-semibold bg-blue-500 text-white py-3 px-6 rounded-md hover:bg-blue-600">Перейти до оформлення</a>
+      {% endif %}
     </div>
   {% else %}
     <p class="font-bold text-xl">Ваш кошик порожній</p>

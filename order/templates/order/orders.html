@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Мої замовлення
+{% endblock %}
+
+{% block content %}
+  <div class="mx-auto px-4 py-8">
+    <h1 class="text-2xl font-semibold text-gray-900 mb-6">Мої замовлення</h1>
+
+    {% if orders %}
+      <div class="space-y-4">
+        {% for order in orders %}
+          <a href="{% url 'order:order_detail' order.id %}" class="flex justify-between items-center rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md hover:border-gray-300 transition duration-150 ease-in-out">
+            <div class="flex flex-col">
+              <span class="text-sm text-gray-500">Замовлення</span>
+              <span class="text-lg font-medium text-gray-900">№ {{ order.id }}</span>
+            </div>
+            <div class="text-sm text-gray-700">{{ order.created_at|date:'d.m.Y' }}</div>
+            <div>
+              <span class="inline-block px-3 py-1 text-xs font-medium rounded-full 
+              {% if order.status == 'RC' %}
+                  bg-green-100 text-green-700
+                {% elif order.status == 'CL' %}
+                  bg-red-100 text-red-700
+                {% else %}                  
+                  bg-yellow-100 text-yellow-700
+                {% endif %}">
+                {{ order.get_status_display }}
+              </span>
+            </div>
+            <div class="text-lg font-semibold text-gray-900">3000 ₴</div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center text-gray-500 text-sm">У вас ще немає замовлень.</div>
+    {% endif %}
+  </div>
+{% endblock %}

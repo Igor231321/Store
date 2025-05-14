@@ -27,15 +27,6 @@ class Color(AbstractNamedModel):
         verbose_name_plural = "Цвета"
 
 
-# class Category(AbstractNamedModel):
-#     image = models.ImageField("Изображение", upload_to="category_images")
-
-#     class Meta:
-#         db_table = "category"
-#         verbose_name = "Категория"
-#         verbose_name_plural = "Категории"
-
-
 class Category(MPTTModel):
     name = models.CharField("Название", max_length=50, unique=True)
     parent = TreeForeignKey(
