@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     "product",
     "cart",
     "flat_json_widget",
+
+    "mptt"
 ]
 
 MIDDLEWARE = [

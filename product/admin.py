@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from flat_json_widget.widgets import FlatJsonWidget
+from mptt.admin import DraggableMPTTAdmin
 
 from product.models import (
     Attribute,
@@ -59,6 +60,7 @@ class AttributeAdmin(admin.ModelAdmin):
     inlines = [AttributeValueInline]
 
 
-admin.site.register(Category)
 admin.site.register(Brand)
 admin.site.register(ProductVariation)
+
+admin.site.register(Category, DraggableMPTTAdmin)

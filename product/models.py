@@ -1,10 +1,11 @@
 from django.db import models
 from django.urls import reverse
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 class AbstractNamedModel(models.Model):
     name = models.CharField("Название", max_length=155, unique=True)
-    slug = models.SlugField("SLUG_URL", max_length=155, unique=True)
+    slug = models.SlugField("SLUG_URL", max_length=155, unique=True, null=True)
 
     class Meta:
         abstract = True
@@ -26,13 +27,35 @@ class Color(AbstractNamedModel):
         verbose_name_plural = "Цвета"
 
 
-class Category(AbstractNamedModel):
-    image = models.ImageField("Изображение", upload_to="category_images")
+# class Category(AbstractNamedModel):
+#     image = models.ImageField("Изображение", upload_to="category_images")
+
+#     class Meta:
+#         db_table = "category"
+#         verbose_name = "Категория"
+#         verbose_name_plural = "Категории"
+
+
+class Category(MPTTModel):
+    name = models.CharField("Название", max_length=50, unique=True)
+    parent = TreeForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="children",
+        verbose_name="Родительская категория",
+    )
+
+    class MPTTMeta:
+        order_insertion_by = ["name"]
 
     class Meta:
-        db_table = "category"
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
+
+    def __str__(self):
+        return self.name
 
 
 class Attribute(AbstractNamedModel):
@@ -63,6 +86,7 @@ class Product(AbstractNamedModel):
         Category,
         on_delete=models.CASCADE,
         verbose_name="Категорія",
+        related_name="products"
     )
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
@@ -85,7 +109,11 @@ class ProductVariation(models.Model):
         Product, on_delete=models.CASCADE, related_name="variations"
     )
     attribute_value = models.ForeignKey(
-        AttributeValue, on_delete=models.CASCADE, blank=True, null=True, verbose_name="Атрибут"
+        AttributeValue,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        verbose_name="Атрибут",
     )
     color = models.ForeignKey(
         Color,
