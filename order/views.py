@@ -29,6 +29,8 @@ class OrderCreateView(generic.CreateView):
     def form_valid(self, form):
         order = form.save(commit=False)
         order.user = self.request.user
+        if not form.cleaned_data["email"]:
+            order.email = "Не вказано"
         order.save()
 
         user_carts = Cart.objects.filter(user=self.request.user)

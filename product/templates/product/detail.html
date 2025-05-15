@@ -87,7 +87,12 @@
         </div>
 
         <div class="mt-5">
-          <a href="{% url 'cart:cart_add' %}" class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-gray-300 shadow-sm hover:shadow-xl text-white font-semibold transition text-base sm:text-lg rounded-md cursor-not-allowed pointer-events-none" data-product-id="{{ product.id }}">{% csrf_token %}Добавить в корзину</a>
+          <a href="{% url 'cart:cart_add' %}" 
+            class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-teal-600 text-white hover:bg-teal-700 hover:shadow-2xl font-semibold transition sm:text-lg rounded-md" 
+            data-product-id="{{ product.id }}">
+            {% csrf_token %}
+            Добавить в корзину
+          </a>
         </div>
 
         <!-- Характеристики -->
@@ -168,9 +173,6 @@
           priceSpan.textContent = price
           articleSpan.textContent = article
           addToCartButton.setAttribute('data-variation-id', variationId)
-
-          addToCartButton.classList.remove('bg-gray-300', 'text-white', 'cursor-not-allowed', 'pointer-events-none')
-          addToCartButton.classList.add('bg-teal-600', 'text-white', 'hover:bg-teal-700', 'hover:text-white', 'hover:shadow-3xl')
 
           swiper.slideTo(slideIndex, 500)
 

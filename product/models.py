@@ -18,26 +18,26 @@ class Brand(AbstractNamedModel):
     class Meta:
         db_table = "brand"
         verbose_name = "Бренд"
-        verbose_name_plural = "Бренды"
+        verbose_name_plural = "Бренди"
 
 
 class Category(MPTTModel):
-    name = models.CharField("Название", max_length=50, unique=True)
+    name = models.CharField("Назва", max_length=50, unique=True)
     parent = TreeForeignKey(
         "self",
         on_delete=models.CASCADE,
         null=True,
         blank=True,
         related_name="children",
-        verbose_name="Родительская категория",
+        verbose_name="Батьківська категорія",
     )
 
     class MPTTMeta:
         order_insertion_by = ["name"]
 
     class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
+        verbose_name = "Категорія"
+        verbose_name_plural = "Категорії"
 
     def __str__(self):
         return self.name
@@ -47,26 +47,26 @@ class Attribute(AbstractNamedModel):
     class Meta:
         db_table = "attribute"
         verbose_name = "Атрибут"
-        verbose_name_plural = "Атрибуты"
+        verbose_name_plural = "Атрибути"
 
 
 class AttributeValue(models.Model):
     attribute = models.ForeignKey(
         Attribute, on_delete=models.CASCADE, null=True, verbose_name="Атрибут"
     )
-    value = models.CharField("Значение", max_length=50)
+    value = models.CharField("Значення", max_length=50)
 
     class Meta:
         db_table = "attribute_value"
-        verbose_name = "Значение атрибута"
-        verbose_name_plural = "Значения атрибутов"
+        verbose_name = "Значення атрибута"
+        verbose_name_plural = "Значення атрибутів"
 
     def __str__(self):
         return f"{self.attribute.name} - {self.value}"
 
 
 class Product(AbstractNamedModel):
-    description = models.TextField("Описание")
+    description = models.TextField("Опис")
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -78,7 +78,7 @@ class Product(AbstractNamedModel):
     class Meta:
         db_table = "product"
         verbose_name = "Товар"
-        verbose_name_plural = "Товары"
+        verbose_name_plural = "Товари"
 
     def __str__(self):
         return self.name
@@ -98,17 +98,17 @@ class ProductVariation(models.Model):
         null=True,
         verbose_name="Атрибут",
     )
-    price = models.DecimalField("Цена", max_digits=10, decimal_places=2)
+    price = models.DecimalField("Ціна", max_digits=10, decimal_places=2)
     image = models.ImageField(
-        "Изображение", upload_to="product_images/", blank=True, null=True
+        "Зображення", upload_to="product_images/", blank=True, null=True
     )
     article = models.CharField("Артикул", max_length=255)
-    quantity = models.PositiveIntegerField("Количество товара", default=0)
+    quantity = models.PositiveIntegerField("Кількість товару", default=0)
 
     class Meta:
         db_table = "product_variations"
-        verbose_name = "Вариации товара"
-        verbose_name_plural = "Вариации товара"
+        verbose_name = "Варіації товару"
+        verbose_name_plural = "Варіації товару"
         ordering = ["price"]
 
     def __str__(self):
@@ -117,7 +117,7 @@ class ProductVariation(models.Model):
 
 class ProductCharacteristics(AbstractNamedModel):
     product_variation = models.ForeignKey("ProductVariation", on_delete=models.CASCADE, related_name="characteristics")
-    value = models.CharField("Значение", max_length=50)
+    value = models.CharField("Значення", max_length=50)
 
     class Meta:
         db_table = "product_characteristics"
