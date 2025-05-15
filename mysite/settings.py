@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "product",
     "cart",
     "order",
+    "user",
 
     "mptt",
 ]
@@ -133,4 +134,9 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-BETTER_JSON_WIDGET_VUE_URL = "https://unpkg.com/vue@3"
+# Users
+AUTH_USER_MODEL = "user.User"
+
+AUTHENTICATION_BACKENDS = [
+    "user.authentication.EmailAuthBackend"
+]

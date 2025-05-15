@@ -154,12 +154,45 @@
 
 .input:hover {
   background-color: #f9fafb;
-  border-color: #0d9488; /* teal-600 */
+  border-color: #0d9488;
 }
 
 .input:focus {
   background-color: #ffffff;
   border-color: #0d9488;
-  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2); /* сияние */
+  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2);
   outline: none;
+}
+
+
+@keyframes slide-from-top {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slide-to-top {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.98);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-from-top 0.4s ease-out forwards;
+}
+
+.animate-slide-out {
+  animation: slide-to-top 0.4s ease-in forwards;
 }

@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User
 from django.db import models
 
 from product.models import ProductVariation
+from user.models import User
 
 
 class OrderItemQuerySet(models.QuerySet):
@@ -18,9 +18,13 @@ class Order(models.Model):
         SENT = "SN", "Відправлено"
         SHIPPED = "SP", "В дорозі"
 
-    user = models.ForeignKey(User, verbose_name=("Користувач"), on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, verbose_name=("Користувач"), on_delete=models.CASCADE
+    )
     created_at = models.DateTimeField("Дата створення", auto_now_add=True)
-    status = models.CharField("Статус", choices=Status.choices, max_length=2, default=Status.PROCESSING)
+    status = models.CharField(
+        "Статус", choices=Status.choices, max_length=2, default=Status.PROCESSING
+    )
     phone_number = models.CharField("Номер телефону", max_length=15)
     first_name = models.CharField("Ім'я", max_length=30)
     last_name = models.CharField("Прізвище", max_length=30)
@@ -39,12 +43,16 @@ class Order(models.Model):
         ordering = ("-id",)
 
     def __str__(self):
-        return f'Замовлення №{self.pk})'
+        return f"Замовлення №{self.pk})"
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Замовлення", related_name="items")
-    product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE, verbose_name="Вариація товара")
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, verbose_name="Замовлення", related_name="items"
+    )
+    product_variation = models.ForeignKey(
+        ProductVariation, on_delete=models.CASCADE, verbose_name="Вариація товара"
+    )
     quantity = models.PositiveIntegerField("Кількість", default=1)
 
     class Meta:

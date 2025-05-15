@@ -1,19 +1,10 @@
-document.querySelectorAll('.toast').forEach(function (toast) {
-    // Появление
-    toast.classList.add("translate-x-full", "opacity-0");
-
+document.querySelectorAll(".toast").forEach((toast) => {
     setTimeout(() => {
-        toast.classList.remove("translate-x-full", "opacity-0");
-        toast.classList.add("translate-x-0", "opacity-100");
-    }, 0);
-
-    // Скрытие через 5 секунд
-    setTimeout(() => {
-        toast.classList.add("opacity-0", "translate-x-full");
+      toast.classList.remove("animate-slide-in");
+      toast.classList.add("animate-slide-out");
     }, 5000);
 
-    // Полное скрытие
     setTimeout(() => {
-        toast.classList.add("hidden");
-    }, 5200);
-});
+      toast.remove();
+    }, 5400);
+  });

@@ -1,16 +1,8 @@
 from django.contrib import admin
-
 from mptt.admin import DraggableMPTTAdmin
 
-from product.models import (
-    Attribute,
-    AttributeValue,
-    Brand,
-    Category,
-    Product,
-    ProductCharacteristics,
-    ProductVariation,
-)
+from product.models import (Attribute, AttributeValue, Brand, Category,
+                            Product, ProductCharacteristics, ProductVariation)
 
 
 class ProductVariationInline(admin.StackedInline):

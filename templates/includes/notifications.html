@@ -1,29 +1,38 @@
 {% load static %}
 
-<div class="fixed right-5 space-y-4 z-200">
-  {% if form.non_field_errors %}
+{% if form.non_field_errors %}
+  <div class="fixed top-18 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-4">
     {% for error in form.non_field_errors %}
-      <div class="toast flex items-center w-full max-w-xs p-4 bg-altbackgound rounded-lg shadow-lg transition-all duration-600">
-        <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg">
-          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z" />
-          </svg>
+      <div class="toast-form-error bg-orange-50 border border-orange-200 text-orange-800 shadow-lg rounded-xl p-4 mb-3 flex items-center justify-between text-sm animate-slide-in">
+        <div class="flex items-center gap-2">
+          <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-orange-500 bg-orange-100 rounded-lg">
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z" />
+            </svg>
+          </div>
+          <span class="font-medium">{{ error }}</span>
         </div>
-        <span class="ms-3 text-sm font-semibold text-gray-500">{{ error }}</span>
+
+        <button onclick="this.closest('.toast-form-error').remove()" class="ml-4 text-orange-400 cursor-pointer hover:text-red-500 font-bold">&times;</button>
       </div>
     {% endfor %}
-  {% endif %}
+  </div>
+{% endif %}
 
-  {% if messages %}
+{% if messages %}
+  <div class="fixed top-18 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-sm px-4">
     {% for message in messages %}
-      <div class="toast flex items-center w-full max-w-xs p-4 bg-altbackgound rounded-lg shadow-lg transition-all duration-600">
-        <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg">
+      <div class="toast bg-white border border-gray-300 shadow-lg rounded-xl p-4 mb-3 flex items-center justify-between text-sm text-gray-800 opacity-0 animate-slide-in">
+        <div class="inline-flex items-center justify-center shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg mr-2">
           <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
           </svg>
         </div>
-        <span class="ms-3 text-sm font-semibold text-gray-500">{{ message }}</span>
+
+        <span class="font-medium">{{ message }}</span>
+
+        <button onclick="this.closest('.toast').remove()" class="ml-4 text-gray-400 hover:text-red-500 font-bold cursor-pointer">&times;</button>
       </div>
     {% endfor %}
-  {% endif %}
-</div>
+  </div>
+{% endif %}

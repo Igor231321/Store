@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}
+  Увійти в акаунт
+{% endblock %}
+
+{% block content %}
+  <div class="w-full max-w-lg mx-auto p-8 border border-gray-300 rounded-2xl shadow-md mt-30">
+    <h2 class="text-2xl font-bold mb-6 text-center">Увійти в акаунт</h2>
+
+    <form action="{% url 'user:login' %}" method="post">
+      {% csrf_token %}
+
+      <!-- Email -->
+      <div class="mb-4">
+        <label for="id_username" class="label">Email</label>
+        <input type="text" name="username" id="username" class="input" value="{% if form.username.value %}{{ form.username.value }}{% endif %}" />
+        {% if form.username.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ form.username.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Пароль -->
+      <div class="mb-6">
+        <label for="id_password" class="label">Пароль</label>
+        <input type="password" name="password" id="password" class="input" value="{% if form.password.value %}{{ form.password.value }}{% endif %}" />
+
+        {% if form.password.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ form.password.errors }}</p>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="w-full py-2 px-4 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition cursor-pointer">Увійти</button>
+    </form>
+  </div>
+{% endblock %}

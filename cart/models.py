@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User
 from django.db import models
 
 from product.models import ProductVariation
+from user.models import User
 
 
 class CartQuerySet(models.QuerySet):
@@ -13,9 +13,7 @@ class CartQuerySet(models.QuerySet):
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="Користувач"
-    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Користувач")
     product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField("Кількість", default=1)
     created_at = models.DateTimeField("Дата створення", auto_now_add=True)
@@ -24,14 +22,12 @@ class Cart(models.Model):
         db_table = "cart"
         verbose_name = "Кошик"
         verbose_name_plural = "Кошики"
-        ordering = "-id",
+        ordering = ("-id",)
 
     objects = CartQuerySet().as_manager()
 
     def __str__(self):
-        return (
-            f"Кошик для {self.user.username}: {self.product_variation.product.name} (x{self.quantity})"
-        )
+        return f"Кошик для {self.user.username}: {self.product_variation.product.name} (x{self.quantity})"
 
     def products_sum(self):
         return self.quantity * self.product_variation.price
