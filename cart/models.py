@@ -13,9 +13,10 @@ class CartQuerySet(models.QuerySet):
 
 
 class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Користувач")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Користувач", blank=True, null=True)
     product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField("Кількість", default=1)
+    session_key = models.CharField("Сессия пользователя", max_length=32, blank=True, null=True)
     created_at = models.DateTimeField("Дата створення", auto_now_add=True)
 
     class Meta:

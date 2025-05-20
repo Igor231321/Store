@@ -6,15 +6,6 @@ from order.forms import OrderCreateForm
 from order.models import Order, OrderItem
 
 
-class OrdersListView(generic.ListView):
-    model = Order
-    template_name = "order/orders.html"
-    context_object_name = "orders"
-
-    def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
-
-
 class OrderDetailView(generic.DetailView):
     model = Order
     template_name = "order/detail.html"

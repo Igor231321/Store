@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}
+  Реєстрація
+{% endblock %}
+
+{% block content %}
+  <div class="w-full max-w-xl mx-auto p-8 border border-gray-300 rounded-2xl shadow-md mt-20 bg-white">
+    <h2 class="text-2xl font-bold mb-6 text-center text-teal-700">Створити акаунт</h2>
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      <div class="grid grid-cols-2 gap-x-3">
+        <div class="col-span-full">
+          <label for="id_first_name" class="label">Ім'я</label>
+          <input type="text" name="first_name" id="id_first_name" value="{{ form.first_name.value|default_if_none:'' }}" class="input {% if form.first_name.errors %}has_errors{% endif %}" required />
+          {% if form.first_name.errors %}
+            <p class="text-sm text-red-600 mt-1">
+              {% for error in form.first_name.errors %}
+                {{ error }}
+              {% endfor %}
+            </p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_last_name" class="label">Прізвище</label>
+          <input type="text" name="last_name" id="id_last_name" value="{{ form.last_name.value|default_if_none:'' }}" class="input {% if form.last_name.errors %}has_errors{% endif %}" required />
+          {% if form.last_name.errors %}
+            <p class="text-sm text-red-600 mt-1">
+              {% for error in form.last_name.errors %}
+                {{ error }}
+              {% endfor %}
+            </p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_surname" class="label">По батькові</label>
+          <input type="text" name="surname" id="id_surname" value="{{ form.surname.value|default_if_none:'' }}" class="input {% if form.surname.errors %}has_errors{% endif %}" required />
+          {% if form.surname.errors %}
+            <p class="text-sm text-red-600 mt-1">
+              {% for error in form.surname.errors %}
+                {{ error }}
+              {% endfor %}
+            </p>
+          {% endif %}
+        </div>
+
+        <div class="col-span-full">
+          <label for="id_email" class="label">Email адреса</label>
+          <input type="email" name="email" id="id_email" value="{{ form.email.value|default_if_none:'' }}" class="input {% if form.email.errors %}has_errors{% endif %}" required />
+          {% if form.email.errors %}
+            <p class="text-sm text-red-600 mt-1">
+              {% for error in form.email.errors %}
+                {{ error }}
+              {% endfor %}
+            </p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_password1" class="label">Пароль</label>
+          <input type="password" name="password1" id="id_password1" value="{{ form.password1.value|default_if_none:'' }}" class="input {% if form.password1.errors %}has_errors{% endif %}" required />
+          {% if form.password1.errors %}
+            <p class="text-sm text-red-600 mt-1">
+              {% for error in form.password1.errors %}
+                {{ error }}
+              {% endfor %}
+            </p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_password2" class="label">Підтвердіть пароль</label>
+          <input type="password" name="password2" id="id_password2" value="{{ form.password2.value|default_if_none:'' }}" class="input {% if form.password2.errors %}has_errors{% endif %}" required />
+          {% if form.password2.errors %}
+            <p class="text-sm text-red-600 mt-1">
+              {% for error in form.password2.errors %}
+                {{ error }}
+              {% endfor %}
+            </p>
+          {% endif %}
+        </div>
+      </div>
+      <div>
+        <button type="submit" class="w-full py-3 px-4 bg-teal-600 text-white rounded-xl font-semibold hover:bg-teal-700 transition shadow-sm">Зареєструватися</button>
+      </div>
+    </form>
+
+    <p class="mt-6 text-sm text-center text-gray-600">
+      Вже маєте акаунт?
+      <a href="{% url 'user:login' %}" class="text-teal-600 font-semibold hover:underline">Увійти</a>
+    </p>
+  </div>
+{% endblock %}

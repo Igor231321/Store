@@ -1,0 +1,28 @@
+{% load static %}
+
+<div class="grid grid-cols-2 md:grid-cols-1 gap-2 lg:gap-4 text-sm font-medium text-gray-700">
+
+  <a href="{% url 'user:account' %}"
+     class="text-center md:text-left px-2 md:px-4 py-2 rounded-xl transition
+     {% if request.path == '/user/account/' %}bg-teal-600 text-white font-semibold{% else %}
+       bg-gray-100 hover:bg-gray-200
+     {% endif %}">
+    Особисті дані
+  </a>
+
+  <a href="{% url 'user:user_orders' %}"
+     class="text-center md:text-left px-2 md:px-4 py-2 rounded-xl transition
+     {% if request.path == '/user/user_orders/' %}
+       bg-teal-600 text-white font-semibold
+     {% else %}
+       bg-gray-100 hover:bg-gray-200
+     {% endif %}">
+    Історія замовлень
+  </a>
+
+  <a href="{% url 'user:logout' %}"
+     class="text-center md:text-left px-2 md:px-4 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 transition">
+    Вийти
+  </a>
+
+</div>

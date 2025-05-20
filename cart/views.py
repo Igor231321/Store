@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 
 from cart.models import Cart
+from cart.utils import get_user_carts
 from product.models import Product, ProductVariation
 
 
@@ -12,28 +13,30 @@ def cart_add(request):
     product_id = request.POST.get("product_id")
     quantity = int(request.POST.get("quantity"))
 
-    carts = Cart.objects.filter(user=request.user)
-
     if variation_id:
         product_variation = ProductVariation.objects.get(id=variation_id)
     else:
         product = Product.objects.get(id=product_id)
         product_variation = product.variations.first()
 
-    carts = carts.filter(product_variation=product_variation)
+    carts_query = {"product_variation": product_variation}
+
+    if request.user.is_authenticated:
+        carts_query["user"] = request.user
+    else:
+        carts_query["session_key"] = request.session.session_key
+
+    carts = Cart.objects.filter(**carts_query)
 
     if carts.exists():
         cart = carts.first()
         cart.quantity += quantity
         cart.save()
     else:
-        Cart.objects.create(
-            user=request.user, product_variation=product_variation, quantity=quantity
-        )
+        carts_query["quantity"] = quantity
+        Cart.objects.create(**carts_query)
 
-    carts = Cart.objects.filter(user=request.user)
-
-    context = {"carts": carts}
+    context = {"carts": get_user_carts(request)}
 
     # if referer page is create_order add key orders: True to context
     referer = request.META.get("HTTP_REFERER")
@@ -60,9 +63,9 @@ def cart_change(request):
     cart.save()
     updated_quantity = cart.quantity
 
-    cart = Cart.objects.filter(user=request.user)
     cart_items_html = render_to_string(
-        "cart/includes/included_cart.html", {"carts": cart}, request=request)
+        "cart/includes/included_cart.html", {"carts": get_user_carts(request)}, request=request
+    )
 
     response_data = {
         "cart_items_html": cart_items_html,
@@ -79,8 +82,7 @@ def cart_remove(request):
     quantity = cart.quantity
     cart.delete()
 
-    carts = Cart.objects.filter(user=request.user)
-    context = {"carts": carts}
+    context = {"carts": get_user_carts(request)}
 
     # if referer page is create_order add key orders: True to context
     referer = request.META.get("HTTP_REFERER")

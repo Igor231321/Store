@@ -164,6 +164,10 @@
   outline: none;
 }
 
+.input.has_errors {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 1px #f87171;
+}
 
 @keyframes slide-from-top {
   0% {
