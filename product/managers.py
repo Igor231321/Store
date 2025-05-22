@@ -1,4 +1,4 @@
-from django.db.models import QuerySet, Min, Max
+from django.db.models import Max, Min, QuerySet
 
 
 class ProductQuerySet(QuerySet):

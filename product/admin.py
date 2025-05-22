@@ -38,13 +38,17 @@ class AttributeAdmin(admin.ModelAdmin):
     inlines = [AttributeValueInline]
 
 
-admin.site.register(Brand)
-admin.site.register(ProductVariation)
-
-admin.site.register(Category, DraggableMPTTAdmin)
-
-
 @admin.register(ProductCharacteristics)
 class ProductCharacteristicsAdmin(admin.ModelAdmin):
     list_display = ["name", "value", "product_variation"]
     exclude = ["slug"]
+
+
+@admin.register(Category)
+class CategoryAdmin(DraggableMPTTAdmin):
+    list_display = ["tree_actions", "indented_title", "name"]
+    prepopulated_fields = {"slug": ["name"]}
+
+
+admin.site.register(Brand)
+admin.site.register(ProductVariation)

@@ -3,17 +3,18 @@ import csv
 from django.db.models import Max, Min
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views.generic import DetailView, FormView, ListView
 
 from product.forms import UploadDataForm
-from product.models import Product, ProductVariation
+from product.mixins import ProductOrderByMixin
+from product.models import Category, Product, ProductVariation
 
 
 def home(request):
     return render(request, "product/index.html")
 
 
-class UploadData(generic.FormView):
+class UploadData(FormView):
     template_name = "product/upload_data.html"
     form_class = UploadDataForm
     success_url = reverse_lazy("admin:index")
@@ -33,16 +34,14 @@ class UploadData(generic.FormView):
         return super().form_valid(form)
 
 
-class Catalog(generic.ListView):
+class Catalog(ProductOrderByMixin, ListView):
     template_name = "product/catalog.html"
     context_object_name = "products"
     model = Product
     paginate_by = 6
 
     def get_queryset(self):
-        products = Product.objects.annotate(
-            min_price=Min("variations__price"), max_price=Max("variations__price")
-        )
+        products = Product.objects.with_min_max_prices()
 
         min_price = self.request.GET.get("min_price", None)
         if min_price:
@@ -53,8 +52,8 @@ class Catalog(generic.ListView):
             products = products.filter(variations__price__lte=max_price)
 
         order_by = self.request.GET.get("order_by", None)
-        if order_by and order_by != "default":
-            products = products.order_by(order_by)
+        self.filters(products, order_by)
+
         return products
 
     def get_context_data(self, **kwargs):
@@ -67,7 +66,7 @@ class Catalog(generic.ListView):
         return context
 
 
-class ProductDetail(generic.DetailView):
+class ProductDetail(DetailView):
     template_name = "product/detail.html"
 
     def get_object(self, queryset=None):
@@ -86,4 +85,33 @@ class ProductDetail(generic.DetailView):
                 min_price=Min("variations__price"), max_price=Max("variations__price")
             )[:4]
         )
+        return context
+
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = "product/categories.html"
+    context_object_name = "categories"
+
+    def get_queryset(self):
+        return Category.objects.root_nodes()
+
+
+class CategoryDetailView(ProductOrderByMixin, DetailView):
+    model = Category
+    template_name = "product/category_detail.html"
+    context_object_name = "category"
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Category, slug=self.kwargs["slug"])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        order_by = self.request.GET.get("order_by", None)
+        category = self.get_object()
+        products = category.products.with_min_max_prices()
+
+        context["products"] = self.filters(products, order_by)
+        context["subcategories"] = category.get_children()
         return context

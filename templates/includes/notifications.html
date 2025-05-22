@@ -13,7 +13,7 @@
           <span class="font-medium">{{ error }}</span>
         </div>
 
-        <button onclick="this.closest('.toast-form-error').remove()" class="ml-4 text-orange-400 cursor-pointer hover:text-red-500 font-bold">&times;</button>
+        <button onclick="this.closest('.toast-form-error').remove()" class="ml-4 text-orange-400 cursor-pointer hover:text-red-500 font-medium">&times;</button>
       </div>
     {% endfor %}
   </div>
@@ -31,7 +31,7 @@
 
         <span class="font-medium">{{ message }}</span>
 
-        <button onclick="this.closest('.toast').remove()" class="ml-4 text-gray-400 hover:text-red-500 font-bold cursor-pointer">&times;</button>
+        <button onclick="this.closest('.toast').remove()" class="ml-4 text-gray-400 hover:text-red-500 font-medium cursor-pointer">&times;</button>
       </div>
     {% endfor %}
   </div>

@@ -93,11 +93,9 @@
                     <input type="number" id="max-price" name="max_price" min="{{ min_price|floatformat }}" step="1" placeholder="{{ max_price|floatformat }}" max="{{ max_price|floatformat }}" class="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
                   </div>
                 </div>
-                 <button type="submit" class="mt-4 w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl shadow-md transition-all duration-300 ease-out cursor-pointer">Фільтрувати</button>
-
+                <button type="submit" class="mt-4 w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl shadow-md transition-all duration-300 ease-out cursor-pointer">Фільтрувати</button>
               </div>
             </div>
-
           </form>
         </div>
       </div>
@@ -114,12 +112,8 @@
               <div class="text-center">
                 <a href="{{ product.get_absolute_url }}"><h2 class="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-teal-500">{{ product.name }}</h2></a>
 
-                {% if product.min_price != product.max_price %}
-                  <p class="text-base sm:text-lg font-semibold text-teal-500 mt-2">{{ product.min_price|floatformat }} грн – {{ product.max_price|floatformat }} грн</p>
-                {% else %}
-                  <p class="text-base sm:text-lg font-semibold text-teal-500 mt-2">{{ product.min_price|floatformat }} грн</p>
-                {% endif %}
-
+                <p class="text-base sm:text-lg font-semibold text-teal-500 mt-2">{{ product.display_price}}</p>
+                
                 <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300" />
               </div>
             </div>

@@ -35,17 +35,17 @@
 
       <!-- Контент -->
       <div class="mt-5 text-slate-600 text-center md:text-left">
-        <h1 class="text-2xl sm:text-3xl font-semibold mb-2">{{ product.name }}</h1>
-        <p class="mt-4 text-xl sm:text-2xl font-semibold text-teal-500">
-          <span id="price">{{ product.variations.first.price }}</span> грн
+        <h1 class="text-2xl sm:text-3xl font-medium mb-2">{{ product.name }}</h1>
+        <p class="mt-4 text-xl sm:text-2xl font-medium text-teal-500">
+          <span id="price">{{ product.variations.first.price }}</span> ₴
         </p>
 
         <div class="mt-5 mb-3 space-y-2">
-          <p class="font-semibold">
+          <p class="font-medium">
             Виробник:
             <a href="#" class="text-teal-500 hover:text-slate-600 transition-colors">{{ product.brand }}</a>
           </p>
-          <p class="font-semibold">
+          <p class="font-medium">
             Артикул: <span id="article">{{ product.variations.first.article }}</span>
           </p>
         </div>
@@ -66,7 +66,7 @@
                            data-price="{{ variation.price }}"
                            data-article="{{ variation.article }}"
                            data-characteristics='[{% for ch in variation.characteristics.all %}{"name": "{{ ch.name }}", "value": "{{ ch.value }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'/>
-                    <span class="color-button inline-block border border-gray-300 bg-white rounded-lg px-3 py-1 text-sm sm:text-lg font-semibold transition-colors peer-checked:bg-black peer-checked:text-white peer-checked:border-gray-800 hover:border-gray-800">
+                    <span class="color-button inline-block border border-gray-300 bg-white rounded-lg px-3 py-1 text-sm sm:text-lg font-medium transition-colors peer-checked:bg-black peer-checked:text-white peer-checked:border-gray-800 hover:border-gray-800">
                       {{ variation.attribute_value.value }}
                     </span>
                   </label>
@@ -78,17 +78,17 @@
 
         <div class="my-5">
           <div class="flex items-center gap-x-4 justify-center md:justify-start">
-            <button type="button" class="minus w-10 h-10 font-bold flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">−</button>
+            <button type="button" class="minus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">−</button>
 
-            <input type="text" readonly class="product__quantity w-14 text-center border border-gray-300 rounded-lg text-lg font-semibold focus:outline-none" value="1" />
+            <input type="text" readonly class="product__quantity w-14 text-center border border-gray-300 rounded-lg text-lg font-medium focus:outline-none" value="1" />
 
-            <button type="button" class="plus w-10 h-10 font-bold flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">+</button>
+            <button type="button" class="plus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">+</button>
           </div>
         </div>
 
         <div class="mt-5">
           <a href="{% url 'cart:cart_add' %}" 
-            class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-teal-600 text-white hover:bg-teal-700 hover:shadow-2xl font-semibold transition sm:text-lg rounded-md" 
+            class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-teal-600 text-white hover:bg-teal-700 hover:shadow-2xl font-medium transition sm:text-lg rounded-md" 
             data-product-id="{{ product.id }}">
             {% csrf_token %}
             Добавить в корзину
@@ -111,7 +111,7 @@
 
     <!-- Схожі товари -->
     <div class="mt-10">
-      <h4 class="text-2xl sm:text-3xl text-slate-500 font-semibold mb-5">Схожі товари</h4>
+      <h4 class="text-2xl sm:text-3xl text-slate-500 font-medium mb-5">Схожі товари</h4>
 
       <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {% for product in products_brand %}
@@ -121,13 +121,9 @@
             {% endif %}
 
             <div class="text-center">
-              <a href="{{ product.get_absolute_url }}"><h2 class="text-base sm:text-lg font-semibold text-gray-900 group-hover:text-teal-500">{{ product.name }}</h2></a>
+              <a href="{{ product.get_absolute_url }}"><h2 class="text-base sm:text-lg font-medium text-gray-900 group-hover:text-teal-500">{{ product.name }}</h2></a>
 
-              {% if product.min_price != product.max_price %}
-                <p class="text-sm sm:text-base font-semibold text-teal-500 mt-2">{{ product.min_price|floatformat }} грн – {{ product.max_price|floatformat }} грн</p>
-              {% else %}
-                <p class="text-sm sm:text-base font-semibold text-teal-500 mt-2">{{ product.min_price|floatformat }} грн</p>
-              {% endif %}
+              <p class="text-sm sm:text-base font-medium text-teal-500 mt-2">{{ product.display_price }}</p>
 
               <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300" />
             </div>
@@ -181,7 +177,7 @@
           characteristics.forEach(attr => {
             characteristicsBlock.innerHTML += `
               <div class="border-b border-slate-300 flex justify-between py-2 text-slate-500">
-                <span class="font-semibold text-slate-500">${attr.name}</span>
+                <span class="font-medium text-slate-500">${attr.name}</span>
                 <span>${attr.value}</span>
               </div>`
           })

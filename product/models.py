@@ -2,6 +2,8 @@ from django.db import models
 from django.urls import reverse
 from mptt.models import MPTTModel, TreeForeignKey
 
+from product.managers import ProductQuerySet
+
 
 class AbstractNamedModel(models.Model):
     name = models.CharField("Название", max_length=155, unique=True)
@@ -31,6 +33,8 @@ class Category(MPTTModel):
         related_name="children",
         verbose_name="Батьківська категорія",
     )
+    slug = models.SlugField("Слаг", max_length=50, unique=True)
+    image = models.ImageField(upload_to="categories_images/")
 
     class MPTTMeta:
         order_insertion_by = ["name"]
@@ -71,7 +75,7 @@ class Product(AbstractNamedModel):
         Category,
         on_delete=models.CASCADE,
         verbose_name="Категорія",
-        related_name="products"
+        related_name="products",
     )
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
 
@@ -85,6 +89,14 @@ class Product(AbstractNamedModel):
 
     def get_absolute_url(self):
         return reverse("product:detail", kwargs={"slug": self.slug})
+
+    objects = ProductQuerySet().as_manager()
+
+    def display_price(self):
+        if self.min_price != self.max_price:
+            return f"{self.min_price} ₴ – { self.max_price } ₴"
+        else:
+            return f"{self.min_price} ₴"
 
 
 class ProductVariation(models.Model):
@@ -116,7 +128,9 @@ class ProductVariation(models.Model):
 
 
 class ProductCharacteristics(AbstractNamedModel):
-    product_variation = models.ForeignKey("ProductVariation", on_delete=models.CASCADE, related_name="characteristics")
+    product_variation = models.ForeignKey(
+        "ProductVariation", on_delete=models.CASCADE, related_name="characteristics"
+    )
     value = models.CharField("Значення", max_length=50)
 
     class Meta:

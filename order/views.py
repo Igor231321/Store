@@ -1,10 +1,10 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views import generic
 
 from cart.models import Cart
 from order.forms import OrderCreateForm
 from order.models import Order, OrderItem
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class OrderDetailView(LoginRequiredMixin, generic.DetailView):
