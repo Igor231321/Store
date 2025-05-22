@@ -4,14 +4,10 @@ from django.views import generic
 from cart.models import Cart
 from order.forms import OrderCreateForm
 from order.models import Order, OrderItem
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class OrderDetailView(generic.DetailView):
-    model = Order
-    template_name = "order/detail.html"
-
-
-class OrderCreateView(generic.CreateView):
+class OrderCreateView(LoginRequiredMixin, generic.CreateView):
     model = Order
     template_name = "order/create.html"
     form_class = OrderCreateForm
