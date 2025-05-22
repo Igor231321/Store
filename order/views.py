@@ -7,6 +7,11 @@ from order.models import Order, OrderItem
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
+class OrderDetailView(LoginRequiredMixin, generic.DetailView):
+    model = Order
+    template_name = "order/detail.html"
+
+
 class OrderCreateView(LoginRequiredMixin, generic.CreateView):
     model = Order
     template_name = "order/create.html"

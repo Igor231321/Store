@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+{% load static %}
+
+{% block title %}
+  Категорія - {{ category.name }}
+{% endblock %}
+
+{% block content %}
+  <div class="flex items-baseline justify-between border-b border-gray-300 pb-3 mb-5">
+    <h1 class="text-4xl font-bold tracking-tight text-slate-600">{{ category.name }}</h1>
+  </div>
+
+  {% if subcategories %}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {% for sub in subcategories %}
+        <div class="border border-teal-600 rounded-xl p-4 group cursor-pointer overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
+          {% if sub.image %}
+            <a href="{% url 'product:category_detail' sub.slug %}" class="block overflow-hidden rounded-lg"><img src="{{ sub.image.url }}" alt="{{ sub.name }}" class="w-full object-cover mb-4 transform transition-transform duration-300 group-hover:scale-110" /></a>
+          {% endif %}
+
+          <a href="{% url 'product:category_detail' sub.slug %}" class="block bg-white border border-teal-700 rounded-md p-3 text-center font-medium text-gray-800 transition-colors duration-200 hover:bg-teal-700 hover:text-white">{{ sub.name }}</a>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if products %}
+    <section class="pt-6 pb-24">
+      <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
+        <!-- Filters -->
+        <div class="hidden lg:block">
+          <div class="sticky top-10">
+            <form action="{% url 'product:catalog' %}" method="get">
+              <!-- Другие фильтры (например, по цене) -->
+              <div class="accordion">
+                Ціна<span class="icon"><img src="{% static 'images/right.svg' %}" alt="" /></span>
+              </div>
+              <div class="panel">
+                <div class="panel-content">
+                  <!-- Диапазон с двумя инпутами -->
+                  <div class="grid grid-cols-2 gap-x-4">
+                    <!-- Инпут для минимальной цены -->
+                    <div class="flex flex-col">
+                      <label for="min-price" class="text-sm font-medium text-gray-700 pl-1">Від</label>
+                      <input type="number" id="min-price" name="min_price" min="0" step="1" placeholder="{{ min_price|floatformat }}" class="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                    </div>
+
+                    <!-- Инпут для максимальной цены -->
+                    <div class="flex flex-col">
+                      <label for="max-price" class="text-sm font-medium text-gray-700 pl-1">До</label>
+                      <input type="number" id="max-price" name="max_price" min="{{ min_price|floatformat }}" step="1" placeholder="{{ max_price|floatformat }}" max="{{ max_price|floatformat }}" class="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                    </div>
+                  </div>
+                  <button type="submit" class="mt-4 w-full py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-xl shadow-md transition-all duration-300 ease-out cursor-pointer">Фільтрувати</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- Product grid -->
+        <div class="lg:col-span-3">
+          <div class="grid grid-cols-2 md:grid-cols-3">
+            {% for product in products %}
+              <div class="rounded-xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] transition p-4 group">
+                {% if product.variations.first.image %}
+                  <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt="" class="w-full object-cover rounded-xl mb-4" /></a>
+                {% endif %}
+
+                <div class="text-center">
+                  <a href="{{ product.get_absolute_url }}"><h2 class="text-lg sm:text-xl font-medium text-slate-600 group-hover:text-teal-500">{{ product.name }}</h2></a>
+
+                  <p class="text-base sm:text-lg font-medium text-teal-500 mt-2">{{ product.display_price }}</p>
+                  <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300" />
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}
