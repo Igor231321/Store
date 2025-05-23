@@ -37,7 +37,7 @@
               </div>
             {% endif %}
 
-            <p class="mt-2 font-medium">{{ cart.quantity }} x {{ cart.product_variation.price|floatformat }} ₴</p>
+            <p class="mt-2 font-medium">{{ cart.quantity }} x {{ cart.product_variation.price|floatformat }} грн.</p>
             <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}" class="remove-from-cart float-end text-sm border-b-2 text-gray-500 border-gray-400 hover:text-black hover:border-red-600 font-medium transition-all">{% csrf_token %}Видалити кошик</a>
           </div>
         </div>
@@ -45,7 +45,7 @@
     </div>
 
     <div class="mt-8 grid">
-      <p class="text-xl font-medium">Сума: {{ carts.total_sum }} ₴</p>
+      <p class="text-xl font-medium">Сума: {{ carts.total_sum }} грн.</p>
       {% if not order %}
         <a href="{% url 'order:create' %}" class="inline-block mt-4 text-center font-medium bg-teal-600 text-white py-3 px-6 rounded-md hover:bg-teal-700 transition-all duration-200 ease-in-out shadow-sm hover:shadow-xl">Перейти до оформлення</a>
       {% endif %}
@@ -53,7 +53,7 @@
   {% else %}
     <div class="text-center">
       <p class="text-2xl font-medium text-gray-700 mb-4">Ваш кошик порожній</p>
-      <a href="{% url 'product:catalog' %}" class="inline-block bg-teal-600 font-medium text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition">Повернутись до покупок</a>
+      <a href="{% url 'product:сategories' %}" class="inline-block bg-teal-600 font-medium text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition">Повернутись до покупок</a>
     </div>
 
     <script>

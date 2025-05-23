@@ -83,7 +83,7 @@ class Product(AbstractNamedModel):
         verbose_name="Категорія",
         related_name="products",
     )
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Бренд")
 
     class Meta:
         db_table = "product"
@@ -100,14 +100,17 @@ class Product(AbstractNamedModel):
 
     def display_price(self):
         if self.min_price != self.max_price:
-            return f"{self.min_price} ₴ – { self.max_price } ₴"
+            return f"{self.min_price} грн. – { self.max_price } грн."
         else:
-            return f"{self.min_price} ₴"
+            return f"{self.min_price} грн."
 
 
 class ProductVariation(models.Model):
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="variations", verbose_name="Товар"
+        Product,
+        on_delete=models.CASCADE,
+        related_name="variations",
+        verbose_name="Товар",
     )
     attribute_value = models.ForeignKey(
         AttributeValue,
@@ -135,7 +138,10 @@ class ProductVariation(models.Model):
 
 class ProductCharacteristics(AbstractNamedModel):
     product_variation = models.ForeignKey(
-        "ProductVariation", on_delete=models.CASCADE, related_name="characteristics", verbose_name="Варіація товару"
+        "ProductVariation",
+        on_delete=models.CASCADE,
+        related_name="characteristics",
+        verbose_name="Варіація товару",
     )
     value = models.CharField("Значення", max_length=50)
 

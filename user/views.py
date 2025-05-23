@@ -26,7 +26,7 @@ def login_view(request):
                 messages.success(
                     request, "Ви успішно увійшли до свого облікового запису"
                 )
-                return redirect("product:catalog")
+                return redirect("product:сategories")
     else:
         form = UserLoginForm()
 
@@ -39,13 +39,13 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, "Ви успішно вийшли з облікового запису")
-    return redirect("product:catalog")
+    return redirect("product:сategories")
 
 
 class UserRegisterView(generic.CreateView):
     form_class = UserRegisterForm
     template_name = "user/register.html"
-    success_url = reverse_lazy("product:catalog")
+    success_url = reverse_lazy("product:сategories")
 
     def form_valid(self, form):
         self.object = form.save()  # <--- обов'язково зберегти саме form.save()
@@ -60,7 +60,7 @@ class UserRegisterView(generic.CreateView):
 class UserAccountView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
     template_name = "user/account.html"
     form_class = UserAccountForm
-    success_url = reverse_lazy("product:catalog")
+    success_url = reverse_lazy("product:сategories")
     success_message = "Акаунт успішно змінено"
 
     def get_object(self, queryset=None):
