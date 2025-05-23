@@ -1,7 +1,8 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
-
+from unidecode import unidecode
 from product.managers import ProductQuerySet
 
 
@@ -14,6 +15,11 @@ class AbstractNamedModel(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
 
 
 class Brand(AbstractNamedModel):
@@ -101,7 +107,7 @@ class Product(AbstractNamedModel):
 
 class ProductVariation(models.Model):
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="variations"
+        Product, on_delete=models.CASCADE, related_name="variations", verbose_name="Товар"
     )
     attribute_value = models.ForeignKey(
         AttributeValue,
@@ -129,7 +135,7 @@ class ProductVariation(models.Model):
 
 class ProductCharacteristics(AbstractNamedModel):
     product_variation = models.ForeignKey(
-        "ProductVariation", on_delete=models.CASCADE, related_name="characteristics"
+        "ProductVariation", on_delete=models.CASCADE, related_name="characteristics", verbose_name="Варіація товару"
     )
     value = models.CharField("Значення", max_length=50)
 

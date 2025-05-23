@@ -1,8 +1,16 @@
 from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 
-from product.models import (Attribute, AttributeValue, Brand, Category,
-                            Product, ProductCharacteristics, ProductVariation)
+from product.mixins import ProductSlugMixin
+from product.models import (
+    Attribute,
+    AttributeValue,
+    Brand,
+    Category,
+    Product,
+    ProductCharacteristics,
+    ProductVariation,
+)
 
 
 class ProductVariationInline(admin.StackedInline):
@@ -12,15 +20,15 @@ class ProductVariationInline(admin.StackedInline):
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ProductSlugMixin, admin.ModelAdmin):
     list_display = ["name", "category"]
-    prepopulated_fields = {"slug": ["name"]}
     list_editable = ["category"]
+
     inlines = [ProductVariationInline]
 
 
 @admin.register(AttributeValue)
-class AttributeValueAdmin(admin.ModelAdmin):
+class AttributeValueAdmin(ProductSlugMixin, admin.ModelAdmin):
     list_display = ["attribute__name", "value"]
     search_fields = ["attribute__name", "value"]
 
@@ -31,7 +39,7 @@ class AttributeValueInline(admin.StackedInline):
 
 
 @admin.register(Attribute)
-class AttributeAdmin(admin.ModelAdmin):
+class AttributeAdmin(ProductSlugMixin, admin.ModelAdmin):
     list_display = ["name"]
     search_fields = ["name"]
 
@@ -39,16 +47,20 @@ class AttributeAdmin(admin.ModelAdmin):
 
 
 @admin.register(ProductCharacteristics)
-class ProductCharacteristicsAdmin(admin.ModelAdmin):
+class ProductCharacteristicsAdmin(ProductSlugMixin, admin.ModelAdmin):
     list_display = ["name", "value", "product_variation"]
-    exclude = ["slug"]
 
 
 @admin.register(Category)
-class CategoryAdmin(DraggableMPTTAdmin):
+class CategoryAdmin(ProductSlugMixin, DraggableMPTTAdmin):
     list_display = ["tree_actions", "indented_title", "name"]
-    prepopulated_fields = {"slug": ["name"]}
 
 
-admin.site.register(Brand)
-admin.site.register(ProductVariation)
+@admin.register(Brand)
+class BrandAdmin(ProductSlugMixin, admin.ModelAdmin):
+    list_display = ["name"]
+
+
+@admin.register(ProductVariation)
+class ProductVariationAdmin(ProductSlugMixin, admin.ModelAdmin):
+    list_display = ["product", "attribute_value", "article"]

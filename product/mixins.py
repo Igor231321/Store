@@ -5,3 +5,7 @@ class ProductOrderByMixin:
             return queryset.order_by(order_by)
         else:
             return queryset
+
+
+class ProductSlugMixin:
+    exclude = ["slug"]
