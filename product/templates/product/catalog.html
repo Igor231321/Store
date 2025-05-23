@@ -26,9 +26,29 @@
             <a href="?{% change_params order_by='default' %}"
               class="block px-4 py-2 text-sm text-gray-800 font-semibold 
               {% if request.GET.order_by == 'default' or not request.GET.order_by %}
+                
+                
+                
+                
+                
                 bg-teal-600 text-white
+
+
+
+
+
               {% else %}
+                
+                
+                
+                
+                
                 hover:bg-gray-200
+
+
+
+
+
               {% endif %}">
               За популярністю
             </a>
@@ -37,9 +57,29 @@
             <a href="?{% change_params order_by='-min_price' %}"
               class="block px-4 py-2 text-sm text-gray-800 font-semibold
               {% if request.GET.order_by == '-min_price' %}
+                
+                
+                
+                
+                
                 bg-teal-600 text-white
+
+
+
+
+
               {% else %}
+                
+                
+                
+                
+                
                 hover:bg-gray-200
+
+
+
+
+
               {% endif %}">
               Від більшої цени
             </a>
@@ -48,9 +88,29 @@
             <a href="?{% change_params order_by='min_price' %}"
               class="block px-4 py-2 text-sm text-gray-800 font-semibold
               {% if request.GET.order_by == 'min_price' %}
+                
+                
+                
+                
+                
                 bg-teal-600 text-white
+
+
+
+
+
               {% else %}
+                
+                
+                
+                
+                
                 hover:bg-gray-200
+
+
+
+
+
               {% endif %}">
               Від меншої цени
             </a>
@@ -102,19 +162,33 @@
 
       <!-- Product grid -->
       <div class="lg:col-span-3">
-        <div class="grid grid-cols-2 md:grid-cols-3">
+        <div class="grid grid-cols-2 md:grid-cols-3 md:gap-x-3 gap-y-4">
           {% for product in products %}
-            <div class="rounded-xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] transition p-4 group">
+            <div class="p-4 bg-white rounded-2xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] group transition-all">
               {% if product.variations.first.image %}
-                <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt="" class="w-full object-cover rounded-xl mb-4" /></a>
+                <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt="" class="w-full object-cover rounded-t-xl mb-4" /></a>
               {% endif %}
 
               <div class="text-center">
-                <a href="{{ product.get_absolute_url }}"><h2 class="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-teal-500">{{ product.name }}</h2></a>
+                <a href="{{ product.get_absolute_url }}"><h2 class="text-lg sm:text-xl font-semibold text-slate-600 group-hover:text-teal-500 transition-colors">{{ product.name }}</h2></a>
 
-                <p class="text-base sm:text-lg font-semibold text-teal-500 mt-2">{{ product.display_price}}</p>
-                
-                <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300" />
+                <p class="text-base sm:text-lg font-semibold text-slate-600 mt-2">{{ product.display_price }}</p>
+
+                {% if product.variations.count > 1 %}
+                  <div class="p-2 transition-all">
+                    <div class="group-hover:flex hidden  justify-center gap-2 transition-all flex-wrap">
+                      {% for variation in product.variations.all|dictsort:"price" %}
+                        <span class="px-2 py-1 bg-black text-white font-medium rounded-2xl text-sm">{{ variation.attribute_value.value }}</span>
+                      {% endfor %}
+                    </div>
+
+                    <div class="group-hover:hidden flex justify-center transition-all">
+                      <span class="px-2 py-1 bg-teal-600 text-white font-medium text-sm rounded-2xl">Варіацій: {{ product.variations.count }}</span>
+                    </div>
+                    
+                  </div>
+                  {% endif %}
+                  <hr class="mt-4 text-gray-400 group-hover:opacity-0 transition-opacity duration-0" />
               </div>
             </div>
           {% endfor %}
@@ -156,21 +230,20 @@
     </div>
   </section>
 {% endblock %}
+{% comment %} {% for product in products %}
+  <div class="group relative">
+    <div class="hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] transition p-4 cursor-pointer bg-white">
+      {% if product.variations.first.image %}
+        <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt="" class="w-full object-cover rounded-xl mb-4" /></a>
+      {% endif %}
 
-{% block js %}
-  {% comment %} <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector('form');
-    const button = document.getElementById('filter-btn');
+      <div class="text-center">
+        <a href="{{ product.get_absolute_url }}"><h2 class="text-lg sm:text-xl font-semibold text-gray-900 group-hover:text-teal-500 transition-colors">{{ product.name }}</h2></a>
 
-    const inputs = form.querySelectorAll('input');
+        <p class="text-base sm:text-lg font-semibold text-teal-500 mt-2">{{ product.display_price }}</p>
 
-    inputs.forEach(input => {
-      input.addEventListener('input', () => {
-        button.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
-        button.classList.add('opacity-100', 'scale-100');
-      });
-    });
-  });
-</script> {% endcomment %}
-{% endblock %}
+        <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300" />
+      </div>
+    </div>
+  </div>
+{% endfor %} {% endcomment %}

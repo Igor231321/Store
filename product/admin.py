@@ -63,4 +63,5 @@ class BrandAdmin(ProductSlugMixin, admin.ModelAdmin):
 
 @admin.register(ProductVariation)
 class ProductVariationAdmin(ProductSlugMixin, admin.ModelAdmin):
-    list_display = ["product", "attribute_value", "article"]
+    list_display = ["product", "article", "attribute_value", "price"]
+    list_editable = ["price", "attribute_value"]
