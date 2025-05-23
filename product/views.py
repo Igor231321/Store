@@ -52,7 +52,7 @@ class Catalog(ProductOrderByMixin, ListView):
             products = products.filter(variations__price__lte=max_price)
 
         order_by = self.request.GET.get("order_by", None)
-        self.filters(products, order_by)
+        products = self.filters(products, order_by)
 
         return products
 
