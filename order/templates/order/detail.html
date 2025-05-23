@@ -20,23 +20,11 @@
           <h2 class="text-lg font-medium text-gray-900">Статус:</h2>
           <span class="inline-block mt-1 px-3 py-1 rounded-full text-sm font-medium
           {% if order.status == 'PR' %}
-              
-              
               bg-yellow-100 text-yellow-800
-
-
             {% elif order.status == 'RC' %}
-              
-              
               bg-green-100 text-green-700
-
-
             {% elif order.status == 'CL' %}
-              
-              
               bg-red-100 text-red-700
-
-
             {% endif %}">
             {{ order.get_status_display }}
           </span>
@@ -57,7 +45,7 @@
             <strong>Телефон:</strong> {{ order.phone_number }}
           </p>
           <p>
-            <strong>Email:</strong> {{ order.email }}
+            <strong>Email:</strong> {{ order.email|default_if_none:"Не вказано" }}
           </p>
         </div>
         <div>

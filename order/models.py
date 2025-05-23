@@ -19,8 +19,9 @@ class Order(models.Model):
         SHIPPED = "SP", "В дорозі"
 
     user = models.ForeignKey(
-        User, verbose_name=("Користувач"), on_delete=models.CASCADE
+        User, verbose_name="Користувач", on_delete=models.CASCADE, blank=True, null=True
     )
+    session_key = models.CharField("Сессия", max_length=32, blank=True, null=True)
     created_at = models.DateTimeField("Дата створення", auto_now_add=True)
     status = models.CharField(
         "Статус", choices=Status.choices, max_length=2, default=Status.PROCESSING
