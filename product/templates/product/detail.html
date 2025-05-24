@@ -37,7 +37,7 @@
       <div class="mt-5 text-slate-600 text-center md:text-left">
         <h1 class="text-2xl sm:text-3xl font-medium mb-2">{{ product.name }}</h1>
         <p class="mt-4 text-xl sm:text-2xl font-medium text-teal-500">
-          <span id="price">{{ product.variations.first.price }}</span> ₴
+          <span id="price">{{ product.variations.first.get_price }}</span> грн.
         </p>
 
         <div class="mt-5 mb-3 space-y-2">
@@ -63,7 +63,7 @@
                            name="color"
                            class="hidden peer"
                            value="{{ variation.id }}"
-                           data-price="{{ variation.price }}"
+                           data-price="{{ variation.get_price }}"
                            data-article="{{ variation.article }}"
                            data-characteristics='[{% for ch in variation.characteristics.all %}{"name": "{{ ch.name }}", "value": "{{ ch.value }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'/>
                     <span class="color-button inline-block border border-gray-300 bg-white rounded-lg px-3 py-1 text-sm sm:text-lg font-medium transition-colors peer-checked:bg-black peer-checked:text-white peer-checked:border-gray-800 hover:border-gray-800">

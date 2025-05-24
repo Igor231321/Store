@@ -10,9 +10,6 @@ cache/
 node_modules/
 package-lock.json
 
-# Tailwind output
-static/css/output.css
-
 # Editors / IDEs
 .vscode/
 .idea/

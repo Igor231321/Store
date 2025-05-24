@@ -7,7 +7,7 @@ from django.views.generic import DetailView, FormView, ListView
 
 from product.forms import UploadDataForm
 from product.mixins import ProductOrderByMixin
-from product.models import Category, Product, ProductVariation
+from product.models import Category, Product
 
 
 def home(request):
@@ -32,38 +32,6 @@ class UploadData(FormView):
                 quantity=row["stock"],
             )
         return super().form_valid(form)
-
-
-class Catalog(ProductOrderByMixin, ListView):
-    template_name = "product/catalog.html"
-    context_object_name = "products"
-    model = Product
-    paginate_by = 6
-
-    def get_queryset(self):
-        products = Product.objects.with_min_max_prices()
-
-        min_price = self.request.GET.get("min_price", None)
-        if min_price:
-            products = products.filter(variations__price__gte=min_price)
-
-        max_price = self.request.GET.get("max_price", None)
-        if max_price:
-            products = products.filter(variations__price__lte=max_price)
-
-        order_by = self.request.GET.get("order_by", None)
-        products = self.filters(products, order_by)
-
-        return products
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        product_prices = ProductVariation.objects.aggregate(Min("price"), Max("price"))
-        context["min_price"] = product_prices["price__min"]
-        context["max_price"] = product_prices["price__max"]
-
-        return context
 
 
 class ProductDetail(DetailView):

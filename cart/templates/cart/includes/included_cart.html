@@ -3,17 +3,21 @@
 {% block content %}
   {% if carts %}
     {% if order %}
-      <h2 class="text-center border-b pb-3 border-gray-400 text-2xl text-slate-800 mb-3 font-medium">Ваше замовлення</h2>
+      <h2 class="text-center border-b pb-3 border-gray-400 text-2xl text-slate-800 mb-3 font-medium">Ваше
+        замовлення</h2>
     {% endif %}
     <div class="flex flex-col gap-y-3">
       {% for cart in carts %}
         <div class="flex border-b border-gray-400 pb-3 gap-2">
           {% if cart.product_variation.image %}
-            <img src="{{ cart.product_variation.image.url }}" alt="{{ cart.product_variation.product.name }}" class="w-32 h-32 object-cover rounded-md" />
+            <img src="{{ cart.product_variation.image.url }}" alt="{{ cart.product_variation.product.name }}"
+                 class="w-32 h-32 object-cover rounded-md"/>
           {% endif %}
 
           <div class="flex-1 relative">
-            <a href="{{ cart.product_variation.product.get_absolute_url }}"><h2 class="inline-block font-medium text-lg hover:text-teal-500 transition-colors mb-2">{{ cart.product_variation.product.name }}</h2></a>
+            <a href="{{ cart.product_variation.product.get_absolute_url }}"><h2
+                class="inline-block font-medium text-lg hover:text-teal-500 transition-colors mb-2">{{ cart.product_variation.product.name }}</h2>
+            </a>
 
             <div class="flex gap-2 text-sm font-medium">
               <span class="text-gray-400">Арктикул:</span>
@@ -29,39 +33,54 @@
 
             {% if not order %}
               <div class="flex items-center gap-2 mt-2 input-group">
-                <button type="button" class="decrement cursor-pointer px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition" data-cart-id="{{ cart.id }}" data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}-</button>
+                <button type="button"
+                        class="decrement cursor-pointer px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                        data-cart-id="{{ cart.id }}"
+                        data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}-
+                </button>
 
-                <input type="text" class="number cursor-pointer w-12 text-center border border-gray-300 rounded" value="{{ cart.quantity }}" readonly />
+                <input type="text" class="number cursor-pointer w-12 text-center border border-gray-300 rounded"
+                       value="{{ cart.quantity }}" readonly/>
 
-                <button type="button" class="increment cursor-pointer px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition" data-cart-id="{{ cart.id }}" data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}+</button>
+                <button type="button"
+                        class="increment cursor-pointer px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                        data-cart-id="{{ cart.id }}"
+                        data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}+
+                </button>
               </div>
             {% endif %}
 
-            <p class="mt-2 font-medium">{{ cart.quantity }} x {{ cart.product_variation.price|floatformat }} ₴</p>
-            <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}" class="remove-from-cart float-end text-sm border-b-2 text-gray-500 border-gray-400 hover:text-black hover:border-red-600 font-medium transition-all">{% csrf_token %}Видалити кошик</a>
+            <p class="mt-2 font-medium">{{ cart.quantity }} x {{ cart.product_variation.get_price|floatformat }} грн.</p>
+            <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}"
+               class="remove-from-cart float-end text-sm border-b-2 text-gray-500 border-gray-400 hover:text-black hover:border-red-600 font-medium transition-all">{% csrf_token %}Видалити
+              кошик</a>
           </div>
         </div>
       {% endfor %}
     </div>
 
     <div class="mt-8 grid">
-      <p class="text-xl font-medium">Сума: {{ carts.total_sum }} ₴</p>
+      <p class="text-xl font-medium">Сума: {{ carts.total_sum }} грн.</p>
       {% if not order %}
-        <a href="{% url 'order:create' %}" class="inline-block mt-4 text-center font-medium bg-teal-600 text-white py-3 px-6 rounded-md hover:bg-teal-700 transition-all duration-200 ease-in-out shadow-sm hover:shadow-xl">Перейти до оформлення</a>
+        <a href="{% url 'order:create' %}"
+           class="inline-block mt-4 text-center font-medium bg-teal-600 text-white py-3 px-6 rounded-md hover:bg-teal-700 transition-all duration-200 ease-in-out shadow-sm hover:shadow-xl">Перейти
+          до оформлення</a>
       {% endif %}
     </div>
   {% else %}
     <div class="text-center">
       <p class="text-2xl font-medium text-gray-700 mb-4">Ваш кошик порожній</p>
-      <a href="{% url 'product:catalog' %}" class="inline-block bg-teal-600 font-medium text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition">Повернутись до покупок</a>
+      <a href="{% url 'product:сategories' %}"
+         class="inline-block bg-teal-600 font-medium text-white px-6 py-3 rounded-lg hover:bg-teal-700 transition">Повернутись
+        до покупок</a>
     </div>
 
     <script>
-      const checkoutWrapper = document.getElementById('checkout-form')
-      if (checkoutWrapper) checkoutWrapper.remove()
-      
-      const cartContainer = document.getElementById('cart-items-container')
-      if (cartContainer) cartContainer.classList.add('col-span-2')
+        const checkoutWrapper = document.getElementById('checkout-form')
+        if (checkoutWrapper) checkoutWrapper.remove()
+
+        const cartContainer = document.getElementById('cart-items-container')
+        if (cartContainer) cartContainer.classList.add('col-span-2')
     </script>
   {% endif %}
 {% endblock %}

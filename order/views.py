@@ -1,11 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views import generic
 
 from cart.utils import get_user_carts
 from order.forms import OrderCreateForm
 from order.models import Order, OrderItem
-from django.contrib.messages.views import SuccessMessageMixin
 
 
 class OrderDetailView(LoginRequiredMixin, generic.DetailView):
@@ -17,7 +17,7 @@ class OrderCreateView(SuccessMessageMixin, generic.CreateView):
     model = Order
     template_name = "order/create.html"
     form_class = OrderCreateForm
-    success_url = reverse_lazy("product:catalog")
+    success_url = reverse_lazy("product:сategories")
     success_message = "Ваше замовлення успішно створено"
 
     def form_valid(self, form):
