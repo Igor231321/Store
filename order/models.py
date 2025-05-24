@@ -35,7 +35,7 @@ class Order(models.Model):
     city = models.CharField("Місто", max_length=100)
     warehouse = models.CharField("Відділення НП", max_length=255)
 
-    comment = models.TextField("Комментарій", blank=True, null=True)
+    comment = models.TextField("Коментар", blank=True, null=True)
 
     class Meta:
         db_table = "order"
@@ -52,7 +52,7 @@ class OrderItem(models.Model):
         Order, on_delete=models.CASCADE, verbose_name="Замовлення", related_name="items"
     )
     product_variation = models.ForeignKey(
-        ProductVariation, on_delete=models.CASCADE, verbose_name="Вариація товара"
+        ProductVariation, on_delete=models.CASCADE, verbose_name="Варіація товара"
     )
     quantity = models.PositiveIntegerField("Кількість", default=1)
 

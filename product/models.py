@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
 from unidecode import unidecode
+
 from product.managers import ProductQuerySet
 
 
@@ -27,6 +28,22 @@ class Brand(AbstractNamedModel):
         db_table = "brand"
         verbose_name = "Бренд"
         verbose_name_plural = "Бренди"
+
+
+class Currency(AbstractNamedModel):
+    rate = models.DecimalField("Курс",
+                               decimal_places=2,
+                               max_digits=4,
+                               default=1,
+                               help_text="Максимум 4 цифри")
+
+    class Meta:
+        db_table = "currency"
+        verbose_name = "Валюта"
+        verbose_name_plural = "Валюти"
+
+    def __str__(self):
+        return f'{self.name} ({self.rate})'
 
 
 class Category(MPTTModel):
@@ -83,7 +100,8 @@ class Product(AbstractNamedModel):
         verbose_name="Категорія",
         related_name="products",
     )
-    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, verbose_name="Бренд")
+    brand = models.ForeignKey(Brand, on_delete=models.PROTECT, verbose_name="Бренд")
+    currency = models.ForeignKey(Currency, on_delete=models.PROTECT, verbose_name="Валюта", blank=True, null=True)
 
     class Meta:
         db_table = "product"
@@ -100,7 +118,7 @@ class Product(AbstractNamedModel):
 
     def display_price(self):
         if self.min_price != self.max_price:
-            return f"{self.min_price} грн. – { self.max_price } грн."
+            return f"{round(self.min_price, 2)} грн. – {round(self.max_price, 2)} грн."
         else:
             return f"{self.min_price} грн."
 
@@ -131,6 +149,12 @@ class ProductVariation(models.Model):
         verbose_name = "Варіації товару"
         verbose_name_plural = "Варіації товару"
         ordering = ["price"]
+
+    def get_price(self):
+        if self.product.currency:
+            return round(self.product.currency.rate * self.price, 2)
+        else:
+            return self.price
 
     def __str__(self):
         return f"{self.product.name} - {self.article}"
