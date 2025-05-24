@@ -7,7 +7,7 @@ from django.views.generic import DetailView, FormView, ListView
 
 from product.forms import UploadDataForm
 from product.mixins import ProductOrderByMixin
-from product.models import Category, Product, ProductVariation
+from product.models import Category, Product
 
 
 def home(request):

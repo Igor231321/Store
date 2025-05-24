@@ -1,11 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.views import generic
 
 from cart.utils import get_user_carts
 from order.forms import OrderCreateForm
 from order.models import Order, OrderItem
-from django.contrib.messages.views import SuccessMessageMixin
 
 
 class OrderDetailView(LoginRequiredMixin, generic.DetailView):

@@ -2,15 +2,9 @@ from django.contrib import admin
 from mptt.admin import DraggableMPTTAdmin
 
 from product.mixins import ProductSlugMixin
-from product.models import (
-    Attribute,
-    AttributeValue,
-    Brand,
-    Category,
-    Product,
-    ProductCharacteristics,
-    ProductVariation,
-)
+from product.models import (Attribute, AttributeValue, Brand, Category,
+                            Currency, Product, ProductCharacteristics,
+                            ProductVariation)
 
 
 class ProductVariationInline(admin.StackedInline):
@@ -65,3 +59,9 @@ class BrandAdmin(ProductSlugMixin, admin.ModelAdmin):
 class ProductVariationAdmin(ProductSlugMixin, admin.ModelAdmin):
     list_display = ["product", "article", "attribute_value", "price"]
     list_editable = ["price", "attribute_value"]
+
+
+@admin.register(Currency)
+class CurrencyAdmin(ProductSlugMixin, admin.ModelAdmin):
+    list_display = ["name", "rate"]
+    list_display_links = ["name", "rate"]
