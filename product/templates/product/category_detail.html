@@ -14,19 +14,23 @@
     {% if products %}
       <div class="flex items-center">
         <div class="relative">
-          <button id="dropdownButton" class="font-medium flex gap-1 border border-transparent px-3 py-2 transition-colors rounded-xl cursor-pointer focus:border-gray-300 hover:border-gray-300">
+          <button id="dropdownButton"
+                  class="font-medium flex gap-1 border border-transparent px-3 py-2 transition-colors rounded-xl cursor-pointer focus:border-gray-300 hover:border-gray-300">
             <span>
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
-                <path d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z" />
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                   fill="#000000">
+                <path
+                    d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/>
               </svg>
             </span>
             Сортувати
           </button>
 
-          <ul class="absolute hidden border border-gray-300 w-48 right-0 mt-1 bg-white shadow-xl rounded-lg overflow-y-auto max-h-60 transition-all duration-300 opacity-0 transform scale-95" id="dropdownMenu">
+          <ul class="absolute hidden border border-gray-300 w-48 right-0 mt-1 bg-white shadow-xl rounded-lg overflow-y-auto max-h-60 transition-all duration-300 opacity-0 transform scale-95"
+              id="dropdownMenu">
             <li>
               <a href="?{% change_params order_by='default' %}"
-                class="block px-4 py-2 text-sm text-gray-800 font-semibold 
+                 class="block px-4 py-2 text-sm text-gray-800 font-semibold
                 {% if request.GET.order_by == 'default' or not request.GET.order_by %}
                   bg-teal-600 text-white
                 {% else %}
@@ -37,7 +41,7 @@
             </li>
             <li>
               <a href="?{% change_params order_by='-min_price' %}"
-                class="block px-4 py-2 text-sm text-gray-800 font-semibold
+                 class="block px-4 py-2 text-sm text-gray-800 font-semibold
                 {% if request.GET.order_by == '-min_price' %}
                   bg-teal-600 text-white
                 {% else %}
@@ -48,7 +52,7 @@
             </li>
             <li>
               <a href="?{% change_params order_by='min_price' %}"
-                class="block px-4 py-2 text-sm text-gray-800 font-semibold
+                 class="block px-4 py-2 text-sm text-gray-800 font-semibold
                 {% if request.GET.order_by == 'min_price' %}
                   bg-teal-600 text-white
                 {% else %}
@@ -63,7 +67,9 @@
         <button type="button" class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden">
           <span class="sr-only">Filters</span>
           <svg class="size-5" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" data-slot="icon">
-            <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z" clip-rule="evenodd" />
+            <path fill-rule="evenodd"
+                  d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z"
+                  clip-rule="evenodd"/>
           </svg>
         </button>
       </div>
@@ -73,12 +79,16 @@
   {% if subcategories %}
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {% for sub in subcategories %}
-        <div class="border border-teal-600 rounded-xl p-4 group cursor-pointer overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
+        <div
+            class="border border-teal-600 rounded-xl p-4 group cursor-pointer overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
           {% if sub.image %}
-            <a href="{% url 'product:category_detail' sub.slug %}" class="block overflow-hidden rounded-lg"><img src="{{ sub.image.url }}" alt="{{ sub.name }}" class="w-full object-cover mb-4 transform transition-transform duration-300 group-hover:scale-110" /></a>
+            <a href="{% url 'product:category_detail' sub.slug %}" class="block overflow-hidden rounded-lg"><img
+                src="{{ sub.image.url }}" alt="{{ sub.name }}"
+                class="w-full object-cover mb-4 transform transition-transform duration-300 group-hover:scale-110"/></a>
           {% endif %}
 
-          <a href="{% url 'product:category_detail' sub.slug %}" class="block bg-white border border-teal-700 rounded-md p-3 text-center font-medium text-gray-800 transition-colors duration-200 hover:bg-teal-700 hover:text-white">{{ sub.name }}</a>
+          <a href="{% url 'product:category_detail' sub.slug %}"
+             class="block bg-white border border-teal-700 rounded-md p-3 text-center font-medium text-gray-800 transition-colors duration-200 hover:bg-teal-700 hover:text-white">{{ sub.name }}</a>
         </div>
       {% endfor %}
     </div>
@@ -90,11 +100,14 @@
         {% for product in products %}
           <div class="p-4 bg-white rounded-2xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] group transition-all">
             {% if product.variations.first.image %}
-              <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt="" class="w-full object-cover rounded-t-xl mb-4" /></a>
+              <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt=""
+                                                            class="w-full object-cover rounded-t-xl mb-4"/></a>
             {% endif %}
 
             <div class="text-center">
-              <a href="{{ product.get_absolute_url }}"><h2 class="text-lg sm:text-xl font-semibold text-slate-600 group-hover:text-teal-500 transition-colors">{{ product.name }}</h2></a>
+              <a href="{{ product.get_absolute_url }}"><h2
+                  class="text-lg sm:text-xl font-semibold text-slate-600 group-hover:text-teal-500 transition-colors">{{ product.name }}</h2>
+              </a>
 
               <p class="text-base sm:text-lg font-semibold text-slate-600 mt-2">{{ product.display_price }}</p>
 
@@ -102,17 +115,19 @@
                 <div class="p-2 transition-all">
                   <div class="group-hover:flex hidden  justify-center gap-2 transition-all flex-wrap">
                     {% for variation in product.variations.all|dictsort:"price" %}
-                      <span class="px-2 py-1 bg-black text-white font-medium rounded-2xl text-sm">{{ variation.attribute_value.value }}</span>
+                      <span
+                          class="px-2 py-1 bg-black text-white font-medium rounded-2xl text-sm">{{ variation.attribute_value.value }}</span>
                     {% endfor %}
                   </div>
 
                   <div class="group-hover:hidden flex justify-center transition-all">
-                    <span class="px-2 py-1 bg-teal-600 text-white font-medium text-sm rounded-2xl">Варіацій: {{ product.variations.count }}</span>
+                    <span
+                        class="px-2 py-1 bg-teal-600 text-white font-medium text-sm rounded-2xl">Варіацій: {{ product.variations.count }}</span>
                   </div>
-                  
+
                 </div>
               {% endif %}
-              <hr class="mt-4 text-gray-400 group-hover:opacity-0 transition-opacity duration-0" />
+              <hr class="mt-4 text-gray-400 group-hover:opacity-0 transition-opacity duration-0"/>
             </div>
           </div>
         {% endfor %}

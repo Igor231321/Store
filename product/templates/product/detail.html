@@ -1,34 +1,60 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+  Товар - {{ product.name }}
+{% endblock %}
+
+
 {% block content %}
   <section>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5 lg:10 md:mt-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8 md:mt-10">
       <!-- Sticky блок -->
-      <div class="">
-        <div class="sticky top-5">
-          <div class="relative flex items-center gap-2">
-            <div id="custom-prev" class="self-center cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000">
-                <path d="M560.67-240 320-480.67l240.67-240.66L608-674 414.67-480.67 608-287.33 560.67-240Z" />
-              </svg>
+      <div>
+        <div class="sticky top-25">
+          <div class="flex flex-col-reverse md:flex-row gap-4 min-w-0">
+
+            <div class="flex md:flex-col gap-3 w-20 max-h-[300px] ml-10 md:ml-0 thumbnail">
+              {% for variation in product.variations.all %}
+                {% if variation.image %}
+                  <img
+                      src="{{ variation.image.url }}"
+                      alt="{{ variation.product.title }}"
+                      class="w-full h-20 object-cover border border-gray-300 rounded-md p-1 cursor-pointer hover:border-teal-500"
+                      data-index="{{ forloop.counter0 }}"
+                  >
+                {% endif %}
+              {% endfor %}
             </div>
 
-            <div class="swiper mySwiper rounded-xl shadow-lg w-full">
-              <div class="swiper-wrapper">
-                {% for product_variation in product.variations.all %}
-                  <div class="swiper-slide">
-                    <img src="{{ product_variation.image.url }}" alt="{{ product_variation.product.name }}" class="w-full object-cover rounded-xl" />
-                  </div>
-                {% endfor %}
+            <!-- Основной слайдер справа -->
+            <div class="relative flex-1 flex items-center gap-2 min-w-0">
+              <div id="custom-prev" class="self-center cursor-pointer z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
+                     fill="#000000">
+                  <path d="M560.67-240 320-480.67l240.67-240.66L608-674 414.67-480.67 608-287.33 560.67-240Z"/>
+                </svg>
+              </div>
+
+              <div class="swiper mySwiper rounded-xl shadow-lg w-full min-w-0">
+                <div class="swiper-wrapper flex flex-nowrap">
+                  {% for product_variation in product.variations.all %}
+                    <div class="swiper-slide">
+                      <img src="{{ product_variation.image.url }}" alt="{{ product_variation.product.name }}"
+                           class="w-full object-cover rounded-xl"/>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div id="custom-next" class="self-center cursor-pointer z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
+                     fill="#000000">
+                  <path d="M521.33-480.67 328-674l47.33-47.33L616-480.67 375.33-240 328-287.33l193.33-193.34Z"/>
+                </svg>
               </div>
             </div>
 
-            <div id="custom-next" class="self-center cursor-pointer">
-              <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000">
-                <path d="M521.33-480.67 328-674l47.33-47.33L616-480.67 375.33-240 328-287.33l193.33-193.34Z" />
-              </svg>
-            </div>
           </div>
         </div>
       </div>
@@ -66,7 +92,8 @@
                            data-price="{{ variation.get_price }}"
                            data-article="{{ variation.article }}"
                            data-characteristics='[{% for ch in variation.characteristics.all %}{"name": "{{ ch.name }}", "value": "{{ ch.value }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'/>
-                    <span class="color-button inline-block border border-gray-300 bg-white rounded-lg px-3 py-1 text-sm sm:text-lg font-medium transition-colors peer-checked:bg-black peer-checked:text-white peer-checked:border-gray-800 hover:border-gray-800">
+                    <span
+                        class="color-button inline-block border border-gray-300 bg-white rounded-lg px-3 py-1 text-sm sm:text-lg font-medium transition-colors peer-checked:bg-black peer-checked:text-white peer-checked:border-gray-800 hover:border-gray-800">
                       {{ variation.attribute_value.value }}
                     </span>
                   </label>
@@ -78,23 +105,30 @@
 
         <div class="my-5">
           <div class="flex items-center gap-x-4 justify-center md:justify-start">
-            <button type="button" class="minus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">−</button>
+            <button type="button"
+                    class="minus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">
+              −
+            </button>
 
-            <input type="text" readonly class="product__quantity w-14 text-center border border-gray-300 rounded-lg text-lg font-medium focus:outline-none" value="1" />
+            <input type="text" readonly
+                   class="product__quantity w-14 text-center border border-gray-300 rounded-lg text-lg font-medium focus:outline-none"
+                   value="1"/>
 
-            <button type="button" class="plus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">+</button>
+            <button type="button"
+                    class="plus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">
+              +
+            </button>
+          </div>
+
+          <div class="mt-5">
+            <a href="{% url 'cart:cart_add' %}"
+               class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-teal-600 text-white hover:bg-teal-700 hover:shadow-2xl font-medium transition sm:text-lg rounded-md"
+               data-product-id="{{ product.id }}">
+              {% csrf_token %}
+              Добавить в корзину
+            </a>
           </div>
         </div>
-
-        <div class="mt-5">
-          <a href="{% url 'cart:cart_add' %}" 
-            class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-teal-600 text-white hover:bg-teal-700 hover:shadow-2xl font-medium transition sm:text-lg rounded-md" 
-            data-product-id="{{ product.id }}">
-            {% csrf_token %}
-            Добавить в корзину
-          </a>
-        </div>
-
         <!-- Характеристики -->
         <div class="mt-7">
           <h5 class="text-slate-600 text-xl sm:text-2xl mb-3">Характеристики</h5>
@@ -117,15 +151,18 @@
         {% for product in products_brand %}
           <div class="rounded-xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] transition p-4 group">
             {% if product.variations.first.image %}
-              <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt="" class="w-full object-cover rounded-xl mb-4" /></a>
+              <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt=""
+                                                            class="w-full object-cover rounded-xl mb-4"/></a>
             {% endif %}
 
             <div class="text-center">
-              <a href="{{ product.get_absolute_url }}"><h2 class="text-base sm:text-lg font-medium text-gray-900 group-hover:text-teal-500">{{ product.name }}</h2></a>
+              <a href="{{ product.get_absolute_url }}"><h2
+                  class="text-base sm:text-lg font-medium text-gray-900 group-hover:text-teal-500">{{ product.name }}</h2>
+              </a>
 
               <p class="text-sm sm:text-base font-medium text-teal-500 mt-2">{{ product.display_price }}</p>
 
-              <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300" />
+              <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300"/>
             </div>
           </div>
         {% endfor %}
@@ -134,62 +171,74 @@
   </section>
 {% endblock %}
 
-
 {% block js %}
   <!-- Swiper JS -->
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const radios = document.querySelectorAll('input[name="color"]')
-      const addToCartButton = document.querySelector('.add-to-cart')
-      const priceSpan = document.getElementById('price')
-      const articleSpan = document.getElementById('article')
-      const characteristicsBlock = document.getElementById('characteristics-block')
+      document.addEventListener('DOMContentLoaded', function () {
+          const radios = document.querySelectorAll('input[name="color"]')
+          const addToCartButton = document.querySelector('.add-to-cart')
+          const priceSpan = document.getElementById('price')
+          const articleSpan = document.getElementById('article')
+          const characteristicsBlock = document.getElementById('characteristics-block')
+          const thumbnails = document.querySelectorAll('.thumbnail img')
 
-      const swiper = new Swiper('.mySwiper', {
-        loop: true,
-        spaceBetween: 10,
-        slidesPerView: 1,
-        speed: 500
-      })
-
-      document.getElementById('custom-next')?.addEventListener('click', () => swiper.slideNext())
-      document.getElementById('custom-prev')?.addEventListener('click', () => swiper.slidePrev())
-
-      // Обработчик выбора вариації
-      radios.forEach((radio) => {
-        radio.addEventListener('change', function () {
-          const variationId = this.value
-          const price = this.dataset.price
-          const article = this.dataset.article
-          const slideIndex = this.nextElementSibling.getAttribute('data-slide-index')
-          const characteristics = JSON.parse(this.dataset.characteristics || '[]')
-
-          priceSpan.textContent = price
-          articleSpan.textContent = article
-          addToCartButton.setAttribute('data-variation-id', variationId)
-
-          swiper.slideTo(slideIndex, 500)
-
-          // Обновить характеристики
-          characteristicsBlock.innerHTML = ''
-          characteristics.forEach(attr => {
-            characteristicsBlock.innerHTML += `
-              <div class="border-b border-slate-300 flex justify-between py-2 text-slate-500">
-                <span class="font-medium text-slate-500">${attr.name}</span>
-                <span>${attr.value}</span>
-              </div>`
+          const swiper = new Swiper('.mySwiper', {
+              loop: true,
+              spaceBetween: 10,
+              slidesPerView: 1,
+              speed: 500,
+              navigation: {
+                  nextEl: '#custom-next',
+                  prevEl: '#custom-prev',
+              },
           })
-        })
-      })
 
-      // Выбрать первую вариацію по умолчанию
-      if (radios.length > 0) {
-        const firstRadio = radios[0]
-        firstRadio.checked = true
-        firstRadio.dispatchEvent(new Event('change'))
-      }
-    })
+          // Обработка кликов по миниатюрам
+          thumbnails.forEach((thumb, index) => {
+              thumb.addEventListener('click', () => {
+                  swiper.slideToLoop(index)
+              })
+          })
+
+          document.getElementById('custom-next')?.addEventListener('click', () => swiper.slideNext())
+          document.getElementById('custom-prev')?.addEventListener('click', () => swiper.slidePrev())
+
+          // Обработчик выбора вариации
+          radios.forEach((radio) => {
+              radio.addEventListener('change', function () {
+                  const variationId = this.value
+                  const price = this.dataset.price
+                  const article = this.dataset.article
+                  const characteristics = JSON.parse(this.dataset.characteristics || '[]')
+
+                  priceSpan.textContent = price
+                  articleSpan.textContent = article
+                  addToCartButton.setAttribute('data-variation-id', variationId)
+
+                  // Переключаем слайд на выбранный вариант, если нужно
+                  // (здесь, если хочешь, можно добавить логику поиска слайда по variationId)
+
+                  // Обновляем характеристики
+                  characteristicsBlock.innerHTML = ''
+                  characteristics.forEach(attr => {
+                      characteristicsBlock.innerHTML += `
+              <div class="flex gap-4 items-center">
+                <span class="font-medium text-slate-600">${attr.name}:</span>
+                <span class="text-slate-500">${attr.value}</span>
+              </div>
+            `
+                  })
+              })
+          })
+
+          // Выбираем первую вариацию по умолчанию
+          if (radios.length > 0) {
+              const firstRadio = radios[0]
+              firstRadio.checked = true
+              firstRadio.dispatchEvent(new Event('change'))
+          }
+      })
   </script>
 {% endblock %}
