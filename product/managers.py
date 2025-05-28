@@ -18,7 +18,7 @@ class ProductQuerySet(QuerySet):
                                                   output_field=DecimalField(max_digits=10, decimal_places=2))
 
         price_after_discount = ExpressionWrapper(price_before_discount * discount,
-                                                 output_field=DecimalField(max_digits=10, decimal_places=2))
+                                       output_field=DecimalField(max_digits=10, decimal_places=2))
 
         return self.annotate(
             min_price_before_discount=Min(price_before_discount),

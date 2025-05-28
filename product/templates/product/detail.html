@@ -156,13 +156,15 @@
         {% for product in products_brand %}
           <div class="p-4 bg-white rounded-2xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] group transition-all relative">
             {% if product.variations.first.image %}
-              <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt=""
+              <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}"
+                                                            alt="{{ product.name }}"
                                                             class="w-full object-cover rounded-t-xl mb-4"/></a>
             {% endif %}
 
             <div class="text-center">
               <a href="{{ product.get_absolute_url }}"><h2
-                  class="text-lg sm:text-xl font-semibold text-slate-600 group-hover:text-teal-500 transition-colors">{{ product.name }}</h2>
+                  class="text-lg sm:text-xl font-semibold text-slate-600 group-hover:text-teal-500 transition-colors">
+                {{ product.name }}</h2>
               </a>
               <div class="mt-1">
                 {% if product.discount %}
@@ -170,7 +172,7 @@
                     {{ product.display_price }}
                   </span>
                 {% endif %}
-                <p class="text-base font-semibold text-slate-600">{{ product.display_price_with_discount }}</p>
+                <p class="text-base font-semibold text-slate-600">{{ product.display_price }}</p>
               </div>
 
               {% if product.variations.count > 1 %}
@@ -193,7 +195,7 @@
             </div>
 
             {% if product.discount %}
-            <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-2 left-2">
+              <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-5 right-5">
                     -{{ product.discount|floatformat }}%
                   </span>
 
