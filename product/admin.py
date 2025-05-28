@@ -15,8 +15,8 @@ class ProductVariationInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(ProductSlugMixin, admin.ModelAdmin):
-    list_display = ["name", "category"]
-    list_editable = ["category"]
+    list_display = ["name", "category", "discount"]
+    list_editable = ["category", "discount"]
 
     inlines = [ProductVariationInline]
 

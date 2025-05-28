@@ -50,7 +50,7 @@
               </div>
             {% endif %}
 
-            <p class="mt-2 font-medium">{{ cart.quantity }} x {{ cart.product_variation.get_price|floatformat:43 }} грн.</p>
+            <p class="mt-2 font-medium">{{ cart.quantity }} x {{ cart.product_variation.get_price }} грн.</p>
             <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}"
                class="remove-from-cart float-end text-sm border-b-2 text-gray-500 border-gray-400 hover:text-black hover:border-red-600 font-medium transition-all">{% csrf_token %}Видалити
               кошик</a>

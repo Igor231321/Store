@@ -102,6 +102,7 @@ class Product(AbstractNamedModel):
     )
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, verbose_name="Бренд")
     currency = models.ForeignKey(Currency, on_delete=models.PROTECT, verbose_name="Валюта", blank=True, null=True)
+    discount = models.DecimalField("Знижка у %", max_digits=10, decimal_places=2, blank=True, null=True)
 
     class Meta:
         db_table = "product"
@@ -120,7 +121,7 @@ class Product(AbstractNamedModel):
         if self.min_price != self.max_price:
             return f"{round(self.min_price, 2)} грн. – {round(self.max_price, 2)} грн."
         else:
-            return f"{self.min_price} грн."
+            return f"{round(self.min_price, 2)} грн."
 
 
 class ProductVariation(models.Model):
@@ -151,10 +152,13 @@ class ProductVariation(models.Model):
         ordering = ["price"]
 
     def get_price(self):
+        price = self.price
+        if self.product.discount:
+            price = round(price - price * self.product.discount / 100, 2)
         if self.product.currency:
-            return round(self.product.currency.rate * self.price, 2)
-        else:
-            return self.price
+            price = round(self.product.currency.rate * price, 2)
+
+        return price
 
     def __str__(self):
         return f"{self.product.name} - {self.article}"
