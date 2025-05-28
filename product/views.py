@@ -1,13 +1,12 @@
 import csv
 
-from django.db.models import Max, Min
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, FormView, ListView
 
 from product.forms import UploadDataForm
 from product.mixins import ProductOrderByMixin
-from product.models import Category, Product
+from product.models import Category, Product, ProductVariation
 
 
 def home(request):
@@ -47,12 +46,17 @@ class ProductDetail(DetailView):
             self.get_object().variations.filter(attribute_value__isnull=False).exists()
         )
         context["products_brand"] = (
-            Product.objects.filter(brand=self.get_object().brand)
-            .exclude(pk=self.get_object().pk)
-            .annotate(
-                min_price=Min("variations__price"), max_price=Max("variations__price")
-            )[:4]
+            Product.objects.with_min_max_prices().filter(brand=self.get_object().brand)
+            .exclude(pk=self.get_object().pk)[:4]
         )
+
+        variation_article = self.request.GET.get("variation_article", None)
+        if variation_article:
+            context["variation"] = ProductVariation.objects.get(article=variation_article)
+            context["variation_article"] = variation_article
+        else:
+            context["variation"] = self.get_object().variations.first()
+
         return context
 
 

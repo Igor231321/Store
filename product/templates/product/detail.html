@@ -27,7 +27,6 @@
               {% endfor %}
             </div>
 
-            <!-- Основной слайдер справа -->
             <div class="relative flex-1 flex items-center gap-2 min-w-0">
               <div id="custom-prev" class="self-center cursor-pointer z-10">
                 <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
@@ -62,9 +61,19 @@
       <!-- Контент -->
       <div class="mt-5 text-slate-600 text-center md:text-left">
         <h1 class="text-2xl sm:text-3xl font-medium mb-2">{{ product.name }}</h1>
-        <p class="mt-4 text-xl sm:text-2xl font-medium text-teal-500">
-          <span id="price">{{ product.variations.first.get_price }}</span> грн.
-        </p>
+        {% if product.discount %}
+          <div class="flex items-center justify-center md:justify-start gap-2">
+            <span class="line-through text-gray-500 text-base">
+              {{ variation.get_price }} грн.
+            </span>
+            <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+              -{{ product.discount|floatformat }}%
+            </span>
+          </div>
+        {% endif %}
+        <div class="text-2xl font-bold text-teal-500 text-shadow-cyan-200">
+          {{ variation.get_price_with_discount }} грн.
+        </div>
 
         <div class="mt-5 mb-3 space-y-2">
           <p class="font-medium">
@@ -72,7 +81,8 @@
             <a href="#" class="text-teal-500 hover:text-slate-600 transition-colors">{{ product.brand }}</a>
           </p>
           <p class="font-medium">
-            Артикул: <span id="article">{{ product.variations.first.article }}</span>
+            Артикул:
+            <span>{{ variation.article }}</span>
           </p>
         </div>
 
@@ -84,19 +94,10 @@
               <h4 class="text-base sm:text-lg font-medium mb-2">{{ group.grouper }}</h4>
               <ul class="flex flex-wrap gap-2 justify-center md:justify-start">
                 {% for variation in group.list %}
-                  <label class="cursor-pointer">
-                    <input type="radio"
-                           name="color"
-                           class="hidden peer"
-                           value="{{ variation.id }}"
-                           data-price="{{ variation.get_price }}"
-                           data-article="{{ variation.article }}"
-                           data-characteristics='[{% for ch in variation.characteristics.all %}{"name": "{{ ch.name }}", "value": "{{ ch.value }}"}{% if not forloop.last %},{% endif %}{% endfor %}]'/>
-                    <span
-                        class="color-button inline-block border border-gray-300 bg-white rounded-lg px-3 py-1 text-sm sm:text-lg font-medium transition-colors peer-checked:bg-black peer-checked:text-white peer-checked:border-gray-800 hover:border-gray-800">
-                      {{ variation.attribute_value.value }}
-                    </span>
-                  </label>
+                  <a href="?variation_article={{ variation.article }}"
+                     class="inline-block border rounded-lg px-3 py-1 text-sm sm:text-lg font-medium transition-colors {% if variation_article == variation.article %}text-white bg-gray-800 border-gray-800 hover:border-gray-800 {% else %}border-gray-300 bg-white {% endif %}">
+                    {{ variation.attribute_value.value }}
+                  </a>
                 {% endfor %}
               </ul>
             {% endfor %}
@@ -123,22 +124,26 @@
           <div class="mt-5">
             <a href="{% url 'cart:cart_add' %}"
                class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-teal-600 text-white hover:bg-teal-700 hover:shadow-2xl font-medium transition sm:text-lg rounded-md"
-               data-product-id="{{ product.id }}">
+               data-variation-id="{{ variation.id }}">
               {% csrf_token %}
-              Добавить в корзину
+              Додати до кошику
             </a>
           </div>
         </div>
-        <!-- Характеристики -->
+
         <div class="mt-7">
           <h5 class="text-slate-600 text-xl sm:text-2xl mb-3">Характеристики</h5>
-          <div id="characteristics-block">
-            <!-- Будет заполняться JavaScript-ом -->
-          </div>
+            {% for characteristic in variation.characteristics.all %}
+              <div class="flex gap-4 items-center justify-center md:justify-start">
+                  <span class="font-medium text-slate-600">{{ characteristic.name }}:</span>
+                  <span class="text-slate-500">{{ characteristic.value }}</span>
+              </div>
+            {% endfor %}
         </div>
 
         <div class="mt-5">
           <p class="text-slate-500">{{ product.description }}</p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab commodi dignissimos dolorem exercitationem illo! Aliquam aspernatur beatae, culpa cupiditate dolore enim eveniet facere facilis, iusto, libero mollitia natus neque placeat quia rem reprehenderit sapiente sequi tempora ullam vitae. Animi dolore id in itaque, laboriosam laborum porro quasi qui suscipit voluptatem?
         </div>
       </div>
     </div>
@@ -149,21 +154,50 @@
 
       <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {% for product in products_brand %}
-          <div class="rounded-xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] transition p-4 group">
+          <div class="p-4 bg-white rounded-2xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] group transition-all relative">
             {% if product.variations.first.image %}
               <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}" alt=""
-                                                            class="w-full object-cover rounded-xl mb-4"/></a>
+                                                            class="w-full object-cover rounded-t-xl mb-4"/></a>
             {% endif %}
 
             <div class="text-center">
               <a href="{{ product.get_absolute_url }}"><h2
-                  class="text-base sm:text-lg font-medium text-gray-900 group-hover:text-teal-500">{{ product.name }}</h2>
+                  class="text-lg sm:text-xl font-semibold text-slate-600 group-hover:text-teal-500 transition-colors">{{ product.name }}</h2>
               </a>
+              <div class="mt-1">
+                {% if product.discount %}
+                  <span class="line-through text-gray-500 text-sm">
+                    {{ product.display_price }}
+                  </span>
+                {% endif %}
+                <p class="text-base font-semibold text-slate-600">{{ product.display_price_with_discount }}</p>
+              </div>
 
-              <p class="text-sm sm:text-base font-medium text-teal-500 mt-2">{{ product.display_price }}</p>
+              {% if product.variations.count > 1 %}
+                <div class="p-2 transition-all">
+                  <div class="group-hover:flex hidden  justify-center gap-2 transition-all flex-wrap">
+                    {% for variation in product.variations.all|dictsort:"price" %}
+                      <span
+                          class="px-2 py-1 bg-black text-white font-medium rounded-2xl text-sm">{{ variation.attribute_value.value }}</span>
+                    {% endfor %}
+                  </div>
 
-              <hr class="mt-4 text-gray-200 group-hover:opacity-0 transition-opacity duration-300"/>
+                  <div class="group-hover:hidden flex justify-center transition-all">
+                    <span
+                        class="px-2 py-1 bg-teal-600 text-white font-medium text-sm rounded-2xl">Варіацій: {{ product.variations.count }}</span>
+                  </div>
+
+                </div>
+              {% endif %}
+              <hr class="mt-4 text-gray-400 group-hover:opacity-0 transition-opacity duration-0"/>
             </div>
+
+            {% if product.discount %}
+            <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-2 left-2">
+                    -{{ product.discount|floatformat }}%
+                  </span>
+
+            {% endif %}
           </div>
         {% endfor %}
       </div>
@@ -177,25 +211,18 @@
 
   <script>
       document.addEventListener('DOMContentLoaded', function () {
-          const radios = document.querySelectorAll('input[name="color"]')
-          const addToCartButton = document.querySelector('.add-to-cart')
-          const priceSpan = document.getElementById('price')
-          const articleSpan = document.getElementById('article')
-          const characteristicsBlock = document.getElementById('characteristics-block')
           const thumbnails = document.querySelectorAll('.thumbnail img')
-
           const swiper = new Swiper('.mySwiper', {
               loop: true,
               spaceBetween: 10,
               slidesPerView: 1,
-              speed: 500,
+              speed: 300,
               navigation: {
                   nextEl: '#custom-next',
                   prevEl: '#custom-prev',
               },
           })
 
-          // Обработка кликов по миниатюрам
           thumbnails.forEach((thumb, index) => {
               thumb.addEventListener('click', () => {
                   swiper.slideToLoop(index)
@@ -205,40 +232,6 @@
           document.getElementById('custom-next')?.addEventListener('click', () => swiper.slideNext())
           document.getElementById('custom-prev')?.addEventListener('click', () => swiper.slidePrev())
 
-          // Обработчик выбора вариации
-          radios.forEach((radio) => {
-              radio.addEventListener('change', function () {
-                  const variationId = this.value
-                  const price = this.dataset.price
-                  const article = this.dataset.article
-                  const characteristics = JSON.parse(this.dataset.characteristics || '[]')
-
-                  priceSpan.textContent = price
-                  articleSpan.textContent = article
-                  addToCartButton.setAttribute('data-variation-id', variationId)
-
-                  // Переключаем слайд на выбранный вариант, если нужно
-                  // (здесь, если хочешь, можно добавить логику поиска слайда по variationId)
-
-                  // Обновляем характеристики
-                  characteristicsBlock.innerHTML = ''
-                  characteristics.forEach(attr => {
-                      characteristicsBlock.innerHTML += `
-              <div class="flex gap-4 items-center">
-                <span class="font-medium text-slate-600">${attr.name}:</span>
-                <span class="text-slate-500">${attr.value}</span>
-              </div>
-            `
-                  })
-              })
-          })
-
-          // Выбираем первую вариацию по умолчанию
-          if (radios.length > 0) {
-              const firstRadio = radios[0]
-              firstRadio.checked = true
-              firstRadio.dispatchEvent(new Event('change'))
-          }
       })
   </script>
 {% endblock %}
