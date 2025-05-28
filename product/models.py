@@ -118,10 +118,16 @@ class Product(AbstractNamedModel):
     objects = ProductQuerySet().as_manager()
 
     def display_price(self):
-        if self.min_price != self.max_price:
-            return f"{round(self.min_price, 2)} грн. – {round(self.max_price, 2)} грн."
+        if self.min_price_before_discount != self.max_price_before_discount:
+            return f"{round(self.min_price_before_discount, 2)} грн. – {round(self.max_price_before_discount, 2)} грн."
         else:
-            return f"{round(self.min_price, 2)} грн."
+            return f"{round(self.min_price_before_discount, 2)} грн."
+
+    def display_price_with_discount(self):
+        if self.min_price_after_discount != self.max_price_after_discount:
+            return f"{round(self.min_price_after_discount, 2)} грн. – {round(self.max_price_after_discount, 2)} грн."
+        else:
+            return f"{round(self.min_price_after_discount, 2)} грн."
 
 
 class ProductVariation(models.Model):
@@ -142,7 +148,7 @@ class ProductVariation(models.Model):
     image = models.ImageField(
         "Зображення", upload_to="product_images/", blank=True, null=True
     )
-    article = models.CharField("Артикул", max_length=255)
+    article = models.CharField("Артикул", max_length=255, unique=True)
     quantity = models.PositiveIntegerField("Кількість товару", default=0)
 
     class Meta:
@@ -152,11 +158,14 @@ class ProductVariation(models.Model):
         ordering = ["price"]
 
     def get_price(self):
-        price = self.price
+        if self.product.currency:
+            return round(self.product.currency.rate * self.price, 2)
+        return self.price
+
+    def get_price_with_discount(self):
+        price = self.get_price()
         if self.product.discount:
             price = round(price - price * self.product.discount / 100, 2)
-        if self.product.currency:
-            price = round(self.product.currency.rate * price, 2)
 
         return price
 

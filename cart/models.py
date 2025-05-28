@@ -31,4 +31,4 @@ class Cart(models.Model):
         return f"Кошик для {self.user.get_full_name()}: {self.product_variation.product.name} (x{self.quantity})"
 
     def products_sum(self):
-        return self.quantity * self.product_variation.get_price()
+        return self.quantity * self.product_variation.get_price_with_discount()

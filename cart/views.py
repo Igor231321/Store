@@ -5,19 +5,14 @@ from django.urls import reverse
 
 from cart.models import Cart
 from cart.utils import get_user_carts
-from product.models import Product, ProductVariation
+from product.models import ProductVariation
 
 
 def cart_add(request):
-    variation_id = request.POST.get("variation_id")
-    product_id = request.POST.get("product_id")
+    variation_id = int(request.POST.get("variation_id"))
     quantity = int(request.POST.get("quantity"))
 
-    if variation_id:
-        product_variation = ProductVariation.objects.get(id=variation_id)
-    else:
-        product = Product.objects.get(id=product_id)
-        product_variation = product.variations.first()
+    product_variation = ProductVariation.objects.get(id=variation_id)
 
     carts_query = {"product_variation": product_variation}
 

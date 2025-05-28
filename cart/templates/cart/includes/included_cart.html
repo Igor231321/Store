@@ -8,11 +8,15 @@
     {% endif %}
     <div class="flex flex-col gap-y-3">
       {% for cart in carts %}
-        <div class="flex border-b border-gray-400 pb-3 gap-2">
+        <div class="flex border-b border-gray-400 pb-3 gap-2 md:gap-4 relative">
           {% if cart.product_variation.image %}
             <img src="{{ cart.product_variation.image.url }}" alt="{{ cart.product_variation.product.name }}"
-                 class="w-32 h-32 object-cover rounded-md"/>
+                 class="w-24 h-24 md:w-32 md:h-32 object-cover rounded-md"/>
           {% endif %}
+
+          <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-0 left-0">
+              -{{ cart.product_variation.product.discount|floatformat }}%
+            </span>
 
           <div class="flex-1 relative">
             <a href="{{ cart.product_variation.product.get_absolute_url }}"><h2
@@ -20,7 +24,7 @@
             </a>
 
             <div class="flex gap-2 text-sm font-medium">
-              <span class="text-gray-400">Арктикул:</span>
+              <span class="text-gray-400">Артикул:</span>
               <span>{{ cart.product_variation.article }}</span>
             </div>
 
@@ -31,29 +35,50 @@
               </div>
             {% endif %}
 
-            {% if not order %}
-              <div class="flex items-center gap-2 mt-2 input-group">
-                <button type="button"
-                        class="decrement cursor-pointer px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                        data-cart-id="{{ cart.id }}"
-                        data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}-
-                </button>
 
-                <input type="text" class="number cursor-pointer w-12 text-center border border-gray-300 rounded"
-                       value="{{ cart.quantity }}" readonly/>
+            <div class="mt-2">
+              {% if cart.product_variation.product.discount %}
+                <div class="flex items-center gap-2">
+                  <span class="line-through text-gray-500 text-base">
+                    {{ cart.product_variation.get_price }} грн.
+                  </span>
+                </div>
+              {% endif %}
 
-                <button type="button"
-                        class="increment cursor-pointer px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
-                        data-cart-id="{{ cart.id }}"
-                        data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}+
-                </button>
-              </div>
-            {% endif %}
+              <p class="font-medium">
+                {{ cart.quantity }} x {{ cart.product_variation.get_price_with_discount }} грн.
+              </p>
 
-            <p class="mt-2 font-medium">{{ cart.quantity }} x {{ cart.product_variation.get_price }} грн.</p>
-            <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}"
-               class="remove-from-cart float-end text-sm border-b-2 text-gray-500 border-gray-400 hover:text-black hover:border-red-600 font-medium transition-all">{% csrf_token %}Видалити
-              кошик</a>
+
+              {% if not order %}
+                <div class="flex items-center gap-2 mt-2 input-group">
+                  <button type="button"
+                          class="decrement cursor-pointer px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                          data-cart-id="{{ cart.id }}"
+                          data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}-
+                  </button>
+
+                  <input type="text" class="number cursor-pointer w-12 text-center border border-gray-300 rounded"
+                         value="{{ cart.quantity }}" readonly/>
+
+                  <button type="button"
+                          class="increment cursor-pointer px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                          data-cart-id="{{ cart.id }}"
+                          data-cart-change-url="{% url 'cart:cart_change' %}">{% csrf_token %}+
+                  </button>
+                </div>
+              {% endif %}
+
+              <a href="{% url 'cart:cart_remove' %}" data-cart-id="{{ cart.id }}"
+                 class="remove-from-cart text-sm p-1 rounded-full hover:bg-red-600  font-medium transition-all absolute bottom-0 right-0">
+                {% csrf_token %}
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                     fill="currentColor">
+                  <path
+                      d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       {% endfor %}

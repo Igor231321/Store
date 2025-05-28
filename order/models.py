@@ -67,4 +67,4 @@ class OrderItem(models.Model):
         return self.product_variation.product.name
 
     def products_sum(self):
-        return self.quantity * self.product_variation.price
+        return self.quantity * self.product_variation.get_price_with_discount()
