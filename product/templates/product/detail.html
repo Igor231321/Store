@@ -7,204 +7,209 @@
 
 
 {% block content %}
-  <section>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8 md:mt-10">
-      <!-- Sticky блок -->
-      <div>
-        <div class="sticky top-25">
-          <div class="flex flex-col-reverse md:flex-row gap-4 min-w-0">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-8 md:mt-10">
+    <!-- Sticky блок -->
+    <section>
+      <div class="sticky top-25">
+        <div class="flex flex-col-reverse md:flex-row gap-4 min-w-0">
 
-            <div class="flex md:flex-col gap-3 w-20 max-h-[300px] ml-10 md:ml-0 thumbnail">
-              {% for variation in product.variations.all %}
-                {% if variation.image %}
-                  <img
-                      src="{{ variation.image.url }}"
-                      alt="{{ variation.product.title }}"
-                      class="w-full h-20 object-cover border border-gray-300 rounded-md p-1 cursor-pointer hover:border-teal-500"
-                      data-index="{{ forloop.counter0 }}"
-                  >
-                {% endif %}
-              {% endfor %}
-            </div>
-
-            <div class="relative flex-1 flex items-center gap-2 min-w-0">
-              <div id="custom-prev" class="self-center cursor-pointer z-10">
-                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
-                     fill="#000000">
-                  <path d="M560.67-240 320-480.67l240.67-240.66L608-674 414.67-480.67 608-287.33 560.67-240Z"/>
-                </svg>
-              </div>
-
-              <div class="swiper mySwiper rounded-xl shadow-lg w-full min-w-0">
-                <div class="swiper-wrapper flex flex-nowrap">
-                  {% for product_variation in product.variations.all %}
-                    <div class="swiper-slide">
-                      <img src="{{ product_variation.image.url }}" alt="{{ product_variation.product.name }}"
-                           class="w-full object-cover rounded-xl"/>
-                    </div>
-                  {% endfor %}
-                </div>
-              </div>
-
-              <div id="custom-next" class="self-center cursor-pointer z-10">
-                <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
-                     fill="#000000">
-                  <path d="M521.33-480.67 328-674l47.33-47.33L616-480.67 375.33-240 328-287.33l193.33-193.34Z"/>
-                </svg>
-              </div>
-            </div>
-
+          <div class="flex md:flex-col gap-3 w-20 max-h-[300px] ml-10 md:ml-0 thumbnail">
+            {% for variation in product.variations.all %}
+              {% if variation.image %}
+                <img
+                    src="{{ variation.image.url }}"
+                    alt="{{ variation.product.title }}"
+                    class="w-full h-20 object-cover border border-gray-300 rounded-md p-1 cursor-pointer hover:border-teal-500"
+                    data-index="{{ forloop.counter0 }}"
+                >
+              {% endif %}
+            {% endfor %}
           </div>
+
+          <div class="relative flex-1 flex items-center gap-2 min-w-0">
+            <div id="custom-prev" class="self-center cursor-pointer z-10">
+              <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
+                   fill="#000000">
+                <path d="M560.67-240 320-480.67l240.67-240.66L608-674 414.67-480.67 608-287.33 560.67-240Z"/>
+              </svg>
+            </div>
+
+            <div class="swiper mySwiper rounded-xl shadow-lg w-full min-w-0">
+              <div class="swiper-wrapper flex flex-nowrap">
+                {% for product_variation in product.variations.all %}
+                  <div class="swiper-slide">
+                    <img src="{{ product_variation.image.url }}" alt="{{ product_variation.product.name }}"
+                         class="w-full object-cover rounded-xl"/>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div id="custom-next" class="self-center cursor-pointer z-10">
+              <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
+                   fill="#000000">
+                <path d="M521.33-480.67 328-674l47.33-47.33L616-480.67 375.33-240 328-287.33l193.33-193.34Z"/>
+              </svg>
+            </div>
+          </div>
+
         </div>
       </div>
+    </section>
 
-      <!-- Контент -->
-      <div class="mt-5 text-slate-600 text-center md:text-left">
+    <!-- Контент -->
+    <section class="mt-5 text-slate-600 text-center md:text-left space-y-5">
+      <div>
         <h1 class="text-2xl sm:text-3xl font-medium mb-2">{{ product.name }}</h1>
         {% if product.discount %}
           <div class="flex items-center justify-center md:justify-start gap-2">
-            <span class="line-through text-gray-500 text-base">
-              {{ variation.get_price }} грн.
-            </span>
+              <span class="line-through text-gray-500 text-base">
+                {{ variation.get_price }} грн.
+              </span>
             <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-              -{{ product.discount|floatformat }}%
-            </span>
+                -{{ product.discount|floatformat }}%
+              </span>
           </div>
         {% endif %}
         <div class="text-2xl font-bold text-teal-500 text-shadow-cyan-200">
           {{ variation.get_price_with_discount }} грн.
         </div>
+      </div>
 
-        <div class="mt-5 mb-3 space-y-2">
-          <p class="font-medium">
-            Виробник:
-            <a href="#" class="text-teal-500 hover:text-slate-600 transition-colors">{{ product.brand }}</a>
-          </p>
-          <p class="font-medium">
-            Артикул:
-            <span>{{ variation.article }}</span>
-          </p>
+      <div class="space-y-2">
+        <p class="font-medium">
+          Виробник:
+          <a href="#" class="text-teal-500 hover:text-slate-600 transition-colors">{{ product.brand }}</a>
+        </p>
+        <p class="font-medium">
+          Артикул:
+          <span>{{ variation.article }}</span>
+        </p>
+      </div>
+
+      {% if has_attribute %}
+        <div class="space-y-4">
+          {% regroup product.variations.all by attribute_value.attribute.name as grouped_variations %}
+
+          {% for group in grouped_variations %}
+            <h4 class="text-base sm:text-lg font-medium mb-2">{{ group.grouper }}</h4>
+            <ul class="flex flex-wrap gap-2 justify-center md:justify-start">
+              {% for variation in group.list %}
+                <a href="?variation_article={{ variation.article }}"
+                   class="variation-link inline-block border rounded-lg px-3 py-1 text-sm sm:text-lg font-medium transition-colors
+                     {% if variation_article == variation.article %}text-white bg-gray-800 border-gray-800 hover:border-gray-800{% else %}border-gray-300 bg-white{% endif %}">
+                  {{ variation.attribute_value.value }}
+                </a>
+              {% endfor %}
+            </ul>
+          {% endfor %}
         </div>
+      {% endif %}
 
-        {% if has_attribute %}
-          <div class="space-y-4 ">
-            {% regroup product.variations.all by attribute_value.attribute.name as grouped_variations %}
+      <div>
+        <div class="flex items-center gap-x-4 justify-center md:justify-start">
+          <button type="button"
+                  class="minus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">
+            −
+          </button>
 
-            {% for group in grouped_variations %}
-              <h4 class="text-base sm:text-lg font-medium mb-2">{{ group.grouper }}</h4>
-              <ul class="flex flex-wrap gap-2 justify-center md:justify-start">
-                {% for variation in group.list %}
-                  <a href="?variation_article={{ variation.article }}"
-                     class="inline-block border rounded-lg px-3 py-1 text-sm sm:text-lg font-medium transition-colors {% if variation_article == variation.article %}text-white bg-gray-800 border-gray-800 hover:border-gray-800 {% else %}border-gray-300 bg-white {% endif %}">
-                    {{ variation.attribute_value.value }}
-                  </a>
-                {% endfor %}
-              </ul>
-            {% endfor %}
-          </div>
-        {% endif %}
+          <input type="text" readonly
+                 class="product__quantity w-14 text-center border border-gray-300 rounded-lg text-lg font-medium focus:outline-none"
+                 value="1"/>
 
-        <div class="my-5">
-          <div class="flex items-center gap-x-4 justify-center md:justify-start">
-            <button type="button"
-                    class="minus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">
-              −
-            </button>
-
-            <input type="text" readonly
-                   class="product__quantity w-14 text-center border border-gray-300 rounded-lg text-lg font-medium focus:outline-none"
-                   value="1"/>
-
-            <button type="button"
-                    class="plus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">
-              +
-            </button>
-          </div>
-
-          <div class="mt-5">
-            <a href="{% url 'cart:cart_add' %}"
-               class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-teal-600 text-white hover:bg-teal-700 hover:shadow-2xl font-medium transition sm:text-lg rounded-md"
-               data-variation-id="{{ variation.id }}">
-              {% csrf_token %}
-              Додати до кошику
-            </a>
-          </div>
-        </div>
-
-        <div class="mt-7">
-          <h5 class="text-slate-600 text-xl sm:text-2xl mb-3">Характеристики</h5>
-            {% for characteristic in variation.characteristics.all %}
-              <div class="flex gap-4 items-center justify-center md:justify-start">
-                  <span class="font-medium text-slate-600">{{ characteristic.name }}:</span>
-                  <span class="text-slate-500">{{ characteristic.value }}</span>
-              </div>
-            {% endfor %}
+          <button type="button"
+                  class="plus w-10 h-10 font-medium flex items-center justify-center rounded-full bg-gray-200 text-xl hover:bg-gray-300 cursor-pointer">
+            +
+          </button>
         </div>
 
         <div class="mt-5">
-          <p class="text-slate-500">{{ product.description }}</p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab commodi dignissimos dolorem exercitationem illo! Aliquam aspernatur beatae, culpa cupiditate dolore enim eveniet facere facilis, iusto, libero mollitia natus neque placeat quia rem reprehenderit sapiente sequi tempora ullam vitae. Animi dolore id in itaque, laboriosam laborum porro quasi qui suscipit voluptatem?
+          <a href="{% url 'cart:cart_add' %}"
+             class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-teal-600 text-white hover:bg-teal-700 hover:shadow-2xl font-medium transition sm:text-lg rounded-md"
+             data-variation-id="{{ variation.id }}">
+            {% csrf_token %}
+            Додати до кошику
+          </a>
         </div>
       </div>
-    </div>
 
-    <!-- Схожі товари -->
-    <div class="mt-10">
-      <h4 class="text-2xl sm:text-3xl text-slate-500 font-medium mb-5">Схожі товари</h4>
+      <div>
+        <h5 class="text-slate-600 text-xl sm:text-2xl mb-3">Характеристики</h5>
+        {% for characteristic in variation.characteristics.all %}
 
-      <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {% for product in products_brand %}
-          <div class="p-4 bg-white rounded-2xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] group transition-all relative">
-            {% if product.variations.first.image %}
-              <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}"
-                                                            alt="{{ product.name }}"
-                                                            class="w-full object-cover rounded-t-xl mb-4"/></a>
-            {% endif %}
-
-            <div class="text-center">
-              <a href="{{ product.get_absolute_url }}"><h2
-                  class="text-lg sm:text-xl font-semibold text-slate-600 group-hover:text-teal-500 transition-colors">
-                {{ product.name }}</h2>
-              </a>
-              <div class="mt-1">
-                {% if product.discount %}
-                  <span class="line-through text-gray-500 text-sm">
-                    {{ product.display_price }}
-                  </span>
-                {% endif %}
-                <p class="text-base font-semibold text-slate-600">{{ product.display_price }}</p>
-              </div>
-
-              {% if product.variations.count > 1 %}
-                <div class="p-2 transition-all">
-                  <div class="group-hover:flex hidden  justify-center gap-2 transition-all flex-wrap">
-                    {% for variation in product.variations.all|dictsort:"price" %}
-                      <span
-                          class="px-2 py-1 bg-black text-white font-medium rounded-2xl text-sm">{{ variation.attribute_value.value }}</span>
-                    {% endfor %}
-                  </div>
-
-                  <div class="group-hover:hidden flex justify-center transition-all">
-                    <span
-                        class="px-2 py-1 bg-teal-600 text-white font-medium text-sm rounded-2xl">Варіацій: {{ product.variations.count }}</span>
-                  </div>
-
-                </div>
-              {% endif %}
-              <hr class="mt-4 text-gray-400 group-hover:opacity-0 transition-opacity duration-0"/>
-            </div>
-
-            {% if product.discount %}
-              <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-5 right-5">
-                    -{{ product.discount|floatformat }}%
-                  </span>
-
-            {% endif %}
+          <div class="border-b border-slate-300 flex justify-between py-2 text-slate-500">
+            <span class="font-medium text-slate-500">{{ characteristic.name }}</span>
+            <span>{{ characteristic.value }}</span>
           </div>
         {% endfor %}
       </div>
+
+      <div>
+        <p class="text-slate-500">{{ product.description }}</p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab commodi dignissimos dolorem exercitationem illo!
+        Aliquam aspernatur beatae, culpa cupiditate dolore enim eveniet facere facilis, iusto, libero mollitia natus
+        neque placeat quia rem reprehenderit sapiente sequi tempora ullam vitae. Animi dolore id in itaque, laboriosam
+        laborum porro quasi qui suscipit voluptatem?
+      </div>
+    </section>
+  </div>
+
+  <!-- Схожі товари -->
+  <div class="mt-10">
+    <h4 class="text-2xl sm:text-3xl text-slate-500 font-medium mb-5">Схожі товари</h4>
+
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {% for product in products_brand %}
+        <div class="p-4 bg-white rounded-2xl hover:shadow-[0_0_15px_rgba(0,0,0,0.5)] group transition-all relative">
+          {% if product.variations.first.image %}
+            <a href="{{ product.get_absolute_url }}"><img src="{{ product.variations.first.image.url }}"
+                                                          alt="{{ product.name }}"
+                                                          class="w-full object-cover rounded-t-xl mb-4"/></a>
+          {% endif %}
+
+          <div class="text-center">
+            <a href="{{ product.get_absolute_url }}"><h2
+                class="text-lg sm:text-xl font-semibold text-slate-600 group-hover:text-teal-500 transition-colors">
+              {{ product.name }}</h2>
+            </a>
+            <div class="mt-1">
+              {% if product.discount %}
+                <span class="line-through text-gray-500 text-sm">
+                    {{ product.display_price }}
+                  </span>
+              {% endif %}
+              <p class="text-base font-semibold text-slate-600">{{ product.display_price_with_discount }}</p>
+            </div>
+
+            {% if product.variations.count > 1 %}
+              <div class="p-2 transition-all">
+                <div class="group-hover:flex hidden  justify-center gap-2 transition-all flex-wrap">
+                  {% for variation in product.variations.all|dictsort:"price" %}
+                    <span
+                        class="px-2 py-1 bg-black text-white font-medium rounded-2xl text-sm">{{ variation.attribute_value.value }}</span>
+                  {% endfor %}
+                </div>
+
+                <div class="group-hover:hidden flex justify-center transition-all">
+                    <span
+                        class="px-2 py-1 bg-teal-600 text-white font-medium text-sm rounded-2xl">Варіацій: {{ product.variations.count }}</span>
+                </div>
+
+              </div>
+            {% endif %}
+            <hr class="mt-4 text-gray-400 group-hover:opacity-0 transition-opacity duration-0"/>
+          </div>
+
+          {% if product.discount %}
+            <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-5 right-5">
+                    -{{ product.discount|floatformat }}%
+                  </span>
+
+          {% endif %}
+        </div>
+      {% endfor %}
     </div>
-  </section>
+  </div>
 {% endblock %}
 
 {% block js %}
@@ -236,4 +241,19 @@
 
       })
   </script>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', () => {
+          const links = document.querySelectorAll('.variation-link');
+          const urlParams = new URLSearchParams(window.location.search);
+          const selectedArticle = urlParams.get('variation_article');
+
+          if (!selectedArticle && links.length > 0) {
+              // Если параметр variation_article отсутствует — выбираем первый элемент
+              links[0].classList.add('text-white', 'bg-gray-800', 'border-gray-800', 'hover:border-gray-800');
+              links[0].classList.remove('border-gray-300', 'bg-white');
+          }
+      });
+  </script>
+
 {% endblock %}
