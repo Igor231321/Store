@@ -63,7 +63,8 @@
         <h1 class="text-2xl sm:text-3xl font-medium mb-2">{{ product.name }}</h1>
         {% if product.discount %}
           <div class="flex items-center justify-center md:justify-start gap-2">
-              <span class="line-through text-gray-500 text-base">
+              <span class="line-through text-gray-500 text-base"
+                    id="price">
                 {{ variation.get_price }} грн.
               </span>
             <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
@@ -71,7 +72,8 @@
               </span>
           </div>
         {% endif %}
-        <div class="text-2xl font-bold text-teal-500 text-shadow-cyan-200">
+        <div class="text-2xl font-bold text-teal-500 text-shadow-cyan-200"
+             id="price_with_discount">
           {{ variation.get_price_with_discount }} грн.
         </div>
       </div>
@@ -83,7 +85,7 @@
         </p>
         <p class="font-medium">
           Артикул:
-          <span>{{ variation.article }}</span>
+          <span id="article">{{ variation.article }}</span>
         </p>
       </div>
 
@@ -95,15 +97,22 @@
             <h4 class="text-base sm:text-lg font-medium mb-2">{{ group.grouper }}</h4>
             <ul class="flex flex-wrap gap-2 justify-center md:justify-start">
               {% for variation in group.list %}
-                <a href="?variation_article={{ variation.article }}"
-                   class="variation-link inline-block border rounded-lg px-3 py-1 text-sm sm:text-lg font-medium transition-colors
-                     {% if variation_article == variation.article %}text-white bg-gray-800 border-gray-800 hover:border-gray-800{% else %}border-gray-300 bg-white{% endif %}">
+                <label class="inline-block border rounded-lg px-3 py-1 text-sm sm:text-lg font-medium cursor-pointer">
+
+                  <input type="radio"
+                         name="variation_article"
+                         value="{{ variation.article }}"
+                         class="variation-radio hidden"
+                         data-id="{{ variation.id }}"
+                         {% if variation_article == variation.article %}checked{% endif %}>
                   {{ variation.attribute_value.value }}
-                </a>
+                </label>
               {% endfor %}
             </ul>
           {% endfor %}
         </div>
+      {% else %}
+        <input type="hidden" id="single-variation-id" value="{{ product.variations.first.id }}">
       {% endif %}
 
       <div>
@@ -123,33 +132,23 @@
           </button>
         </div>
 
-        <div class="mt-5">
+        <div class="mt-6">
           <a href="{% url 'cart:cart_add' %}"
-             class="add-to-cart drawer-trigger inline-flex px-4 py-3 bg-teal-600 text-white hover:bg-teal-700 hover:shadow-2xl font-medium transition sm:text-lg rounded-md"
-             data-variation-id="{{ variation.id }}">
+             class="add-to-cart drawer-trigger px-4 py-3 lg:text-lg bg-teal-600 hover:bg-teal-700 text-white  hover:shadow-2xl font-medium transition rounded-full">
             {% csrf_token %}
             Додати до кошику
           </a>
+
         </div>
       </div>
 
       <div>
         <h5 class="text-slate-600 text-xl sm:text-2xl mb-3">Характеристики</h5>
-        {% for characteristic in variation.characteristics.all %}
-
-          <div class="border-b border-slate-300 flex justify-between py-2 text-slate-500">
-            <span class="font-medium text-slate-500">{{ characteristic.name }}</span>
-            <span>{{ characteristic.value }}</span>
-          </div>
-        {% endfor %}
+        <div id="characteristics-block"></div>
       </div>
 
       <div>
         <p class="text-slate-500">{{ product.description }}</p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab commodi dignissimos dolorem exercitationem illo!
-        Aliquam aspernatur beatae, culpa cupiditate dolore enim eveniet facere facilis, iusto, libero mollitia natus
-        neque placeat quia rem reprehenderit sapiente sequi tempora ullam vitae. Animi dolore id in itaque, laboriosam
-        laborum porro quasi qui suscipit voluptatem?
       </div>
     </section>
   </div>
@@ -204,7 +203,6 @@
             <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-5 right-5">
                     -{{ product.discount|floatformat }}%
                   </span>
-
           {% endif %}
         </div>
       {% endfor %}
@@ -249,11 +247,114 @@
           const selectedArticle = urlParams.get('variation_article');
 
           if (!selectedArticle && links.length > 0) {
-              // Если параметр variation_article отсутствует — выбираем первый элемент
               links[0].classList.add('text-white', 'bg-gray-800', 'border-gray-800', 'hover:border-gray-800');
               links[0].classList.remove('border-gray-300', 'bg-white');
           }
       });
   </script>
+
+
+  <script>
+      $(document).ready(function () {
+          function updateVariationStyles() {
+              $("input.variation-radio").each(function () {
+                  const label = $(this).closest("label");
+                  if ($(this).is(":checked")) {
+                      label.removeClass("bg-white border-gray-300");
+                      label.addClass("text-white bg-gray-800 border-gray-800");
+                  } else {
+                      label.removeClass("text-white bg-gray-800 border-gray-800");
+                      label.addClass("bg-white border-gray-300");
+                  }
+              });
+          }
+
+          function loadVariation(article) {
+              $.ajax({
+                  url: "{% url 'product:variation_data' %}",
+                  method: "GET",
+                  dataType: "json",
+                  data: {variation_article: article},
+                  success: function (data) {
+                      $("#title").text(data.title);
+                      $("#article").text(data.article);
+                      $("#price").text(data.price);
+                      $("#price_with_discount").text(data.price_with_discount);
+
+                      $(".add-to-cart").attr("data-variation-id", data.variation_id);
+
+                      const charBlock = $("#characteristics-block");
+                      charBlock.empty();
+                      data.characteristics.forEach(function (char) {
+                          const html = `
+                        <div class="border-b border-slate-300 flex justify-between py-2 text-slate-500">
+                          <span class="font-medium text-slate-500">${char.name}</span>
+                          <span>${char.value}</span>
+                        </div>`;
+                          charBlock.append(html);
+                      });
+                  },
+                  error: function () {
+                      alert("Помилка завантаження варіації.");
+                  }
+              });
+          }
+
+          const firstRadio = $('input.variation-radio').first();
+          if (firstRadio.length) {
+              firstRadio.prop('checked', true);
+              loadVariation(firstRadio.val());
+              updateVariationStyles();
+          }
+
+          $('input.variation-radio').change(function () {
+              const article = $(this).val();
+              loadVariation(article);
+              updateVariationStyles();
+          });
+
+          $(document).on("click", ".add-to-cart", function (e) {
+              e.preventDefault();
+
+              let variationId;
+              const selectedRadio = $('input.variation-radio:checked');
+              if (selectedRadio.length) {
+                  variationId = selectedRadio.data("id");
+              } else {
+                  variationId = $("#single-variation-id").val();
+              }
+
+              if (!variationId) {
+                  alert("Не вдалося визначити варіацію товару.");
+                  return;
+              }
+
+              const quantity = parseInt($('.product__quantity').val()) || 1;
+              const addToCartUrl = $(this).attr("href");
+
+              const postData = {
+                  variation_id: variationId,
+                  quantity: quantity,
+                  csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val()
+              };
+
+              $.ajax({
+                  type: "POST",
+                  url: addToCartUrl,
+                  data: postData,
+                  success: function (data) {
+                      const countEl = $("#products-in-cart-count");
+                      const current = parseInt(countEl.text() || 0);
+                      countEl.text(current + quantity);
+                      $("#cart-items-container").html(data.cart_items_html);
+                  },
+                  error: function (data) {
+                      console.log("❌ Помилка при додаванні товару в кошик", data);
+                  }
+              });
+          });
+      });
+  </script>
+
 
 {% endblock %}

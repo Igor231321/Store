@@ -1,5 +1,6 @@
 import csv
 
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, FormView, ListView
@@ -58,6 +59,19 @@ class ProductDetail(DetailView):
             context["variation"] = self.get_object().variations.first()
 
         return context
+
+
+def variation_data(request):
+    article = request.GET.get("variation_article")
+    variation = ProductVariation.objects.get(article=article)
+    data = {
+        "variation_id": variation.id,
+        "article": variation.article,
+        "price": f"{variation.get_price()} грн.",
+        "price_with_discount": f"{variation.get_price_with_discount()} грн.",
+        "characteristics": list(variation.characteristics.values("name", "value"))
+    }
+    return JsonResponse(data)
 
 
 class CategoryListView(ListView):
