@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block title %}
-  Увійти в акаунт
+  {% trans 'Увійти в акаунт' %}
 {% endblock %}
 
 {% block content %}
   <div class="w-full max-w-lg mx-auto p-8 border border-gray-300 rounded-2xl shadow-md mt-30">
-    <h2 class="text-2xl font-medium mb-6 text-center">Увійти в акаунт</h2>
+    <h2 class="text-2xl font-medium mb-6 text-center">{% trans 'Увійти в акаунт' %}</h2>
 
     <form action="{% url 'user:login' %}" method="post">
       {% csrf_token %}
@@ -14,7 +15,9 @@
       <!-- Email -->
       <div class="mb-4">
         <label for="id_username" class="label">Email</label>
-        <input type="text" name="username" id="username" class="input {% if form.username.errors %}has_errors{% endif %}" value="{{ form.username.value|default_if_none:'' }}" />
+        <input type="text" name="username" id="username"
+               class="input {% if form.username.errors %}has_errors{% endif %}"
+               value="{{ form.username.value|default_if_none:'' }}"/>
 
         {% if form.username.errors %}
           <p class="text-sm text-red-600 mt-1">
@@ -28,7 +31,9 @@
       <!-- Пароль -->
       <div class="mb-6">
         <label for="id_password" class="label">Пароль</label>
-        <input type="password" name="password" id="password" class="input {% if form.password.errors %}has_errors{% endif %}" value="{{ form.password.value|default_if_none:'' }}" />
+        <input type="password" name="password" id="password"
+               class="input {% if form.password.errors %}has_errors{% endif %}"
+               value="{{ form.password.value|default_if_none:'' }}"/>
 
         {% if form.password.errors %}
           <p class="text-sm text-red-600 mt-1">
@@ -39,11 +44,17 @@
         {% endif %}
       </div>
 
-      <button type="submit" class="w-full py-2 px-4 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition cursor-pointer font-medium">Увійти</button>
+      <button type="submit"
+              class="w-full py-2 px-4 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition cursor-pointer font-medium">
+        {% trans 'Увійти' %}
+      </button>
       <!-- Кнопка регистрации -->
       <p class="mt-6 text-center text-sm text-gray-600">
-        Не маєте акаунта?
-        <a href="{% url 'user:register' %}" class="inline-block mt-2 w-full py-2 px-4 border border-teal-600 text-teal-700 font-medium rounded-xl hover:bg-teal-50 transition">Зареєструватися</a>
+        {% trans 'Не маєте акаунта?' %}
+        <a href="{% url 'user:register' %}"
+           class="inline-block mt-2 w-full py-2 px-4 border border-teal-600 text-teal-700 font-medium rounded-xl hover:bg-teal-50 transition">
+          {% trans 'Зареєструватися' %}
+        </a>
       </p>
     </form>
   </div>

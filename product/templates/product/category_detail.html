@@ -2,9 +2,10 @@
 {% load mptt_tags %}
 {% load static %}
 {% load custom_filters %}
+{% load i18n %}
 
 {% block title %}
-  Категорія - {{ category.name }}
+  {% trans "Категорія" %} - {{ category.name }}
 {% endblock %}
 
 {% block content %}
@@ -23,7 +24,7 @@
                     d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/>
               </svg>
             </span>
-            Сортувати
+            {% trans "Сортувати" %}
           </button>
 
           <ul class="absolute hidden border border-gray-300 w-48 right-0 mt-1 bg-white shadow-xl rounded-lg overflow-y-auto max-h-60 transition-all duration-300 opacity-0 transform scale-95"
@@ -36,7 +37,7 @@
                 {% else %}
                   hover:bg-gray-200
                 {% endif %}">
-                За популярністю
+                {% trans "За популярністю" %}
               </a>
             </li>
             <li>
@@ -47,7 +48,7 @@
                 {% else %}
                   hover:bg-gray-200
                 {% endif %}">
-                Від більшої цени
+                {% trans "Від більшої цени" %}
               </a>
             </li>
             <li>
@@ -58,7 +59,7 @@
                 {% else %}
                   hover:bg-gray-200
                 {% endif %}">
-                Від меншої цени
+                {% trans "Від меншої цени" %}
               </a>
             </li>
           </ul>
@@ -137,10 +138,9 @@
             </div>
 
             {% if product.discount %}
-            <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-2 left-2">
+              <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-2 left-2">
                     -{{ product.discount|floatformat }}%
                   </span>
-
             {% endif %}
           </div>
         {% endfor %}

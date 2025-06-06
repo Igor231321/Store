@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block title %}
-  Категорії
+  {% trans "Категорії" %}
 {% endblock %}
 
-
 {% block content %}
-  <h1 class="text-4xl font-medium tracking-tight text-slate-600 border-b border-gray-300 pb-3 mb-5">Категорії</h1>
-
+  <h1 class="text-4xl font-medium tracking-tight text-slate-600 border-b border-gray-300 pb-3 mb-5">{% trans "Категорії" %}</h1>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     {% for category in categories %}
