@@ -1,1 +1,384 @@
-[{"model": "product.brand", "pk": 1, "fields": {"name": "Nilson", "slug": null}}, {"model": "product.brand", "pk": 2, "fields": {"name": "123123123213", "slug": "123123123213"}}, {"model": "product.category", "pk": 11, "fields": {"name": "Розетки та вимикачі", "parent": null, "slug": "rozetki-ta-vimikachi", "image": "categories_images/zubr_cv2-401_auto_238_png_1_80.png", "lft": 1, "rght": 2, "tree_id": 6, "level": 0}}, {"model": "product.category", "pk": 12, "fields": {"name": "Електро фурнітура", "parent": null, "slug": "elektro-furnitura", "image": "categories_images/zubr_mf2-40_red_auto_238_png_1_80_ZwPwi56.png", "lft": 1, "rght": 6, "tree_id": 1, "level": 0}}, {"model": "product.category", "pk": 13, "fields": {"name": "Реле напруги", "parent": null, "slug": "rele-naprugi", "image": "categories_images/zubr_d2-40_red_auto_238_jpg_1_80.jpg", "lft": 1, "rght": 6, "tree_id": 4, "level": 0}}, {"model": "product.category", "pk": 14, "fields": {"name": "Інвентори", "parent": null, "slug": "inventori", "image": "categories_images/terneo_pro_1_342_auto_jpg_1_80_wuvU3km.jpg", "lft": 1, "rght": 2, "tree_id": 2, "level": 0}}, {"model": "product.category", "pk": 15, "fields": {"name": "Монтаж", "parent": null, "slug": "montazh", "image": "categories_images/zubr_mf2-40_red_auto_238_png_1_80_xTBEnw0.png", "lft": 1, "rght": 2, "tree_id": 3, "level": 0}}, {"model": "product.category", "pk": 16, "fields": {"name": "Вилки та колодки", "parent": 12, "slug": "vilki-ta-kolodki", "image": "categories_images/zubr_mf2-40_red_auto_238_png_1_80.png", "lft": 2, "rght": 3, "tree_id": 1, "level": 1}}, {"model": "product.category", "pk": 17, "fields": {"name": "Подовжувачі", "parent": 12, "slug": "podovzhuvachi", "image": "categories_images/zubr_sr1_750_auto_238_jpg_1_80.jpg", "lft": 4, "rght": 5, "tree_id": 1, "level": 1}}, {"model": "product.category", "pk": 18, "fields": {"name": "Реле напруги Zubr", "parent": 13, "slug": "rele-naprugi-zubr", "image": "categories_images/zubr_cv2-401_auto_238_png_1_80_GWSF8ON.png", "lft": 4, "rght": 5, "tree_id": 4, "level": 1}}, {"model": "product.category", "pk": 19, "fields": {"name": "Реле напруги Tax", "parent": 13, "slug": "rele-naprugi-tax", "image": "categories_images/zubr_mf2-40_red_auto_238_png_1_80_XtxBiDs.png", "lft": 2, "rght": 3, "tree_id": 4, "level": 1}}, {"model": "product.attribute", "pk": 1, "fields": {"name": "Цвет", "slug": null}}, {"model": "product.attribute", "pk": 2, "fields": {"name": "Сила струму", "slug": null}}, {"model": "product.attribute", "pk": 3, "fields": {"name": "Тест", "slug": "213123"}}, {"model": "product.attribute", "pk": 4, "fields": {"name": "Колір", "slug": "123213"}}, {"model": "product.attributevalue", "pk": 2, "fields": {"attribute": 1, "value": "Синий"}}, {"model": "product.attributevalue", "pk": 3, "fields": {"attribute": 1, "value": "Красный"}}, {"model": "product.attributevalue", "pk": 4, "fields": {"attribute": 2, "value": "50А"}}, {"model": "product.attributevalue", "pk": 5, "fields": {"attribute": 2, "value": "60А"}}, {"model": "product.attributevalue", "pk": 6, "fields": {"attribute": 2, "value": "100А"}}, {"model": "product.attributevalue", "pk": 7, "fields": {"attribute": 3, "value": "1М"}}, {"model": "product.attributevalue", "pk": 8, "fields": {"attribute": 3, "value": "2М"}}, {"model": "product.attributevalue", "pk": 9, "fields": {"attribute": 3, "value": "3М"}}, {"model": "product.attributevalue", "pk": 10, "fields": {"attribute": 4, "value": "Синий"}}, {"model": "product.attributevalue", "pk": 11, "fields": {"attribute": 4, "value": "Красный"}}, {"model": "product.product", "pk": 16, "fields": {"name": "Реле напруги", "slug": "rele-naprugi", "description": "234234", "category": 18, "brand": 1}}, {"model": "product.product", "pk": 17, "fields": {"name": "Инвентор", "slug": "inventor", "description": "234234234", "category": 14, "brand": 1}}, {"model": "product.product", "pk": 18, "fields": {"name": "Тестовый", "slug": "testovyj", "description": "12321321", "category": 14, "brand": 1}}, {"model": "product.product", "pk": 19, "fields": {"name": "123123", "slug": "123123", "description": "123123", "category": 14, "brand": 1}}, {"model": "product.productvariation", "pk": 29, "fields": {"product": 16, "attribute_value": 4, "price": "300.00", "image": "product_images/terneo_pro_1_342_auto_jpg_1_80_6bbUs6q.jpg", "article": "3123123", "quantity": 1}}, {"model": "product.productvariation", "pk": 32, "fields": {"product": 18, "attribute_value": 4, "price": "100.00", "image": "product_images/terneo_pro_1_342_auto_jpg_1_80_RlqtFxM.jpg", "article": "312321", "quantity": 1}}, {"model": "product.productvariation", "pk": 33, "fields": {"product": 17, "attribute_value": 4, "price": "2200.00", "image": "product_images/zubr_d2-40_red_auto_238_jpg_1_80_VjG4jep.jpg", "article": "123213", "quantity": 1}}, {"model": "product.productvariation", "pk": 34, "fields": {"product": 17, "attribute_value": 5, "price": "3000.00", "image": "product_images/zubr_sr1_750_auto_238_jpg_1_80.jpg", "article": "123123", "quantity": 123}}, {"model": "product.productvariation", "pk": 35, "fields": {"product": 17, "attribute_value": 6, "price": "3500.00", "image": "product_images/zubr_mf2-40_red_auto_238_png_1_80.png", "article": "123", "quantity": 1}}, {"model": "product.productvariation", "pk": 36, "fields": {"product": 19, "attribute_value": null, "price": "5000.00", "image": "product_images/zubr_sr1_750_auto_238_jpg_1_80_xiu1rhn.jpg", "article": "123123", "quantity": 0}}, {"model": "product.productvariation", "pk": 37, "fields": {"product": 18, "attribute_value": 5, "price": "200.00", "image": "product_images/zubr_d2-40_red_auto_238_jpg_1_80.jpg", "article": "4123443", "quantity": 0}}]
+[
+  {
+    "model": "product.brand",
+    "pk": 1,
+    "fields": {
+      "name": "Nilson",
+      "slug": null
+    }
+  },
+  {
+    "model": "product.brand",
+    "pk": 2,
+    "fields": {
+      "name": "123123123213",
+      "slug": "123123123213"
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 11,
+    "fields": {
+      "name": "Розетки та вимикачі",
+      "parent": null,
+      "slug": "rozetki-ta-vimikachi",
+      "image": "categories_images/zubr_cv2-401_auto_238_png_1_80.png",
+      "lft": 1,
+      "rght": 2,
+      "tree_id": 6,
+      "level": 0
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 12,
+    "fields": {
+      "name": "Електро фурнітура",
+      "parent": null,
+      "slug": "elektro-furnitura",
+      "image": "categories_images/zubr_mf2-40_red_auto_238_png_1_80_ZwPwi56.png",
+      "lft": 1,
+      "rght": 6,
+      "tree_id": 1,
+      "level": 0
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 13,
+    "fields": {
+      "name": "Реле напруги",
+      "parent": null,
+      "slug": "rele-naprugi",
+      "image": "categories_images/zubr_d2-40_red_auto_238_jpg_1_80.jpg",
+      "lft": 1,
+      "rght": 6,
+      "tree_id": 4,
+      "level": 0
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 14,
+    "fields": {
+      "name": "Інвентори",
+      "parent": null,
+      "slug": "inventori",
+      "image": "categories_images/terneo_pro_1_342_auto_jpg_1_80_wuvU3km.jpg",
+      "lft": 1,
+      "rght": 2,
+      "tree_id": 2,
+      "level": 0
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 15,
+    "fields": {
+      "name": "Монтаж",
+      "parent": null,
+      "slug": "montazh",
+      "image": "categories_images/zubr_mf2-40_red_auto_238_png_1_80_xTBEnw0.png",
+      "lft": 1,
+      "rght": 2,
+      "tree_id": 3,
+      "level": 0
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 16,
+    "fields": {
+      "name": "Вилки та колодки",
+      "parent": 12,
+      "slug": "vilki-ta-kolodki",
+      "image": "categories_images/zubr_mf2-40_red_auto_238_png_1_80.png",
+      "lft": 2,
+      "rght": 3,
+      "tree_id": 1,
+      "level": 1
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 17,
+    "fields": {
+      "name": "Подовжувачі",
+      "parent": 12,
+      "slug": "podovzhuvachi",
+      "image": "categories_images/zubr_sr1_750_auto_238_jpg_1_80.jpg",
+      "lft": 4,
+      "rght": 5,
+      "tree_id": 1,
+      "level": 1
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 18,
+    "fields": {
+      "name": "Реле напруги Zubr",
+      "parent": 13,
+      "slug": "rele-naprugi-zubr",
+      "image": "categories_images/zubr_cv2-401_auto_238_png_1_80_GWSF8ON.png",
+      "lft": 4,
+      "rght": 5,
+      "tree_id": 4,
+      "level": 1
+    }
+  },
+  {
+    "model": "product.category",
+    "pk": 19,
+    "fields": {
+      "name": "Реле напруги Tax",
+      "parent": 13,
+      "slug": "rele-naprugi-tax",
+      "image": "categories_images/zubr_mf2-40_red_auto_238_png_1_80_XtxBiDs.png",
+      "lft": 2,
+      "rght": 3,
+      "tree_id": 4,
+      "level": 1
+    }
+  },
+  {
+    "model": "product.attribute",
+    "pk": 1,
+    "fields": {
+      "name": "Цвет",
+      "slug": null
+    }
+  },
+  {
+    "model": "product.attribute",
+    "pk": 2,
+    "fields": {
+      "name": "Сила струму",
+      "slug": null
+    }
+  },
+  {
+    "model": "product.attribute",
+    "pk": 3,
+    "fields": {
+      "name": "Тест",
+      "slug": "213123"
+    }
+  },
+  {
+    "model": "product.attribute",
+    "pk": 4,
+    "fields": {
+      "name": "Колір",
+      "slug": "123213"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 2,
+    "fields": {
+      "attribute": 1,
+      "value": "Синий"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 3,
+    "fields": {
+      "attribute": 1,
+      "value": "Красный"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 4,
+    "fields": {
+      "attribute": 2,
+      "value": "50А"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 5,
+    "fields": {
+      "attribute": 2,
+      "value": "60А"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 6,
+    "fields": {
+      "attribute": 2,
+      "value": "100А"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 7,
+    "fields": {
+      "attribute": 3,
+      "value": "1М"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 8,
+    "fields": {
+      "attribute": 3,
+      "value": "2М"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 9,
+    "fields": {
+      "attribute": 3,
+      "value": "3М"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 10,
+    "fields": {
+      "attribute": 4,
+      "value": "Синий"
+    }
+  },
+  {
+    "model": "product.attributevalue",
+    "pk": 11,
+    "fields": {
+      "attribute": 4,
+      "value": "Красный"
+    }
+  },
+  {
+    "model": "product.product",
+    "pk": 16,
+    "fields": {
+      "name": "Реле напруги",
+      "slug": "rele-naprugi",
+      "description": "234234",
+      "category": 18,
+      "brand": 1
+    }
+  },
+  {
+    "model": "product.product",
+    "pk": 17,
+    "fields": {
+      "name": "Инвентор",
+      "slug": "inventor",
+      "description": "234234234",
+      "category": 14,
+      "brand": 1
+    }
+  },
+  {
+    "model": "product.product",
+    "pk": 18,
+    "fields": {
+      "name": "Тестовый",
+      "slug": "testovyj",
+      "description": "12321321",
+      "category": 14,
+      "brand": 1
+    }
+  },
+  {
+    "model": "product.product",
+    "pk": 19,
+    "fields": {
+      "name": "123123",
+      "slug": "123123",
+      "description": "123123",
+      "category": 14,
+      "brand": 1
+    }
+  },
+  {
+    "model": "product.productvariation",
+    "pk": 29,
+    "fields": {
+      "product": 16,
+      "attribute_value": 4,
+      "price": "300.00",
+      "image": "product_images/terneo_pro_1_342_auto_jpg_1_80_6bbUs6q.jpg",
+      "article": "3123123",
+      "quantity": 1
+    }
+  },
+  {
+    "model": "product.productvariation",
+    "pk": 32,
+    "fields": {
+      "product": 18,
+      "attribute_value": 4,
+      "price": "100.00",
+      "image": "product_images/terneo_pro_1_342_auto_jpg_1_80_RlqtFxM.jpg",
+      "article": "312321",
+      "quantity": 1
+    }
+  },
+  {
+    "model": "product.productvariation",
+    "pk": 33,
+    "fields": {
+      "product": 17,
+      "attribute_value": 4,
+      "price": "2200.00",
+      "image": "product_images/zubr_d2-40_red_auto_238_jpg_1_80_VjG4jep.jpg",
+      "article": "1232133333",
+      "quantity": 1
+    }
+  },
+  {
+    "model": "product.productvariation",
+    "pk": 34,
+    "fields": {
+      "product": 17,
+      "attribute_value": 5,
+      "price": "3000.00",
+      "image": "product_images/zubr_sr1_750_auto_238_jpg_1_80.jpg",
+      "article": "123121233",
+      "quantity": 123
+    }
+  },
+  {
+    "model": "product.productvariation",
+    "pk": 35,
+    "fields": {
+      "product": 17,
+      "attribute_value": 6,
+      "price": "3500.00",
+      "image": "product_images/zubr_mf2-40_red_auto_238_png_1_80.png",
+      "article": "123df",
+      "quantity": 1
+    }
+  },
+  {
+    "model": "product.productvariation",
+    "pk": 36,
+    "fields": {
+      "product": 19,
+      "attribute_value": null,
+      "price": "5000.00",
+      "image": "product_images/zubr_sr1_750_auto_238_jpg_1_80_xiu1rhn.jpg",
+      "article": "1231fdgd23",
+      "quantity": 0
+    }
+  },
+  {
+    "model": "product.productvariation",
+    "pk": 37,
+    "fields": {
+      "product": 18,
+      "attribute_value": 5,
+      "price": "200.00",
+      "image": "product_images/zubr_d2-40_red_auto_238_jpg_1_80.jpg",
+      "article": "4123443",
+      "quantity": 0
+    }
+  }
+]

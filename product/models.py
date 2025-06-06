@@ -8,7 +8,7 @@ from product.managers import ProductQuerySet
 
 
 class AbstractNamedModel(models.Model):
-    name = models.CharField("Название", max_length=155, unique=True)
+    name = models.CharField("Название", max_length=155, unique=True, null=True)
     slug = models.SlugField("SLUG_URL", max_length=155, unique=True, null=True)
 
     class Meta:
@@ -34,7 +34,6 @@ class Currency(AbstractNamedModel):
     rate = models.DecimalField("Курс",
                                decimal_places=2,
                                max_digits=4,
-                               default=1,
                                help_text="Максимум 4 цифри")
 
     class Meta:
@@ -66,6 +65,11 @@ class Category(MPTTModel):
         verbose_name = "Категорія"
         verbose_name_plural = "Категорії"
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
@@ -81,7 +85,7 @@ class AttributeValue(models.Model):
     attribute = models.ForeignKey(
         Attribute, on_delete=models.CASCADE, null=True, verbose_name="Атрибут"
     )
-    value = models.CharField("Значення", max_length=50)
+    value = models.CharField("Значення", max_length=50, null=True)
 
     class Meta:
         db_table = "attribute_value"
@@ -93,7 +97,7 @@ class AttributeValue(models.Model):
 
 
 class Product(AbstractNamedModel):
-    description = models.TextField("Опис")
+    description = models.TextField("Опис", null=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -180,7 +184,7 @@ class ProductCharacteristics(AbstractNamedModel):
         related_name="characteristics",
         verbose_name="Варіація товару",
     )
-    value = models.CharField("Значення", max_length=50)
+    value = models.CharField("Значення", max_length=50, null=True)
 
     class Meta:
         db_table = "product_characteristics"

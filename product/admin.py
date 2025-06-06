@@ -1,4 +1,5 @@
 from django.contrib import admin
+from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 from mptt.admin import DraggableMPTTAdmin
 
 from product.mixins import ProductSlugMixin
@@ -9,12 +10,12 @@ from product.models import (Attribute, AttributeValue, Brand, Category,
 
 class ProductVariationInline(admin.StackedInline):
     model = ProductVariation
-    extra = 0
+    extra = 1
     autocomplete_fields = ("attribute_value",)
 
 
 @admin.register(Product)
-class ProductAdmin(ProductSlugMixin, admin.ModelAdmin):
+class ProductAdmin(ProductSlugMixin, TranslationAdmin):
     list_display = ["name", "category", "discount"]
     list_editable = ["category", "discount"]
 
@@ -22,18 +23,18 @@ class ProductAdmin(ProductSlugMixin, admin.ModelAdmin):
 
 
 @admin.register(AttributeValue)
-class AttributeValueAdmin(ProductSlugMixin, admin.ModelAdmin):
+class AttributeValueAdmin(ProductSlugMixin, TranslationAdmin):
     list_display = ["attribute__name", "value"]
     search_fields = ["attribute__name", "value"]
 
 
-class AttributeValueInline(admin.StackedInline):
+class AttributeValueInline(TranslationTabularInline):
     model = AttributeValue
-    extra = 0
+    extra = 1
 
 
 @admin.register(Attribute)
-class AttributeAdmin(ProductSlugMixin, admin.ModelAdmin):
+class AttributeAdmin(ProductSlugMixin, TranslationAdmin):
     list_display = ["name"]
     search_fields = ["name"]
 
@@ -41,12 +42,12 @@ class AttributeAdmin(ProductSlugMixin, admin.ModelAdmin):
 
 
 @admin.register(ProductCharacteristics)
-class ProductCharacteristicsAdmin(ProductSlugMixin, admin.ModelAdmin):
+class ProductCharacteristicsAdmin(ProductSlugMixin, TranslationAdmin):
     list_display = ["name", "value", "product_variation"]
 
 
 @admin.register(Category)
-class CategoryAdmin(ProductSlugMixin, DraggableMPTTAdmin):
+class CategoryAdmin(ProductSlugMixin, DraggableMPTTAdmin, TranslationAdmin):
     list_display = ["tree_actions", "indented_title", "name"]
 
 
