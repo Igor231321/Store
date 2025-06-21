@@ -9,6 +9,49 @@ class OrderItemQuerySet(models.QuerySet):
         return sum(item.products_sum() for item in self)
 
 
+class Country(models.Model):
+    description = models.CharField(max_length=50)
+    area_description = models.CharField(max_length=50)
+    country_type = models.CharField(max_length=36)
+    ref = models.CharField(max_length=36)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "countries"
+        verbose_name = "Населений пункт"
+        verbose_name_plural = "Населені пункти"
+        ordering = ["country_type"]
+
+    def __str__(self):
+        country_types = {
+            "місто": "м.",
+            "село": "с.",
+            "селище міського типу": "смт.",
+            "селище": 'c'
+        }
+        return f"{country_types[self.country_type]} {self.description} ({self.area_description} обл.)"
+
+
+class Warehouse(models.Model):
+    class WarehouseType(models.TextChoices):
+        POST_OFFICE = "PO", "Поштове відділення"
+        TERMINAL = "TR", "Поштомат"
+
+    country = models.ForeignKey("Country", on_delete=models.CASCADE, related_name="warehouses")
+    description = models.CharField(max_length=100)
+    warehouse_type = models.CharField(max_length=2, choices=WarehouseType)
+    number = models.IntegerField()
+
+    class Meta:
+        ordering = ["number"]
+        db_table = "warehouses"
+        verbose_name = "Відділення"
+        verbose_name_plural = "Відділення"
+
+    def __str__(self):
+        return self.description
+
+
 class Order(models.Model):
     class Status(models.TextChoices):
         PROCESSING = "PR", "Обробляється"
@@ -17,6 +60,10 @@ class Order(models.Model):
         CANCELLED = "CL", "Скасовано"
         SENT = "SN", "Відправлено"
         SHIPPED = "SP", "В дорозі"
+
+    class DeliveryMethod(models.TextChoices):
+        WAREHOUSE = "WR", "Відділення «Нова пошта»"
+        TERMINAL = "TR", "Поштомат «Нова Пошта»"
 
     user = models.ForeignKey(
         User, verbose_name="Користувач", on_delete=models.CASCADE, blank=True, null=True
@@ -32,8 +79,16 @@ class Order(models.Model):
     surname = models.CharField("По батькові", max_length=30)
     email = models.EmailField("Email", max_length=255, blank=True, null=True)
 
-    city = models.CharField("Місто", max_length=100)
-    warehouse = models.CharField("Відділення НП", max_length=255)
+    delivery_method = models.CharField("Спосіб доставки", max_length=50,
+                                       choices=Warehouse.WarehouseType)
+    country = models.CharField("Місто", max_length=100)
+    warehouse = models.CharField("Відділення НП", max_length=255, blank=True, null=True)
+
+    terminal = models.CharField("Поштомат НП", max_length=255, blank=True, null=True)
+
+    street = models.CharField("Вулиця", max_length=255, blank=True, null=True)
+    apartment = models.CharField("Квартира", max_length=255, blank=True, null=True)
+    house = models.CharField("Дім", max_length=255, blank=True, null=True)
 
     comment = models.TextField("Коментар", blank=True, null=True)
 

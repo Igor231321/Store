@@ -57,6 +57,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "mysite.urls"
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

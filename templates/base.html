@@ -10,8 +10,10 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
   <!-- Swiper CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="{% static 'css/output.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/base.css' %}"/>
+
   <title>
     {% block title %}
 
@@ -34,8 +36,6 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
         </button>
-
-
       </div>
 
       <!-- Центр: ссылки -->
@@ -50,8 +50,6 @@
                 {% endif %}">
             {% trans 'Категорії' %}
           </a>
-
-
 
           {% if user.is_staff %}
             <a href="{% url 'admin:index' %}"
@@ -132,13 +130,15 @@
     </div>
     <div class="offcanvas-body">
       <div id="cart-items-container">
-        {% comment %}Разметка корзины{% endcomment %}
+        {% comment %}Разметка кошику{% endcomment %}
         {% include 'cart/includes/included_cart.html' %}
-        {% comment %}Закончилась разметка корзины{% endcomment %}
+        {% comment %}Кінець{% endcomment %}
       </div>
     </div>
   </aside>
-  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+
+  <div id="drawer-backdrop" class="drawer-backdrop absolute inset-0 w-full h-full pointer-events-auto z-[9995] bg-black backdrop-blur-sm"></div>
+
 {% endif %}
 
 {% include 'includes/notifications.html' %}
@@ -151,9 +151,12 @@
 </body>
 
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="{% static 'js/ajax.js' %}"></script>
-<script src="{% static 'js/drawer-cart.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+<script src="{% static 'js/api/delivery-api.js' %}"></script>
+<script src="{% static 'js/ajax.js' %}"></script>
+
+<script src="{% static 'js/drawer-cart.js' %}"></script>
 <script src="{% static 'js/toats.js' %}"></script>
 <script src="{% static 'js/accordions.js' %}"></script>
 <script src="{% static 'js/dropdowns.js' %}"></script>

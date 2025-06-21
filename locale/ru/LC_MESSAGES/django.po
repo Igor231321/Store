@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-06 09:26+0300\n"
+"POT-Creation-Date: 2025-06-17 18:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,180 +19,279 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
+#: .\cart\templates\cart\includes\included_cart.html:8
 msgid "Ваше замовлення"
 msgstr "Ваш заказ"
 
+#: .\cart\templates\cart\includes\included_cart.html:33
+#: .\product\templates\product\detail.html:87
+#: .\product\templates\product\includes\variation_detail.html:27
 msgid "Артикул"
 msgstr "Артикул"
 
+#: .\cart\templates\cart\includes\included_cart.html:92
 msgid "Сума"
 msgstr "Сумма"
 
+#: .\cart\templates\cart\includes\included_cart.html:96
 msgid "Перейти до оформлення"
 msgstr "Перейти к оформлению"
 
+#: .\cart\templates\cart\includes\included_cart.html:102
 msgid "Ваш кошик порожній"
 msgstr "Ваша корзина пуста"
 
+#: .\cart\templates\cart\includes\included_cart.html:105
 msgid "Повернутись до покупок"
 msgstr "Вернуться к покупкам"
 
+#: .\mysite\settings.py:115
+msgid "Russia"
+msgstr ""
+
+#: .\mysite\settings.py:116
+msgid "Ukraine"
+msgstr ""
+
+#: .\order\templates\order\create.html:5 .\order\templates\order\create.html:12
 msgid "Оформлення замовлення"
 msgstr "Оформление заказа"
 
+#: .\order\templates\order\create.html:18
 msgid "Контактна інформація"
 msgstr "Контактная информация"
 
+#: .\order\templates\order\create.html:32
 msgid "Інформація про доставку"
 msgstr "Информация о доставке"
 
+#: .\order\templates\order\create.html:35
 msgid "Номер телефону"
 msgstr "Номер телефона"
 
+#: .\order\templates\order\create.html:47 .\user\templates\user\account.html:30
 msgid "Ім’я"
 msgstr "Имя"
 
+#: .\order\templates\order\create.html:57 .\user\templates\user\account.html:39
+#: .\user\templates\user\register.html:28
 msgid "Прізвище"
 msgstr "Фамилия"
 
+#: .\order\templates\order\create.html:69 .\user\templates\user\account.html:48
+#: .\user\templates\user\register.html:41
 msgid "По батькові"
 msgstr "Отчество"
 
-msgid "Населений пункт"
+#: .\order\templates\order\create.html:80
+msgid "Ваш населений пункт"
 msgstr "Населённый пункт"
 
-msgid "Відділення НП"
-msgstr "Отделение Новой Почты"
+#: .\order\templates\order\create.html:101
+msgid "Відділення «Нова пошта»"
+msgstr "Отделение «Нова пошта»"
 
+#: .\order\templates\order\create.html:110
+msgid "Кур'єром «Нова Пошта»"
+msgstr "Курьером «Нова Пошта»"
+
+#: .\order\templates\order\create.html:117
+msgid "Оберіть відділення"
+msgstr "Выберете отделение"
+
+#: .\order\templates\order\create.html:127
+msgid "Вулиця"
+msgstr "Улица"
+
+#: .\order\templates\order\create.html:135
+msgid "Дім"
+msgstr "Дом"
+
+#: .\order\templates\order\create.html:142
+msgid "Квартира"
+msgstr ""
+
+#: .\order\templates\order\create.html:150
+#: .\order\templates\order\detail.html:59
 msgid "Коментар"
 msgstr "Комментарий"
 
+#: .\order\templates\order\create.html:164
 msgid "Підтвердити замовлення"
 msgstr "Подтвердить заказ"
 
+#: .\order\templates\order\detail.html:5
+#: .\user\templates\user\user_orders.html:23
 msgid "Замовлення"
 msgstr "Заказ"
 
+#: .\order\templates\order\detail.html:10
 msgid "Деталі замовлення"
 msgstr "Детали заказа"
 
+#: .\order\templates\order\detail.html:15
 msgid "Оформлено"
 msgstr "Оформлено"
 
+#: .\order\templates\order\detail.html:19
 msgid "Статус"
 msgstr "Статус"
 
+#: .\order\templates\order\detail.html:35
 msgid "Інформація про клієнта"
 msgstr "Информация о клиенте"
 
-msgid "Ім"
-msgstr "Имя"
-
-msgid "Фамілія"
-msgstr "Фамилия"
-
-msgid "Місто"
-msgstr "Город"
-
-msgid "Товари в замовленні"
-msgstr "Товары в заказе"
-
-msgid "Кількість"
-msgstr "Количество"
-
-msgid "Категорії"
-msgstr "Категории"
-
-msgid "Категорія"
-msgstr "Категория"
-
-msgid "Сортувати"
-msgstr "Сортировать"
-
-msgid "За популярністю"
-msgstr "По популярности"
-
-msgid "Від більшої цени"
-msgstr "От высокой цены"
-
-msgid "Від меншої цени"
-msgstr "От низкой цены"
-
-msgid "Виробник"
-msgstr "Производитель"
-
-msgid "Додати до кошику"
-msgstr "Добавить в корзину"
-
-msgid "Характеристики"
-msgstr "Характеристики"
-
-msgid "Схожі товари"
-msgstr "Похожие товары"
-
-msgid "Варіацій"
-msgstr "Вариаций"
-
-msgid "Админ"
-msgstr "Админ"
-
-msgid "Додати товар"
-msgstr "Добавить товар"
-
-msgid "Кошик"
-msgstr "Корзина"
-
-msgid "Мій акаунт"
-msgstr "Мой аккаунт"
-
-msgid "Редагування акаунта"
-msgstr "Редактирование аккаунта"
-
-msgid "Зберегти зміни"
-msgstr "Сохранить изменения"
-
-msgid "Особисті дані"
-msgstr "Личные данные"
-
-msgid "Історія замовлень"
-msgstr "История заказов"
-
-msgid "Вийти"
-msgstr "Выйти"
-
-msgid "Увійти в акаунт"
-msgstr "Войти в аккаунт"
-
-msgid "Увійти"
-msgstr "Войти"
-
-msgid "Не маєте акаунта?"
-msgstr "Нет аккаунта?"
-
-msgid "Зареєструватися"
-msgstr "Зарегистрироваться"
-
-msgid "Реєстрація"
-msgstr "Регистрация"
-
-msgid "Створити акаунт"
-msgstr "Создать аккаунт"
-
+#: .\order\templates\order\detail.html:37
+#: .\user\templates\user\register.html:15
 msgid "Ім'я"
 msgstr "Имя"
 
+#: .\order\templates\order\detail.html:40
+msgid "Фамілія"
+msgstr "Фамилия"
+
+#: .\order\templates\order\detail.html:52
+msgid "Місто"
+msgstr "Город"
+
+#: .\order\templates\order\detail.html:55
+msgid "Відділення НП"
+msgstr "Отделение НП"
+
+#: .\order\templates\order\detail.html:67
+msgid "Товари в замовленні"
+msgstr "Товары в заказе"
+
+#: .\order\templates\order\detail.html:90
+msgid "Кількість"
+msgstr "Количество"
+
+#: .\product\templates\product\categories.html:6
+#: .\product\templates\product\categories.html:10 .\templates\base.html:51
+msgid "Категорії"
+msgstr "Категории"
+
+#: .\product\templates\product\category_detail.html:8
+msgid "Категорія"
+msgstr "Категория"
+
+#: .\product\templates\product\category_detail.html:27
+msgid "Сортувати"
+msgstr "Сортировать"
+
+#: .\product\templates\product\category_detail.html:40
+msgid "За популярністю"
+msgstr "По популярности"
+
+#: .\product\templates\product\category_detail.html:51
+msgid "Від більшої цени"
+msgstr "От высокой цены"
+
+#: .\product\templates\product\category_detail.html:62
+msgid "Від меншої цени"
+msgstr "От низкой цены"
+
+#: .\product\templates\product\detail.html:83
+#: .\product\templates\product\includes\variation_detail.html:23
+msgid "Виробник"
+msgstr "Производитель"
+
+#: .\product\templates\product\detail.html:139
+#: .\product\templates\product\includes\variation_detail.html:86
+msgid "Додати до кошику"
+msgstr "Добавить в корзину"
+
+#: .\product\templates\product\detail.html:146
+#: .\product\templates\product\includes\variation_detail.html:92
+msgid "Характеристики"
+msgstr "Характеристики"
+
+#: .\product\templates\product\detail.html:158
+msgid "Схожі товари"
+msgstr "Похожие товары"
+
+#: .\product\templates\product\detail.html:194
+msgid "Варіацій"
+msgstr "Вариаций"
+
+#: .\templates\base.html:57
+msgid "Админ"
+msgstr "Админ"
+
+#: .\templates\base.html:62
+msgid "Додати товар"
+msgstr "Добавить товар"
+
+#: .\templates\base.html:126
+msgid "Кошик"
+msgstr "Корзина"
+
+#: .\user\templates\user\account.html:5
+msgid "Мій акаунт"
+msgstr "Мой аккаунт"
+
+#: .\user\templates\user\account.html:15
+msgid "Редагування акаунта"
+msgstr "Редактирование аккаунта"
+
+#: .\user\templates\user\account.html:58
+msgid "Зберегти зміни"
+msgstr "Сохранить изменения"
+
+#: .\user\templates\user\includes\user_nav.html:12
+msgid "Особисті дані"
+msgstr "Личные данные"
+
+#: .\user\templates\user\includes\user_nav.html:22
+msgid "Історія замовлень"
+msgstr "История заказов"
+
+#: .\user\templates\user\includes\user_nav.html:25
+msgid "Вийти"
+msgstr "Выйти"
+
+#: .\user\templates\user\login.html:5 .\user\templates\user\login.html:10
+msgid "Увійти в акаунт"
+msgstr "Войти в аккаунт"
+
+#: .\user\templates\user\login.html:49 .\user\templates\user\register.html:102
+msgid "Увійти"
+msgstr "Войти"
+
+#: .\user\templates\user\login.html:53
+msgid "Не маєте акаунта?"
+msgstr "Нет аккаунта?"
+
+#: .\user\templates\user\login.html:56 .\user\templates\user\register.html:96
+msgid "Зареєструватися"
+msgstr "Зарегистрироваться"
+
+#: .\user\templates\user\register.html:5
+msgid "Реєстрація"
+msgstr "Регистрация"
+
+#: .\user\templates\user\register.html:10
+msgid "Створити акаунт"
+msgstr "Создать аккаунт"
+
+#: .\user\templates\user\register.html:54
 msgid "адреса"
 msgstr "адрес"
 
+#: .\user\templates\user\register.html:81
 msgid "Підтвердіть пароль"
 msgstr "Подтвердите пароль"
 
+#: .\user\templates\user\register.html:101
 msgid "Вже маєте акаунт?"
 msgstr "Уже есть аккаунт?"
 
+#: .\user\templates\user\user_orders.html:5
+#: .\user\templates\user\user_orders.html:15
 msgid "Мої замовлення"
 msgstr "Мои заказы"
 
+#: .\user\templates\user\user_orders.html:44
 msgid "У вас ще немає замовлень"
 msgstr "У вас ещё нет заказов"
 
@@ -2268,6 +2366,10 @@ msgstr ""
 #: .\venv\Lib\site-packages\jsonfield\forms.py:15
 #, python-format
 msgid "\"%(value)s\" value must be valid JSON."
+msgstr ""
+
+#: .\venv\Lib\site-packages\modeltranslation\widgets.py:32
+msgid "None"
 msgstr ""
 
 #~ msgid "Language"
