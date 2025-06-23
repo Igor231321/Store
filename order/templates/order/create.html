@@ -1,141 +1,305 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load static i18n %}
 
 {% block title %}
   {% trans 'Оформлення замовлення' %}
 {% endblock %}
 
+
 {% block content %}
   <div id="order-page-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-10 pb-10">
-    {% comment %}Форма{% endcomment %}
     <div id="checkout-form">
       <h1 class="text-3xl font-medium text-gray-900 mb-8">{% trans 'Оформлення замовлення' %}</h1>
 
-      <form method="post" class="space-y-10">
+      <form action="{% url 'order:create' %}" method="post">
         {% csrf_token %}
 
-        {% comment %}Contact Information{% endcomment %}
-        <div class="border-b pb-6">
+
+        {% comment %}User info{% endcomment %}
+        <div class="border-t border-gray-400 py-4">
           <h2 class="text-lg font-medium text-gray-900 mb-4">{% trans 'Контактна інформація' %}</h2>
-          <div class="grid grid-cols-1 gap-4">
-            <div>
-              <label for="email" class="label">Email</label>
-              <input type="email" name="email" id="email" class="input {% if form.email.errors %}has_errors{% endif %}" value="{{ form.email.value|default_if_none:'' }}" />
-              {% if form.email.errors %}
-                <p class="text-sm text-red-600 mt-1">
-                  {% for error in form.email.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </p>
-              {% endif %}
-            </div>
-          </div>
-        </div>
 
-        {% comment %}Shipping Information{% endcomment %}
-        <div class="border-b pb-4">
-          <h2 class="text-lg font-medium text-gray-900 mb-4">{% trans 'Інформація про доставку' %}</h2>
-          <div class="grid grid-cols-1 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label for="phone_number" class="label">{% trans 'Номер телефону' %} <span class="text-red-700 text-lg font-medium">*</span></label>
-              <input type="text" name="phone_number" id="phone_number" required class="input {% if form.phone_number.errors %}has_errors{% endif %}" value="{{ form.phone_number.value|default_if_none:'' }}" />
-              {% if form.phone_number.errors %}
-                <p class="text-sm text-red-600 mt-1">
-                  {% for error in form.phone_number.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </p>
+              <label for="{{ form.first_name.id_for_label }}" class="label">{% trans 'Ім’я' %} <span
+                  class="text-red-700 text-lg font-medium">*</span></label>
+              {{ form.first_name }}
+              {% if form.first_name.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.first_name.errors.0 }}</p>
               {% endif %}
             </div>
 
-            <div class="flex gap-4">
-              <div class="flex-1">
-                <label for="first_name" class="label">{% trans 'Ім’я' %} <span class="text-red-700 text-lg font-medium">*</span></label>
-                <input type="text" name="first_name" id="first_name" required class="input {% if form.first_name.errors %}has_errors{% endif %}" value="{{ form.first_name.value|default_if_none:'' }}" />
-                {% if form.first_name.errors %}
-                  <p class="text-sm text-red-600 mt-1">
-                    {% for error in form.first_name.errors %}
-                      {{ error }}
-                    {% endfor %}
-                  </p>
-                {% endif %}
-              </div>
-
-              <div class="flex-1">
-                <label for="last_name" class="label">{% trans 'Прізвище' %} <span class="text-red-700 text-lg font-medium">*</span></label>
-                <input type="text" name="last_name" id="last_name" required class="input {% if form.last_name.errors %}has_errors{% endif %}" value="{{ form.last_name.value|default_if_none:'' }}" />
-                {% if form.last_name.errors %}
-                  <p class="text-sm text-red-600 mt-1">
-                    {% for error in form.last_name.errors %}
-                      {{ error }}
-                    {% endfor %}
-                  </p>
-                {% endif %}
-              </div>
+            <div>
+              <label for="{{ form.last_name.id_for_label }}" class="label">{% trans 'Прізвище' %} <span
+                  class="text-red-700 text-lg font-medium">*</span></label>
+              {{ form.last_name }}
+              {% if form.last_name.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.last_name.errors.0 }}</p>
+              {% endif %}
             </div>
 
             <div>
-              <label for="surname" class="label">{% trans 'По батькові' %} <span class="text-red-700 text-lg font-medium">*</span></label>
-              <input type="text" name="surname" id="surname" class="input {% if form.surname.errors %}has_errors{% endif %}" value="{{ form.surname.value|default_if_none:'' }}" />
+              <label for="{{ form.surname.id_for_label }}" class="label">{% trans 'По батькові' %} <span
+                  class="text-red-700 text-lg font-medium">*</span></label>
+              {{ form.surname }}
               {% if form.surname.errors %}
-                <p class="text-sm text-red-600 mt-1">
-                  {% for error in form.surname.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </p>
+                <p class="text-sm text-red-600 mt-1">{{ form.surname.errors.0 }}</p>
               {% endif %}
             </div>
 
             <div>
-              <label for="city" class="label">{% trans 'Населений пункт' %} <span class="text-red-700 text-lg font-medium">*</span></label>
-              <input type="text" name="city" id="city" class="input {% if form.city.errors %}has_errors{% endif %}" value="{{ form.city.value|default_if_none:'' }}" />
-              {% if form.city.errors %}
-                <p class="text-sm text-red-600 mt-1">
-                  {% for error in form.city.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </p>
+              <label for="phone_number" class="label">{% trans 'Номер телефону' %} <span
+                  class="text-red-700 text-lg font-medium">*</span></label>
+              {{ form.phone_number }}
+              {% if form.phone_number.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.phone_number.errors.0 }}</p>
               {% endif %}
             </div>
 
-            <div>
-              <label for="warehouse" class="label">{% trans 'Відділення НП' %}<span class="text-red-700 text-lg font-medium">*</span></label>
-              <input type="text" name="warehouse" id="warehouse" class="input {% if form.warehouse.errors %}has_errors{% endif %}" value="{{ form.warehouse.value|default_if_none:'' }}" />
-              {% if form.warehouse.errors %}
-                <p class="text-sm text-red-600 mt-1">
-                  {% for error in form.warehouse.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </p>
-              {% endif %}
-            </div>
-
-            <div>
-              <label for="comment" class="label">{% trans 'Коментар' %}</label>
-              <textarea name="comment" id="comment" rows="3" cols="10" class="input {% if form.comment.errors %}has_errors{% endif %}">{{ form.comment.value|default_if_none:'' }}</textarea>
-              {% if form.comment.errors %}
-                <p class="text-sm text-red-600 mt-1">
-                  {% for error in form.comment.errors %}
-                    {{ error }}
-                  {% endfor %}
-                </p>
+            <div class="col-span-full">
+              <label for="{{ form.email.id_for_label }}" class="label">Email</label>
+              {{ form.email }}
+              {% if form.email.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.email.errors.0 }}</p>
               {% endif %}
             </div>
           </div>
         </div>
 
-        {% comment %}Submit{% endcomment %}
-        <div class="">
-          <button type="submit" class="w-full px-6 py-3 rounded-xl text-white font-medium bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-200 transition-all duration-200 ease-in-out shadow-sm cursor-pointer">
-            {% trans 'Підтвердити замовлення' %}
-          </button>
+
+        {% comment %}Address user info{% endcomment %}
+        <div class="border-t border-gray-400 py-4">
+          <h2 class="text-lg font-medium text-gray-900 mb-4">{% trans 'Інформація про доставку' %}</h2>
+
+          <div id="delivery-method-wrapper" class="grid md:grid-cols-2 gap-3">
+
+            {% for value, label in form.fields.delivery_method.choices %}
+              <label class="inline-flex items-center cursor-pointer">
+                <input
+                    type="radio"
+                    name="{{ form.delivery_method.name }}"
+                    value="{{ value }}"
+                    class="peer hidden"
+                    id="id_{{ value }}"
+                    {% if form.delivery_method.value == value|stringformat:"s" %}checked{% endif %}
+                />
+                <span
+                    class="w-5 h-5 mr-2 rounded-full border border-gray-400
+                       flex items-center justify-center
+                       peer-checked:border-teal-500 peer-checked:bg-teal-500"
+                >
+                  <span class="w-2.5 h-2.5 rounded-full bg-white peer-checked:bg-white"></span>
+                </span>
+                {{ label }}
+              </label>
+            {% endfor %}
+
+            {% if form.delivery_method.errors %}
+              <div class="text-red-600 mt-1 text-sm">{{ form.delivery_method.errors }}</div>
+            {% endif %}
+          </div>
+
+          {% comment %}Select county{% endcomment %}
+          <div>
+            <label for="{{ form.country.id_for_label }}" class="label">{% trans 'Ваш населений пункт' %} <span
+                class="text-red-700 text-lg font-medium">*</span></label>
+
+            <select class="input" name="country" id="id_country">
+            </select>
+
+            {% if form.country.errors %}
+              <div class="text-sm text-red-600 mt-1">{{ form.country.errors }}</div>
+            {% endif %}
+          </div>
+
+
+          <div id="post_offices" class="mb-3" style="display: none;">
+            <div class="flex flex-col">
+              <label for="{{ form.post_office.id_for_label }}" class="label">{% trans 'Оберіть відділення' %}
+                <span class="text-red-700 text-lg font-medium">*</span></label>
+              <select name="post_office" id="id_post_office"
+                      style="max-width: 100%;"></select>
+            </div>
+
+            {% if form.post_office.errors %}
+              <div class="text-sm text-red-600 mt-1">
+                {{ form.post_office.errors }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div id="terminals" class="mb-3" style="display: none;">
+            <div class="flex flex-col">
+              <label for="{{ form.terminal.id_for_label }}" class="label">{% trans 'Оберіть поштомат' %}
+                <span class="text-red-700 text-lg font-medium">*</span></label>
+              <select name="terminal" id="id_terminal"
+                      style="max-width: 100%;"></select>
+            </div>
+
+            {% if form.terminal.errors %}
+              <div class="text-sm text-red-600 mt-1">
+                {{ form.terminal.errors }}
+              </div>
+            {% endif %}
+          </div>
         </div>
+
+
+        <div class="border-t border-gray-400 py-4">
+          <label for="{{ form.comment.id_for_label }}" class="label">{% trans 'Коментар' %}</label>
+          {{ form.comment }}
+          {% if form.comment.errors %}
+            <div class="text-red-600 mt-1 text-sm">{{ form.comment.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <button type="submit"
+                class="w-full px-6 py-3 rounded-xl text-white font-medium bg-teal-600 hover:bg-teal-700
+                  focus:outline-none focus:ring-4 focus:ring-teal-200 transition-all duration-200 ease-in-out shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+          {% trans 'Підтвердити замовлення' %}
+        </button>
+
       </form>
     </div>
 
-    {% comment %}Carts{% endcomment %}
     <div id="cart-items-container" class="border border-gray-300 p-8 rounded-2xl h-min shadow-sm sticky top-20">
       {% include 'cart/includes/included_cart.html' %}
     </div>
   </div>
+{% endblock %}
+
+{% block js %}
+  <script>
+      $(document).ready(function () {
+          let selectedCountryPk = '';
+          let selectedDeliveryMethod = $('input[name="delivery_method"]:checked').val() || null;
+
+          function updateDeliveryBlocks() {
+              if (!selectedCountryPk) {
+                  $('#post_offices').hide();
+                  $('#terminals').hide();
+                  return;
+              }
+
+              if (selectedDeliveryMethod === 'PO') {
+                  $('#post_offices').show();
+                  $('#terminals').hide();
+                  getWarehouses($('#id_post_office'), selectedCountryPk, 'post_offices');
+              } else if (selectedDeliveryMethod === 'TR') {
+                  $('#post_offices').hide();
+                  $('#terminals').show();
+                  getWarehouses($('#id_terminal'), selectedCountryPk, 'terminals');
+              } else {
+                  $('#post_offices').hide();
+                  $('#terminals').hide();
+              }
+          }
+
+          $('#id_country').select2({
+              placeholder: "Оберіть населений пункт",
+              minimumInputLength: 2,
+              allowClear: true,
+              language: {
+                  noResults: () => "Нічого не знайдено",
+                  inputTooShort: () => "Будь ласка, введіть 2 або більше символів"
+              },
+              ajax: {
+                  url: '{% url "order:get_countries" %}',
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (params) {
+                      return {query: params.term};
+                  },
+                  processResults: function (data) {
+                      return {
+                          results: data.map(country => ({
+                              id: country.description,
+                              pk: country.id,
+                              text: country.description,
+                              subtext: country.area_description,
+                          }))
+                      };
+                  },
+                  error: function (jqXHR, textStatus, errorThrown) {
+                      console.error('Select2 AJAX error:', textStatus, errorThrown);
+                  }
+              },
+              templateResult: function (item) {
+                  if (!item.id) return item.text;
+                  return $(`
+                <div>
+                    <div style="font-weight: 500;">${item.text}</div>
+                    <div style="font-size: 14px;">${item.subtext}</div>
+                </div>
+            `);
+              },
+              templateSelection: function (item) {
+                  return item.text || item.id;
+              }
+          })
+              .on('select2:select', function (e) {
+                  selectedCountryPk = e.params.data.pk || '';
+
+                  $('#post_offices').hide();
+                  $('#terminals').hide();
+
+                  $('#id_post_office').val(null).trigger('change');
+                  $('#id_terminal').val(null).trigger('change');
+
+                  updateDeliveryBlocks();
+              })
+              .on('select2:clear', function () {
+                  selectedCountryPk = '';
+
+                  $('#post_offices').hide();
+                  $('#terminals').hide();
+
+                  $('#id_post_office').val(null).trigger('change');
+                  $('#id_terminal').val(null).trigger('change');
+              });
+
+          $('input[name="delivery_method"]').on('change', function () {
+              selectedDeliveryMethod = $(this).val();
+              updateDeliveryBlocks();
+          });
+
+          updateDeliveryBlocks();
+      });
+
+      function getWarehouses($select, countryPk, warehouseType = null) {
+          if ($select.hasClass('select2-hidden-accessible')) {
+              $select.select2('destroy');
+          }
+
+          $select.select2({
+              placeholder: "Знайти відділення",
+              allowClear: true,
+              minimumInputLength: 0,
+              ajax: {
+                  url: '{% url "order:get_warehouses" %}',
+                  type: 'GET',
+                  dataType: 'json',
+                  data: function (params) {
+                      return {
+                          country_pk: countryPk,
+                          query: params.term,
+                          warehouse_type: warehouseType
+                      };
+                  },
+                  processResults: function (data) {
+                      return {
+                          results: data.data.map(warehouse => ({
+                              id: warehouse.description,
+                              text: warehouse.description
+                          }))
+                      };
+                  },
+                  cache: true
+              },
+              language: {
+                  noResults: () => "Нічого не знайдено",
+              },
+              width: '100%'
+          });
+      }
+  </script>
 {% endblock %}

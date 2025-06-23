@@ -25,7 +25,7 @@ urlpatterns = i18n_patterns(
     path("cart/", include("cart.urls", namespace="cart")),
     path("order/", include("order.urls", namespace="order")),
     path("user/", include("user.urls", namespace="user")),
-    path("", include("product.urls", namespace="product")),
+    path("", include("product.urls", namespace="product"))
 )
 
 if settings.DEBUG:

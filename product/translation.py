@@ -1,6 +1,7 @@
 from modeltranslation.translator import TranslationOptions, register
 
-from product.models import Product, Attribute, AttributeValue, ProductCharacteristics, Category
+from product.models import (Attribute, AttributeValue, Category, Product,
+                            ProductCharacteristics)
 
 
 @register(Product)
@@ -21,6 +22,7 @@ class AttributeValueOptions(TranslationOptions):
 @register(ProductCharacteristics)
 class ProductCharacteristicsOptions(TranslationOptions):
     fields = ["name", "value"]
+
 
 @register(Category)
 class CategoryOptions(TranslationOptions):
