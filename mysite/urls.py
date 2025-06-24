@@ -20,12 +20,16 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-urlpatterns = i18n_patterns(
+urlpatterns = [
     path('admin/', admin.site.urls),
-    path("cart/", include("cart.urls", namespace="cart")),
-    path("order/", include("order.urls", namespace="order")),
-    path("user/", include("user.urls", namespace="user")),
-    path("", include("product.urls", namespace="product"))
+    path('i18n/', include('django.conf.urls.i18n')),
+]
+
+urlpatterns += i18n_patterns(
+    path('cart/', include('cart.urls', namespace='cart')),
+    path('order/', include('order.urls', namespace='order')),
+    path('user/', include('user.urls', namespace='user')),
+    path('', include('product.urls', namespace='product')),
 )
 
 if settings.DEBUG:

@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "product.middleware.ForceDefaultLanguageMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -114,8 +115,12 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "uk"
 
 LANGUAGES = [
-    ("ru", _("Russia")),
-    ("uk", _("Ukraine")),
+    ("uk", _("Український")),
+    ("ru", _("Русский")),
+]
+# Locale
+LOCALE_PATHS = [
+    BASE_DIR / "locale"
 ]
 
 TIME_ZONE = "Europe/Kiev"
@@ -141,8 +146,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Users
 AUTH_USER_MODEL = "user.User"
 LOGIN_URL = "user:login"
-
-# Locale
-LOCALE_PATHS = [
-    BASE_DIR / "locale"
-]
