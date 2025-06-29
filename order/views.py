@@ -36,10 +36,18 @@ class OrderCreateView(SuccessMessageMixin, generic.CreateView):
         cd = form.cleaned_data
 
         delivery_method = cd.get("delivery_method")
-        if delivery_method == "TR":
-            order.terminal = cd.get("terminal")
-        else:
-            order.post_office = cd.get("post_office")
+        if delivery_method == "NP_TR":
+            order.np_country = cd.get("np_country")
+            order.np_terminal = cd.get("np_terminal")
+        elif delivery_method == "NP_WH":
+            order.np_country = cd.get("np_country")
+            order.np_warehouse = cd.get("np_warehouse")
+        elif delivery_method == "UKR_WH":
+            order.ukr_address = cd.get("ukr_address")
+            order.ukr_post_code = cd.get("ukr_post_code")
+        elif delivery_method == "MEEST_WH":
+            order.meest_country = cd.get("meest_country")
+            order.meest_warehouse = cd.get("meest_warehouse")
 
         if self.request.user.is_authenticated:
             order.user = self.request.user
