@@ -25,6 +25,7 @@ urlpatterns = i18n_patterns(
     path("cart/", include("cart.urls", namespace="cart")),
     path("order/", include("order.urls", namespace="order")),
     path("user/", include("user.urls", namespace="user")),
+    path("api/", include("api.urls", namespace="api")),
     path("", include("product.urls", namespace="product"))
 )
 
