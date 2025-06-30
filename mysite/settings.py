@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     "cart",
     "order",
     "user",
+    "api",
 
     "mptt",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -146,3 +148,10 @@ LOGIN_URL = "user:login"
 LOCALE_PATHS = [
     BASE_DIR / "locale"
 ]
+
+# Django REST framework
+REST_FRAMEWORK = {
+    'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20,
+}
