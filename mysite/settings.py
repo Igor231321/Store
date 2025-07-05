@@ -44,6 +44,8 @@ INSTALLED_APPS = [
 
     "mptt",
     "rest_framework",
+
+    "rest_framework.authtoken"
 ]
 
 MIDDLEWARE = [
@@ -154,4 +156,8 @@ REST_FRAMEWORK = {
     'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 20,
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
 }

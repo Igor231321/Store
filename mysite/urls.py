@@ -19,6 +19,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework.authtoken import views
 
 urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
@@ -26,6 +27,7 @@ urlpatterns = i18n_patterns(
     path("order/", include("order.urls", namespace="order")),
     path("user/", include("user.urls", namespace="user")),
     path("api/", include("api.urls", namespace="api")),
+    path('api-token-auth/', views.obtain_auth_token),
     path("", include("product.urls", namespace="product"))
 )
 
