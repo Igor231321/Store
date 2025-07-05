@@ -237,6 +237,8 @@
           let selectedCountryPk = '';
           let selectedDeliveryMethod = $('input[name="delivery_method"]:checked').val() || null;
 
+          localStorage.setItem('tab_active', 'true');
+
           function updateDeliveryBlocks() {
               $('#post_offices, #terminals, #meest_delivery, #ukr_delivery, #np_countries').hide();
 
@@ -381,5 +383,18 @@
               });
           }
       }
+
+      window.addEventListener('beforeunload', function () {
+          const navEntries = performance.getEntriesByType("navigation");
+          const isReload = navEntries.length && navEntries[0].type === "reload";
+
+          if (!isReload) {
+              localStorage.removeItem('selected_np_country_id');
+              localStorage.removeItem('selected_np_country_text');
+              localStorage.removeItem('selected_np_warehouse');
+              localStorage.removeItem('selected_np_terminal');
+              localStorage.removeItem('tab_active');
+          }
+      });
   </script>
 {% endblock %}

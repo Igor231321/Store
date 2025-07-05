@@ -35,6 +35,14 @@ class OrderCreateView(SuccessMessageMixin, generic.CreateView):
         order = form.save(commit=False)
         cd = form.cleaned_data
 
+        order.np_country = None
+        order.np_terminal = None
+        order.np_warehouse = None
+        order.ukr_address = None
+        order.ukr_post_code = None
+        order.meest_country = None
+        order.meest_warehouse = None
+
         delivery_method = cd.get("delivery_method")
         if delivery_method == "NP_TR":
             order.np_country = cd.get("np_country")
