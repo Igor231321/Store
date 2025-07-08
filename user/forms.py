@@ -12,10 +12,10 @@ class UserLoginForm(AuthenticationForm):
 class UserRegisterForm(UserCreationForm):
     class Meta:
         model = get_user_model()
-        fields = ["email", "first_name", "last_name", "surname", "password1", "password2"]
+        fields = ["email", "first_name", "last_name", "surname", "phone_number", "password1", "password2"]
 
 
 class UserAccountForm(UserChangeForm):
     class Meta:
         model = get_user_model()
-        fields = ["email", "first_name", "last_name", "surname"]
+        fields = ["email", "first_name", "last_name", "surname", "phone_number"]

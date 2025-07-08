@@ -4,7 +4,7 @@
 <div class="grid grid-cols-2 md:grid-cols-1 gap-2 lg:gap-4 text-sm font-medium text-gray-700">
   <a href="{% url 'user:account' %}"
     class="text-center md:text-left px-2 md:px-4 py-2 rounded-xl transition
-     {% if request.path == '/user/account/' %}
+     {% if request.resolver_match.url_name == "account" %}
       bg-teal-600 text-white font-medium
     {% else %}
        bg-gray-100 hover:bg-gray-200
@@ -14,7 +14,7 @@
 
   <a href="{% url 'user:user_orders' %}"
     class="text-center md:text-left px-2 md:px-4 py-2 rounded-xl transition
-     {% if request.path == '/user/user_orders/' %}
+     {% if request.resolver_match.url_name == 'user_orders' %}
        bg-teal-600 text-white font-medium
     {% else %}
        bg-gray-100 hover:bg-gray-200

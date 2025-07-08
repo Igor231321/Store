@@ -77,7 +77,7 @@ class Order(models.Model):
     status = models.CharField(
         "Статус", choices=Status, max_length=2, default=Status.PROCESSING
     )
-    phone_number = models.CharField("Номер телефону", max_length=15)
+    phone_number = models.CharField("Номер телефону", max_length=25)
     first_name = models.CharField("Ім'я", max_length=30)
     last_name = models.CharField("Прізвище", max_length=30)
     surname = models.CharField("По батькові", max_length=30)

@@ -16,7 +16,7 @@ class User(AbstractUser):
     warehouse = models.CharField("Відділення НП", max_length=255, blank=True, null=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["phone_number"]
 
     objects = UserManager()
 

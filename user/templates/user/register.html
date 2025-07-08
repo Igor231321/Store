@@ -63,6 +63,15 @@
           {% endif %}
         </div>
 
+        <div class="col-span-full">
+          <label for="id_phone_number" class="label">{% trans 'Номер телефону' %}</label>
+          <input type="text" class="input {% if form.phone_number.errors %}has_errors{% endif %}" name="phone_number"
+                 id="id_phone_number" value="{% if form.phone_number.value %}{{ form.phone_number.value }}{% endif %}"/>
+          {% if form.phone_number.errors %}
+            <p class="text-sm text-red-600 mt-1">{{ form.phone_number.errors.0 }}</p>
+          {% endif %}
+        </div>
+
         <div>
           <label for="id_password1" class="label">Пароль</label>
           <input type="password" name="password1" id="id_password1"
