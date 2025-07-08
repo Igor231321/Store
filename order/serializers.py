@@ -1,30 +1,11 @@
 from rest_framework import serializers
 
 from order.models import Order, OrderItem
-from product.models import Product, ProductVariation
-
-
-class ProductSerializer(serializers.ModelSerializer):
-    category = serializers.SlugRelatedField(slug_field="name", read_only=True)
-    brand = serializers.SlugRelatedField(slug_field="name", read_only=True)
-    currency = serializers.SlugRelatedField(slug_field="name", read_only=True)
-
-    class Meta:
-        model = Product
-        fields = ["name", "category", "brand", "currency", "discount"]
-
-
-class ProductVariationSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True)
-    attribute_value = serializers.SlugRelatedField(slug_field="value", read_only=True)
-
-    class Meta:
-        model = ProductVariation
-        fields = ["id", "product", "attribute_value", "article", "get_price", "get_price_with_discount"]
+from product.serializers import ProductVariationDetailSerializer
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    product_variation = ProductVariationSerializer(read_only=True)
+    product_variation = ProductVariationDetailSerializer(read_only=True)
 
     class Meta:
         model = OrderItem
