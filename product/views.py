@@ -2,12 +2,15 @@ import csv
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView, ListView
+from django.views import View
+from django.views.generic import DetailView, FormView, ListView, TemplateView
 
 from product.forms import UploadDataForm
 from product.mixins import ProductOrderByMixin
 from product.models import Category, Product, ProductVariation
+from product.services.product_search import product_search
 
 
 def home(request):
@@ -100,4 +103,26 @@ class CategoryDetailView(ProductOrderByMixin, DetailView):
 
         context["products"] = self.filters(products, order_by)
         context["subcategories"] = category.get_children()
+        return context
+
+
+class ProductSearch(View):
+    def get(self, request, *args, **kwargs):
+        q = self.request.GET.get("q", "")
+        products = product_search(query=q)
+
+        context = {"products": products}
+        html = render_to_string("product/includes/search_results.html", context)
+        return JsonResponse({"html": html})
+
+
+class ProductSearchTemplateView(TemplateView):
+    template_name = "product/category_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = self.request.GET.get("q", "")
+        context["products"] = product_search(query=q)
+
         return context

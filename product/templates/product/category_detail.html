@@ -5,18 +5,20 @@
 {% load i18n %}
 
 {% block title %}
-  {% trans "Категорія" %} - {{ category.name }}
+  {% if request.GET.q %}{% trans "Результат пошуку за запитом" %}
+    "{{ request.GET.q }}"{% else %}{% trans "Категорія" %} - {{ category.name }}{% endif %}
 {% endblock %}
 
 {% block content %}
-  <div class="flex items-baseline justify-between border-b border-gray-300 pb-3 mb-5">
-    <h1 class="text-4xl font-medium tracking-tight text-slate-600">{{ category.name }}</h1>
+  <div class="flex flex-col sm:flex-row gap-3 items-baseline justify-between border-b border-gray-300 pb-3 mb-5">
+    <h1 class="text-4xl font-medium tracking-tight text-slate-600">
+      {% if request.GET.q %}{% trans "Результат пошуку за запитом" %} "{{ request.GET.q }}"
+      {% else %}{{ category.name }}{% endif %}</h1>
 
     {% if products %}
-      <div class="flex items-center">
-        <div class="relative">
-          <button id="dropdownButton"
-                  class="font-medium flex gap-1 border border-transparent px-3 py-2 transition-colors rounded-xl cursor-pointer focus:border-gray-300 hover:border-gray-300">
+      <div class="relative">
+        <button id="dropdownButton"
+                class="font-medium flex gap-1 border border-transparent px-3 py-2 transition-colors rounded-xl cursor-pointer focus:border-gray-300 hover:border-gray-300">
             <span>
               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
                    fill="#000000">
@@ -24,56 +26,47 @@
                     d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/>
               </svg>
             </span>
-            {% trans "Сортувати" %}
-          </button>
+          {% trans "Сортувати" %}
+        </button>
 
-          <ul class="absolute hidden border border-gray-300 w-48 right-0 mt-1 bg-white shadow-xl rounded-lg overflow-y-auto max-h-60 transition-all duration-300 opacity-0 transform scale-95"
-              id="dropdownMenu">
-            <li>
-              <a href="?{% change_params order_by='default' %}"
-                 class="block px-4 py-2 text-sm text-gray-800 font-semibold
+        <ul class="absolute hidden border border-gray-300 w-48 right-0 mt-1 bg-white shadow-xl rounded-lg overflow-y-auto max-h-60 transition-all duration-300 opacity-0 transform scale-95"
+            id="dropdownMenu">
+          <li>
+            <a href="?{% change_params order_by='default' %}"
+               class="block px-4 py-2 text-sm text-gray-800 font-semibold
                 {% if request.GET.order_by == 'default' or not request.GET.order_by %}
                   bg-teal-600 text-white
                 {% else %}
                   hover:bg-gray-200
                 {% endif %}">
-                {% trans "За популярністю" %}
-              </a>
-            </li>
-            <li>
-              <a href="?{% change_params order_by='-min_price' %}"
-                 class="block px-4 py-2 text-sm text-gray-800 font-semibold
+              {% trans "За популярністю" %}
+            </a>
+          </li>
+          <li>
+            <a href="?{% change_params order_by='-min_price' %}"
+               class="block px-4 py-2 text-sm text-gray-800 font-semibold
                 {% if request.GET.order_by == '-min_price' %}
                   bg-teal-600 text-white
                 {% else %}
                   hover:bg-gray-200
                 {% endif %}">
-                {% trans "Від більшої цени" %}
-              </a>
-            </li>
-            <li>
-              <a href="?{% change_params order_by='min_price' %}"
-                 class="block px-4 py-2 text-sm text-gray-800 font-semibold
+              {% trans "Від більшої цени" %}
+            </a>
+          </li>
+          <li>
+            <a href="?{% change_params order_by='min_price' %}"
+               class="block px-4 py-2 text-sm text-gray-800 font-semibold
                 {% if request.GET.order_by == 'min_price' %}
                   bg-teal-600 text-white
                 {% else %}
                   hover:bg-gray-200
                 {% endif %}">
-                {% trans "Від меншої цени" %}
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <button type="button" class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden">
-          <span class="sr-only">Filters</span>
-          <svg class="size-5" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" data-slot="icon">
-            <path fill-rule="evenodd"
-                  d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 0 1 .628.74v2.288a2.25 2.25 0 0 1-.659 1.59l-4.682 4.683a2.25 2.25 0 0 0-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 0 1 8 18.25v-5.757a2.25 2.25 0 0 0-.659-1.591L2.659 6.22A2.25 2.25 0 0 1 2 4.629V2.34a.75.75 0 0 1 .628-.74Z"
-                  clip-rule="evenodd"/>
-          </svg>
-        </button>
+              {% trans "Від меншої цени" %}
+            </a>
+          </li>
+        </ul>
       </div>
+
     {% endif %}
   </div>
 

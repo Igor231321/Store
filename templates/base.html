@@ -132,15 +132,25 @@
 {% if not order %}
   <!-- Main modal -->
   <div id="search" tabindex="-1"
-       class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-    <div class="relative p-4 w-full max-w-2xl max-h-full">
+       class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full h-full md:h-auto">
       <!-- Modal content -->
-      <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+      <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700 h-full">
         <!-- Modal header -->
         <div
             class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200 gap-4">
+          <form action="{% url 'product:search_list' %}" method="get" class="w-full">
+            <div class="relative w-full">
+              <input type="text" class="input" name="q" placeholder="Пошук" id="search-input">
+              <button class="absolute right-2 top-3">
+                <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="27px" fill="#000">
+                  <path
+                      d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+                </svg>
+              </button>
+            </div>
 
-          <input type="text" class="input" placeholder="Пошук">
+          </form>
           <button type="button"
                   class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                   data-modal-hide="search">
@@ -152,10 +162,7 @@
           </button>
         </div>
         <!-- Modal body -->
-        <div class="p-4 md:p-5 space-y-4">
-          <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Amet aspernatur debitis dicta earum ipsa nesciunt perferendis quae quo quod repellat repudiandae sunt, temporibus ut velit voluptate. Ad deserunt dolor dolore dolorem ea eius illum labore, molestiae mollitia officiis porro sequi voluptate! Asperiores distinctio dolor illo iste nostrum reiciendis similique tempora?
-          </p>
+        <div class="p-4 md:p-5 space-y-4" id="results">
         </div>
       </div>
     </div>
@@ -209,6 +216,35 @@
         if (input) {
             IMask(input, {mask: '+{380} 00 000 00 00'});
         }
+    });
+</script>
+
+<script>
+    let timer = null;
+
+    $('#search-input').on('input', function () {
+        const query = $(this).val();
+
+        clearTimeout(timer);
+
+        timer = setTimeout(function () {
+            if (query.length < 2) {
+                $('#results').empty();
+                return;
+            }
+
+            $.ajax({
+                url: "{% url 'product:search_data' %}",
+                method: 'GET',
+                data: {q: query},
+                success: function (data) {
+                    $('#results').html(data.html);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Помилка:', error);
+                }
+            });
+        }, 300);
     });
 </script>
 

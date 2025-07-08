@@ -58,6 +58,10 @@ body {
     cursor: pointer;
 }
 
+.input#search-input {
+    padding-right: 40px;
+}
+
 .input:hover {
     background-color: #f9fafb;
     border-color: #0d9488;

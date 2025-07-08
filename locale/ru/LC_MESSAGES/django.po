@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-29 14:21+0300\n"
+"POT-Creation-Date: 2025-07-08 21:51+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,51 +45,51 @@ msgstr "Ваша корзина пуста"
 msgid "Повернутись до покупок"
 msgstr "Вернуться к покупкам"
 
-#: .\mysite\settings.py:117
+#: .\mysite\settings.py:121
 msgid "Russia"
 msgstr ""
 
-#: .\mysite\settings.py:118
+#: .\mysite\settings.py:122
 msgid "Ukraine"
 msgstr ""
 
-#: .\order\models.py:58
+#: .\order\models.py:59
 msgid "Обробляється"
 msgstr "Обрабатывается"
 
-#: .\order\models.py:59
+#: .\order\models.py:60
 msgid "Отримано"
 msgstr "Получено"
 
-#: .\order\models.py:60
+#: .\order\models.py:61
 msgid "Прийнято"
 msgstr "Принято"
 
-#: .\order\models.py:61
+#: .\order\models.py:62
 msgid "Скасовано"
 msgstr "Отменено"
 
-#: .\order\models.py:62
+#: .\order\models.py:63
 msgid "Відправлено"
 msgstr "Отправлено"
 
-#: .\order\models.py:63
+#: .\order\models.py:64
 msgid "В дорозі"
 msgstr "В пути"
 
-#: .\order\models.py:66
+#: .\order\models.py:67
 msgid "Відділення Нової пошти"
 msgstr "Отделение «Новая почта»"
 
-#: .\order\models.py:67
+#: .\order\models.py:68
 msgid "Поштомат Нової пошти"
 msgstr "Почтомат «Новая почта»"
 
-#: .\order\models.py:68
+#: .\order\models.py:69
 msgid "Відділення Укрпошти"
 msgstr "Отделение Укрпочты"
 
-#: .\order\models.py:69
+#: .\order\models.py:70
 msgid "Відділення Meest"
 msgstr "Отделение Meest"
 
@@ -115,7 +115,8 @@ msgstr "Фамилия"
 msgid "По батькові"
 msgstr "Отчество"
 
-#: .\order\templates\order\create.html:52
+#: .\order\templates\order\create.html:52 .\user\templates\user\account.html:57
+#: .\user\templates\user\register.html:67
 msgid "Номер телефону"
 msgstr "Номер телефона"
 
@@ -215,27 +216,31 @@ msgid "Кількість"
 msgstr "Количество"
 
 #: .\product\templates\product\categories.html:6
-#: .\product\templates\product\categories.html:10 .\templates\base.html:51
+#: .\product\templates\product\categories.html:10 .\templates\base.html:49
 msgid "Категорії"
 msgstr "Категории"
 
 #: .\product\templates\product\category_detail.html:8
+msgid "Результат пошуку за запитом"
+msgstr "Результат поиска по запросу"
+
+#: .\product\templates\product\category_detail.html:9
 msgid "Категорія"
 msgstr "Категория"
 
-#: .\product\templates\product\category_detail.html:27
+#: .\product\templates\product\category_detail.html:28
 msgid "Сортувати"
 msgstr "Сортировать"
 
-#: .\product\templates\product\category_detail.html:40
+#: .\product\templates\product\category_detail.html:41
 msgid "За популярністю"
 msgstr "По популярности"
 
-#: .\product\templates\product\category_detail.html:51
+#: .\product\templates\product\category_detail.html:52
 msgid "Від більшої цени"
 msgstr "От высокой цены"
 
-#: .\product\templates\product\category_detail.html:62
+#: .\product\templates\product\category_detail.html:63
 msgid "Від меншої цени"
 msgstr "От низкой цены"
 
@@ -244,33 +249,33 @@ msgstr "От низкой цены"
 msgid "Виробник"
 msgstr "Производитель"
 
-#: .\product\templates\product\detail.html:139
+#: .\product\templates\product\detail.html:142
 #: .\product\templates\product\includes\variation_detail.html:86
 msgid "Додати до кошику"
 msgstr "Добавить в корзину"
 
-#: .\product\templates\product\detail.html:146
+#: .\product\templates\product\detail.html:148
 #: .\product\templates\product\includes\variation_detail.html:92
 msgid "Характеристики"
 msgstr "Характеристики"
 
-#: .\product\templates\product\detail.html:158
+#: .\product\templates\product\detail.html:160
 msgid "Схожі товари"
 msgstr "Похожие товары"
 
-#: .\product\templates\product\detail.html:194
+#: .\product\templates\product\detail.html:196
 msgid "Варіацій"
 msgstr "Вариаций"
 
-#: .\templates\base.html:57
+#: .\templates\base.html:55
 msgid "Админ"
 msgstr "Админ"
 
-#: .\templates\base.html:62
+#: .\templates\base.html:60
 msgid "Додати товар"
 msgstr "Добавить товар"
 
-#: .\templates\base.html:126
+#: .\templates\base.html:175
 msgid "Кошик"
 msgstr "Корзина"
 
@@ -282,7 +287,7 @@ msgstr "Мой аккаунт"
 msgid "Редагування акаунта"
 msgstr "Редактирование аккаунта"
 
-#: .\user\templates\user\account.html:58
+#: .\user\templates\user\account.html:67
 msgid "Зберегти зміни"
 msgstr "Сохранить изменения"
 
@@ -302,7 +307,7 @@ msgstr "Выйти"
 msgid "Увійти в акаунт"
 msgstr "Войти в аккаунт"
 
-#: .\user\templates\user\login.html:49 .\user\templates\user\register.html:102
+#: .\user\templates\user\login.html:49 .\user\templates\user\register.html:111
 msgid "Увійти"
 msgstr "Войти"
 
@@ -310,7 +315,7 @@ msgstr "Войти"
 msgid "Не маєте акаунта?"
 msgstr "Нет аккаунта?"
 
-#: .\user\templates\user\login.html:56 .\user\templates\user\register.html:96
+#: .\user\templates\user\login.html:56 .\user\templates\user\register.html:105
 msgid "Зареєструватися"
 msgstr "Зарегистрироваться"
 
@@ -326,11 +331,11 @@ msgstr "Создать аккаунт"
 msgid "адреса"
 msgstr "адрес"
 
-#: .\user\templates\user\register.html:81
+#: .\user\templates\user\register.html:90
 msgid "Підтвердіть пароль"
 msgstr "Подтвердите пароль"
 
-#: .\user\templates\user\register.html:101
+#: .\user\templates\user\register.html:110
 msgid "Вже маєте акаунт?"
 msgstr "Уже есть аккаунт?"
 
