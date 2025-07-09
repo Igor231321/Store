@@ -2,13 +2,16 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views import generic
 
 from order.models import Order
-from user.forms import UserAccountForm, UserLoginForm, UserRegisterForm
+from user.forms import (UserAccountForm, UserLoginForm, UserPasswordChangeForm,
+                        UserRegisterForm)
 from user.utils import transfer_session_cart_to_user
 
 
@@ -24,7 +27,7 @@ def login_view(request):
             if user:
                 login(request, user)
                 messages.success(
-                    request, "Ви успішно увійшли до свого облікового запису"
+                    request, _("Ви успішно увійшли до свого облікового запису")
                 )
                 return redirect("product:сategories")
     else:
@@ -38,7 +41,7 @@ def login_view(request):
 @login_required
 def logout_view(request):
     logout(request)
-    messages.success(request, "Ви успішно вийшли з облікового запису")
+    messages.success(request, _("Ви успішно вийшли з облікового запису"))
     return redirect("product:сategories")
 
 
@@ -57,7 +60,7 @@ class UserRegisterView(generic.CreateView):
         transfer_session_cart_to_user(self.request, self.object)
 
         login(self.request, self.object)
-        messages.success(self.request, "Ви успішно зареєструвались і увійшли в акаунт.")
+        messages.success(self.request, _("Ви успішно зареєструвались і увійшли в акаунт."))
         return redirect(self.get_success_url())
 
 
@@ -65,7 +68,7 @@ class UserAccountView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateVie
     template_name = "user/account.html"
     form_class = UserAccountForm
     success_url = reverse_lazy("user:account")
-    success_message = "Акаунт успішно змінено"
+    success_message = _("Акаунт успішно змінено")
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -76,6 +79,7 @@ class UserAccountView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateVie
         user.save()
         return super().form_valid(form)
 
+
 class UserOrders(LoginRequiredMixin, generic.ListView):
     model = Order
     template_name = "user/user_orders.html"
@@ -83,3 +87,10 @@ class UserOrders(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
+
+
+class UserPasswordChangeView(SuccessMessageMixin, PasswordChangeView):
+    form_class = UserPasswordChangeForm
+    success_url = reverse_lazy("user:account")
+    template_name = "user/password_change_form.html"
+    success_message = _("Пароль успішно змінено")

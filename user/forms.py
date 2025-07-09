@@ -1,7 +1,8 @@
 from django import forms
-from django.contrib.auth import get_user_model, authenticate
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django.utils.translation import gettext as _
+from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.forms import (PasswordChangeForm, UserChangeForm,
+                                       UserCreationForm)
+from django.utils.translation import gettext_lazy as _
 
 from user.services import normalize_phone_number
 
@@ -13,14 +14,12 @@ class UserLoginForm(forms.Form):
     def clean_identifier(self):
         data = self.cleaned_data["identifier"]
 
-        # Если email (содержит @) — возвращаем как есть
         if "@" in data:
             return data
 
-        # Иначе — пробуем нормализовать как номер
         phone_number = normalize_phone_number(data)
         if not phone_number:
-            raise forms.ValidationError("Невірний номер телефону")
+            raise forms.ValidationError(_("Невірний номер телефону"))
 
         return phone_number
 
@@ -49,3 +48,12 @@ class UserAccountForm(UserChangeForm):
     class Meta:
         model = get_user_model()
         fields = ["email", "first_name", "last_name", "surname", "phone_number"]
+
+
+class UserPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(label=_("Старий пароль"),
+                                   widget=forms.PasswordInput(attrs={'class': "input"}))
+    new_password1 = forms.CharField(label=_("Новий пароль"),
+                                    widget=forms.PasswordInput(attrs={'class': "input"}))
+    new_password2 = forms.CharField(label=_("Новий пароль (підтвердження)"),
+                                    widget=forms.PasswordInput(attrs={'class': "input"}))

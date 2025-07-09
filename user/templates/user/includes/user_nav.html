@@ -22,5 +22,15 @@
     {% trans "Історія замовлень" %}
   </a>
 
+  <a href="{% url 'user:password_change' %}"
+    class="text-center md:text-left px-2 md:px-4 py-2 rounded-xl transition
+     {% if request.resolver_match.url_name == 'password_change' %}
+       bg-teal-600 text-white font-medium
+    {% else %}
+       bg-gray-100 hover:bg-gray-200
+    {% endif %}">
+    {% trans "Змінити пароль" %}
+  </a>
+
   <a href="{% url 'user:logout' %}" class="text-center md:text-left px-2 md:px-4 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 transition">{% trans 'Вийти' %}</a>
 </div>

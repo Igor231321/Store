@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views import generic
 
 from cart.utils import get_user_carts
@@ -19,7 +20,7 @@ class OrderCreateView(SuccessMessageMixin, generic.CreateView):
     template_name = "order/create.html"
     form_class = OrderCreateForm
     success_url = reverse_lazy("product:сategories")
-    success_message = "Ваше замовлення успішно створено"
+    success_message = _("Ваше замовлення успішно створено")
 
     def get_initial(self):
         initial = super().get_initial()

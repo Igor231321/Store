@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-08 21:51+0300\n"
+"POT-Creation-Date: 2025-07-09 11:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,12 +46,40 @@ msgid "Повернутись до покупок"
 msgstr "Вернуться к покупкам"
 
 #: .\mysite\settings.py:121
-msgid "Russia"
+msgid "Ukraine"
 msgstr ""
 
 #: .\mysite\settings.py:122
-msgid "Ukraine"
+msgid "Russia"
 msgstr ""
+
+#: .\order\forms.py:46
+msgid "Будь ласка, оберіть населений пункт"
+msgstr "Пожалуйста, выберите населённый пункт"
+
+#: .\order\forms.py:49
+msgid "Будь ласка, оберіть відділення"
+msgstr "Пожалуйста, выберите отделение"
+
+#: .\order\forms.py:51
+msgid "Будь ласка, оберіть поштомат"
+msgstr "Пожалуйста, выберите почтомат"
+
+#: .\order\forms.py:54
+msgid "Будь ласка, введіть адресу Укрпошти"
+msgstr "Пожалуйста, введите адрес Укрпочты"
+
+#: .\order\forms.py:56
+msgid "Будь ласка, введіть поштовий індекс"
+msgstr "Пожалуйста, введите почтовый индекс"
+
+#: .\order\forms.py:59
+msgid "Будь ласка, введіть ваше місто"
+msgstr "Пожалуйста, введите ваш город"
+
+#: .\order\forms.py:61
+msgid "Будь ласка, введіть номер та адресу відділення"
+msgstr "Пожалуйста, введите номер и адрес отделения"
 
 #: .\order\models.py:59
 msgid "Обробляється"
@@ -215,12 +243,17 @@ msgstr "Товары в заказе"
 msgid "Кількість"
 msgstr "Количество"
 
+#: .\order\views.py:23
+msgid "Ваше замовлення успішно створено"
+msgstr "Ваш заказ успешно создан"
+
 #: .\product\templates\product\categories.html:6
 #: .\product\templates\product\categories.html:10 .\templates\base.html:49
 msgid "Категорії"
 msgstr "Категории"
 
 #: .\product\templates\product\category_detail.html:8
+#: .\product\templates\product\category_detail.html:15
 msgid "Результат пошуку за запитом"
 msgstr "Результат поиска по запросу"
 
@@ -228,19 +261,19 @@ msgstr "Результат поиска по запросу"
 msgid "Категорія"
 msgstr "Категория"
 
-#: .\product\templates\product\category_detail.html:28
+#: .\product\templates\product\category_detail.html:29
 msgid "Сортувати"
 msgstr "Сортировать"
 
-#: .\product\templates\product\category_detail.html:41
+#: .\product\templates\product\category_detail.html:42
 msgid "За популярністю"
 msgstr "По популярности"
 
-#: .\product\templates\product\category_detail.html:52
+#: .\product\templates\product\category_detail.html:53
 msgid "Від більшої цени"
 msgstr "От высокой цены"
 
-#: .\product\templates\product\category_detail.html:63
+#: .\product\templates\product\category_detail.html:64
 msgid "Від меншої цени"
 msgstr "От низкой цены"
 
@@ -279,6 +312,26 @@ msgstr "Добавить товар"
 msgid "Кошик"
 msgstr "Корзина"
 
+#: .\user\forms.py:22
+msgid "Невірний номер телефону"
+msgstr "Неверный номер телефона"
+
+#: .\user\forms.py:36
+msgid "Користувача з такими даними не знайдено або пароль невірний."
+msgstr "Пользователь с такими данными не найден или пароль неверный."
+
+#: .\user\forms.py:54
+msgid "Старий пароль"
+msgstr "Старый пароль"
+
+#: .\user\forms.py:56
+msgid "Новий пароль"
+msgstr "Новый пароль"
+
+#: .\user\forms.py:58
+msgid "Новий пароль (підтвердження)"
+msgstr "Новый пароль (подтверждение)"
+
 #: .\user\templates\user\account.html:5
 msgid "Мій акаунт"
 msgstr "Мой аккаунт"
@@ -288,6 +341,7 @@ msgid "Редагування акаунта"
 msgstr "Редактирование аккаунта"
 
 #: .\user\templates\user\account.html:67
+#: .\user\templates\user\password_change_form.html:33
 msgid "Зберегти зміни"
 msgstr "Сохранить изменения"
 
@@ -299,7 +353,11 @@ msgstr "Личные данные"
 msgid "Історія замовлень"
 msgstr "История заказов"
 
-#: .\user\templates\user\includes\user_nav.html:25
+#: .\user\templates\user\includes\user_nav.html:32
+msgid "Змінити пароль"
+msgstr "Сменить пароль"
+
+#: .\user\templates\user\includes\user_nav.html:35
 msgid "Вийти"
 msgstr "Выйти"
 
@@ -307,17 +365,26 @@ msgstr "Выйти"
 msgid "Увійти в акаунт"
 msgstr "Войти в аккаунт"
 
-#: .\user\templates\user\login.html:49 .\user\templates\user\register.html:111
+#: .\user\templates\user\login.html:16
+msgid "Email або номер телефону"
+msgstr "Email или номер телефона"
+
+#: .\user\templates\user\login.html:44 .\user\templates\user\register.html:111
 msgid "Увійти"
 msgstr "Войти"
 
-#: .\user\templates\user\login.html:53
+#: .\user\templates\user\login.html:48
 msgid "Не маєте акаунта?"
 msgstr "Нет аккаунта?"
 
-#: .\user\templates\user\login.html:56 .\user\templates\user\register.html:105
+#: .\user\templates\user\login.html:51 .\user\templates\user\register.html:105
 msgid "Зареєструватися"
 msgstr "Зарегистрироваться"
+
+#: .\user\templates\user\password_change_form.html:5
+#: .\user\templates\user\password_change_form.html:15
+msgid "Зміна паролю"
+msgstr "Смена пароля"
 
 #: .\user\templates\user\register.html:5
 msgid "Реєстрація"
@@ -347,6 +414,26 @@ msgstr "Мои заказы"
 #: .\user\templates\user\user_orders.html:44
 msgid "У вас ще немає замовлень"
 msgstr "У вас ещё нет заказов"
+
+#: .\user\views.py:30
+msgid "Ви успішно увійшли до свого облікового запису"
+msgstr "Вы успешно вошли в свой аккаунт"
+
+#: .\user\views.py:44
+msgid "Ви успішно вийшли з облікового запису"
+msgstr "Вы успешно вышли из аккаунта"
+
+#: .\user\views.py:63
+msgid "Ви успішно зареєструвались і увійшли в акаунт."
+msgstr "Вы успешно зарегистрировались и вошли в аккаунт."
+
+#: .\user\views.py:71
+msgid "Акаунт успішно змінено"
+msgstr "Аккаунт успешно обновлён"
+
+#: .\user\views.py:96
+msgid "Пароль успішно змінено"
+msgstr "Пароль успешно изменён"
 
 #: .\venv\Lib\site-packages\django\contrib\messages\apps.py:16
 msgid "Messages"

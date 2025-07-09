@@ -118,8 +118,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "uk"
 
 LANGUAGES = [
-    ("ru", _("Russia")),
     ("uk", _("Ukraine")),
+    ("ru", _("Russia")),
 ]
 
 TIME_ZONE = "Europe/Kiev"

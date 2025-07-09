@@ -1,6 +1,7 @@
 import re
-from phonenumbers.phonenumberutil import NumberParseException
+
 import phonenumbers
+from phonenumbers.phonenumberutil import NumberParseException
 
 
 def normalize_phone_number(string):
