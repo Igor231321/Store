@@ -17,7 +17,7 @@ def login_view(request):
         form = UserLoginForm(data=request.POST)
         if form.is_valid():
             cd = form.cleaned_data
-            user = authenticate(username=cd["username"], password=cd["password"])
+            user = authenticate(identifier=cd["identifier"], password=cd["password"])
 
             transfer_session_cart_to_user(request, user)
 
@@ -48,24 +48,33 @@ class UserRegisterView(generic.CreateView):
     success_url = reverse_lazy("product:сategories")
 
     def form_valid(self, form):
-        self.object = form.save()  # <--- обов'язково зберегти саме form.save()
+        user = form.save(commit=False)
+        phone_number = form.cleaned_data["phone_number"]
+        user.phone_number = phone_number.replace(" ", "")
+        user.save()
+        self.object = user
 
         transfer_session_cart_to_user(self.request, self.object)
 
         login(self.request, self.object)
-        messages.success(self.request, "Ви успіщно зареєструвались і увійшли в акаунт.")
+        messages.success(self.request, "Ви успішно зареєструвались і увійшли в акаунт.")
         return redirect(self.get_success_url())
 
 
 class UserAccountView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateView):
     template_name = "user/account.html"
     form_class = UserAccountForm
-    success_url = reverse_lazy("product:сategories")
+    success_url = reverse_lazy("user:account")
     success_message = "Акаунт успішно змінено"
 
     def get_object(self, queryset=None):
         return self.request.user
 
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.phone_number = form.cleaned_data["phone_number"].replace(" ", "")
+        user.save()
+        return super().form_valid(form)
 
 class UserOrders(LoginRequiredMixin, generic.ListView):
     model = Order

@@ -12,16 +12,13 @@
     <form action="{% url 'user:login' %}" method="post">
       {% csrf_token %}
 
-      <!-- Email -->
       <div class="mb-4">
-        <label for="id_username" class="label">Email</label>
-        <input type="text" name="username" id="username"
-               class="input {% if form.username.errors %}has_errors{% endif %}"
-               value="{{ form.username.value|default_if_none:'' }}"/>
+        <label for="{{ form.id_for_identifier }}" class="label">{% trans "Email або номер телефону" %}</label>
+        {{ form.identifier }}
 
-        {% if form.username.errors %}
+        {% if form.identifier.errors %}
           <p class="text-sm text-red-600 mt-1">
-            {% for error in form.username.errors %}
+            {% for error in form.identifier.errors %}
               {{ error }}
             {% endfor %}
           </p>
@@ -30,10 +27,8 @@
 
       <!-- Пароль -->
       <div class="mb-6">
-        <label for="id_password" class="label">Пароль</label>
-        <input type="password" name="password" id="password"
-               class="input {% if form.password.errors %}has_errors{% endif %}"
-               value="{{ form.password.value|default_if_none:'' }}"/>
+        <label for="{{ form.id_for_password }}" class="label">Пароль</label>
+        {{ form.password }}
 
         {% if form.password.errors %}
           <p class="text-sm text-red-600 mt-1">
