@@ -60,3 +60,15 @@ class OrderCreateForm(forms.ModelForm):
             if not meest_warehouse:
                 self.add_error("meest_warehouse", _("Будь ласка, введіть номер та адресу відділення"))
         return cleaned_data
+
+
+class QuickOrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['first_name', 'last_name', 'phone_number']
+
+        widgets = {
+            "first_name": forms.TextInput(attrs={"class": "input"}),
+            "last_name": forms.TextInput(attrs={"class": "input"}),
+            "phone_number": forms.TextInput(attrs={"class": "input"})
+        }

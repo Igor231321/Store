@@ -1,13 +1,17 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
+from django.views.decorators.http import require_POST
 
 from cart.utils import get_user_carts
-from order.forms import OrderCreateForm
+from order.forms import OrderCreateForm, QuickOrderForm
 from order.models import Country, Order, OrderItem, Warehouse
+from product.models import ProductVariation
 
 
 class OrderDetailView(LoginRequiredMixin, generic.DetailView):
@@ -122,3 +126,21 @@ def get_warehouses(request):
     data = [{"description": wr.description, "id": wr.id} for wr in warehouses]
 
     return JsonResponse({"data": data})
+
+
+@require_POST
+def quick_order_form(request):
+    form = QuickOrderForm(request.POST)
+    product_variation_id = request.POST.get("variation_id")
+    product_variation = ProductVariation.objects.get(id=product_variation_id)
+    quantity = request.POST.get("quantity")
+    if form.is_valid():
+        order = form.save()
+        OrderItem.objects.create(
+            order=order,
+            product_variation=product_variation,
+            quantity=quantity
+        )
+        messages.success(request, "Очікуйте дзвінка — ми з вами скоро зв'яжемося!")
+        return redirect(request.META.get("HTTP_REFERER"))
+    return QuickOrderForm

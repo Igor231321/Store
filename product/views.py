@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 
+from order.forms import QuickOrderForm
 from product.forms import UploadDataForm
 from product.mixins import ProductOrderByMixin
 from product.models import Category, Product, ProductVariation
@@ -53,6 +54,8 @@ class ProductDetail(DetailView):
             Product.objects.with_min_max_prices().filter(brand=self.get_object().brand)
             .exclude(pk=self.get_object().pk)[:4]
         )
+
+        context["form"] = QuickOrderForm()
 
         variation_article = self.request.GET.get("variation_article", None)
         if variation_article:

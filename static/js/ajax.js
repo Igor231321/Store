@@ -32,17 +32,23 @@ $(document).ready(function () {
             });
         });
 
-        $(document).on("click", '.minus, .plus', function () {
-            var $input = $(this).siblings('input.product__quantity');
-            var quantity = parseInt($input.val());
+        $(document).on("click", ".minus, .plus", function () {
+            var $input1 = $("input.product__quantity");
+            var $input2 = $("input.product__quantity2");
 
-            if ($(this).hasClass('plus')) {
-                quantity += 1;
-            } else if ($(this).hasClass('minus') && quantity > 1) {
-                quantity -= 1;
+            var quantity1 = parseInt($input1.val());
+            var quantity2 = parseInt($input2.val());
+
+            if ($(this).hasClass("plus")) {
+                quantity1 += 1;
+                quantity2 += 1;
+            } else if ($(this).hasClass("minus") && quantity1 > 1 && quantity2 > 1) {
+                quantity1 -= 1;
+                quantity2 -= 1;
             }
 
-            $input.val(quantity);
+            $input1.val(quantity1);
+            $input2.val(quantity2);
         });
 
         $(document).on("click", ".decrement", function () {

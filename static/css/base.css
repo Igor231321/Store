@@ -3,6 +3,9 @@
 body {
     font-family: "Rubik", sans-serif;
 }
+button {
+    cursor: pointer;
+}
 
 .offcanvas-header {
     display: flex;
@@ -27,7 +30,6 @@ body {
     transition: transform 0.3s;
     font-size: 14px;
 }
-
 
 /* Forms */
 

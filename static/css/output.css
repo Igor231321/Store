@@ -1068,6 +1068,9 @@
   .mx-auto {
     margin-inline: auto;
   }
+  .ms-3 {
+    margin-inline-start: calc(var(--spacing) * 3);
+  }
   .ms-auto {
     margin-inline-start: auto;
   }
@@ -1791,6 +1794,9 @@
   .shrink-0 {
     flex-shrink: 0;
   }
+  .flex-grow {
+    flex-grow: 1;
+  }
   .-translate-x-1\/2 {
     --tw-translate-x: calc(calc(1/2 * 100%) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
@@ -2309,6 +2315,9 @@
   .bg-teal-600 {
     background-color: var(--color-teal-600);
   }
+  .bg-teal-700 {
+    background-color: var(--color-teal-700);
+  }
   .bg-transparent {
     background-color: transparent;
   }
@@ -2814,6 +2823,10 @@
     --tw-duration: 500ms;
     transition-duration: 500ms;
   }
+  .ease-in {
+    --tw-ease: var(--ease-in);
+    transition-timing-function: var(--ease-in);
+  }
   .ease-in-out {
     --tw-ease: var(--ease-in-out);
     transition-timing-function: var(--ease-in-out);
@@ -2986,6 +2999,13 @@
       }
     }
   }
+  .hover\:bg-teal-800 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-teal-800);
+      }
+    }
+  }
   .hover\:bg-white {
     &:hover {
       @media (hover: hover) {
@@ -2997,6 +3017,13 @@
     &:hover {
       @media (hover: hover) {
         color: var(--color-blue-600);
+      }
+    }
+  }
+  .hover\:text-blue-700 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-blue-700);
       }
     }
   }
@@ -3046,6 +3073,13 @@
     &:hover {
       @media (hover: hover) {
         color: var(--color-teal-500);
+      }
+    }
+  }
+  .hover\:text-teal-700 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-teal-700);
       }
     }
   }
@@ -3120,6 +3154,11 @@
   .focus\:ring-blue-300 {
     &:focus {
       --tw-ring-color: var(--color-blue-300);
+    }
+  }
+  .focus\:ring-gray-100 {
+    &:focus {
+      --tw-ring-color: var(--color-gray-100);
     }
   }
   .focus\:ring-gray-200 {
@@ -3323,6 +3362,11 @@
       padding-inline: calc(var(--spacing) * 4);
     }
   }
+  .md\:py-5 {
+    @media (width >= 48rem) {
+      padding-block: calc(var(--spacing) * 5);
+    }
+  }
   .md\:text-left {
     @media (width >= 48rem) {
       text-align: left;
@@ -3465,6 +3509,15 @@
       }
     }
   }
+  .dark\:hover\:bg-gray-700 {
+    @media (prefers-color-scheme: dark) {
+      &:hover {
+        @media (hover: hover) {
+          background-color: var(--color-gray-700);
+        }
+      }
+    }
+  }
   .dark\:hover\:bg-gray-800 {
     @media (prefers-color-scheme: dark) {
       &:hover {
@@ -3512,6 +3565,13 @@
     @media (prefers-color-scheme: dark) {
       &:focus {
         --tw-ring-color: var(--color-gray-600);
+      }
+    }
+  }
+  .dark\:focus\:ring-gray-700 {
+    @media (prefers-color-scheme: dark) {
+      &:focus {
+        --tw-ring-color: var(--color-gray-700);
       }
     }
   }
