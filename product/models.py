@@ -112,6 +112,9 @@ class Product(AbstractNamedModel):
         db_table = "product"
         verbose_name = "Товар"
         verbose_name_plural = "Товари"
+        indexes = [
+            models.Index(fields=["name"])
+        ]
 
     def __str__(self):
         return self.name
@@ -135,6 +138,10 @@ class Product(AbstractNamedModel):
 
 
 class ProductVariation(models.Model):
+    class StatusTextChoices(models.TextChoices):
+        IN_STOCK = "IN_STOCK", "В наличии"
+        OUT_OF_STOCK = "OUT_OF_STOCK", "Нету в наличии"
+
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
@@ -154,12 +161,16 @@ class ProductVariation(models.Model):
     )
     article = models.CharField("Артикул", max_length=255, unique=True)
     quantity = models.PositiveIntegerField("Кількість товару", default=0)
+    status = models.CharField("Статус", choices=StatusTextChoices, null=True)
 
     class Meta:
         db_table = "product_variations"
         verbose_name = "Варіації товару"
         verbose_name_plural = "Варіації товару"
         ordering = ["price"]
+        indexes = [
+            models.Index(fields=["article"])
+        ]
 
     def get_price(self):
         if self.product.currency:

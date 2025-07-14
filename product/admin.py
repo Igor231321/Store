@@ -56,10 +56,22 @@ class BrandAdmin(ProductSlugMixin, admin.ModelAdmin):
     list_display = ["name"]
 
 
+@admin.action(description="Позначити як 'В наявності'")
+def set_status_in_stock(self, request, queryset):
+    queryset.update(status=ProductVariation.StatusTextChoices.IN_STOCK)
+
+
+@admin.action(description="Позначити як 'Нема в наявності'")
+def set_status_out_in_stock(self, request, queryset):
+    queryset.update(status=ProductVariation.StatusTextChoices.OUT_OF_STOCK)
+
+
 @admin.register(ProductVariation)
 class ProductVariationAdmin(ProductSlugMixin, admin.ModelAdmin):
-    list_display = ["product", "article", "attribute_value", "price"]
-    list_editable = ["price", "attribute_value"]
+    list_display = ["product", "article", "attribute_value", "price", "status"]
+    list_editable = ["price", "attribute_value", "status"]
+
+    actions = [set_status_in_stock, set_status_out_in_stock]
 
 
 @admin.register(Currency)

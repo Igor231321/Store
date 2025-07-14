@@ -12,7 +12,7 @@ class OrderItemQuerySet(models.QuerySet):
 
 
 class Country(models.Model):
-    description = models.CharField(max_length=50)
+    description = models.CharField(max_length=50, db_index=True)
     area_description = models.CharField(max_length=50)
     country_type = models.CharField(max_length=36)
     ref = models.CharField(max_length=36)
@@ -49,6 +49,9 @@ class Warehouse(models.Model):
         db_table = "warehouses"
         verbose_name = "Відділення"
         verbose_name_plural = "Відділення"
+        indexes = [
+            models.Index(fields=["warehouse_type"])
+        ]
 
     def __str__(self):
         return self.description
