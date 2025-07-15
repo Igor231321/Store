@@ -73,17 +73,18 @@
   {% if subcategories %}
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {% for sub in subcategories %}
-        <div
-            class="border border-teal-600 rounded-xl p-4 group cursor-pointer overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
-          {% if sub.image %}
-            <a href="{% url 'product:category_detail' sub.slug %}" class="block overflow-hidden rounded-lg"><img
-                src="{{ sub.image.url }}" alt="{{ sub.name }}"
-                class="w-full object-cover mb-4 transform transition-transform duration-300 group-hover:scale-110"/></a>
-          {% endif %}
-
-          <a href="{% url 'product:category_detail' sub.slug %}"
-             class="block bg-white border border-teal-700 rounded-md p-3 text-center font-medium text-gray-800 transition-colors duration-200 hover:bg-teal-700 hover:text-white">{{ sub.name }}</a>
-        </div>
+{#        <div#}
+{#            class="border border-teal-600 rounded-xl p-4 group cursor-pointer overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">#}
+{#          {% if sub.image %}#}
+{#            <a href="{% url 'product:category_detail' sub.slug %}" class="block overflow-hidden rounded-lg"><img#}
+{#                src="{{ sub.image.url }}" alt="{{ sub.name }}"#}
+{#                class="w-full object-cover mb-4 transform transition-transform duration-300 group-hover:scale-110"/></a>#}
+{#          {% endif %}#}
+{##}
+{#          <a href="{% url 'product:category_detail' sub.slug %}"#}
+{#             class="block bg-white border border-teal-700 rounded-md p-3 text-center font-medium text-gray-800 transition-colors duration-200 hover:bg-teal-700 hover:text-white">{{ sub.name }}</a>#}
+{#        </div>#}
+        {% include "includes/category_card.html" with category=sub %}
       {% endfor %}
     </div>
   {% endif %}

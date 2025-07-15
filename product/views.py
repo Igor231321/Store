@@ -14,8 +14,15 @@ from product.models import Category, Product, ProductVariation
 from product.services.product_search import product_search
 
 
-def home(request):
-    return render(request, "product/index.html")
+class HomeTemplateView(TemplateView):
+    template_name = "product/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["categories"] = Category.objects.all()
+        context["popular_products"] = Product.objects.with_min_max_prices()
+        return context
 
 
 class UploadData(FormView):

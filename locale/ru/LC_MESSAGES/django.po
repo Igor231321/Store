@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-09 11:06+0300\n"
+"POT-Creation-Date: 2025-07-15 09:41+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -81,43 +81,43 @@ msgstr "Пожалуйста, введите ваш город"
 msgid "Будь ласка, введіть номер та адресу відділення"
 msgstr "Пожалуйста, введите номер и адрес отделения"
 
-#: .\order\models.py:59
+#: .\order\models.py:62
 msgid "Обробляється"
 msgstr "Обрабатывается"
 
-#: .\order\models.py:60
+#: .\order\models.py:63
 msgid "Отримано"
 msgstr "Получено"
 
-#: .\order\models.py:61
+#: .\order\models.py:64
 msgid "Прийнято"
 msgstr "Принято"
 
-#: .\order\models.py:62
+#: .\order\models.py:65
 msgid "Скасовано"
 msgstr "Отменено"
 
-#: .\order\models.py:63
+#: .\order\models.py:66
 msgid "Відправлено"
 msgstr "Отправлено"
 
-#: .\order\models.py:64
+#: .\order\models.py:67
 msgid "В дорозі"
 msgstr "В пути"
 
-#: .\order\models.py:67
+#: .\order\models.py:70
 msgid "Відділення Нової пошти"
 msgstr "Отделение «Новая почта»"
 
-#: .\order\models.py:68
+#: .\order\models.py:71
 msgid "Поштомат Нової пошти"
 msgstr "Почтомат «Новая почта»"
 
-#: .\order\models.py:69
+#: .\order\models.py:72
 msgid "Відділення Укрпошти"
 msgstr "Отделение Укрпочты"
 
-#: .\order\models.py:70
+#: .\order\models.py:73
 msgid "Відділення Meest"
 msgstr "Отделение Meest"
 
@@ -243,12 +243,13 @@ msgstr "Товары в заказе"
 msgid "Кількість"
 msgstr "Количество"
 
-#: .\order\views.py:23
+#: .\order\views.py:27
 msgid "Ваше замовлення успішно створено"
 msgstr "Ваш заказ успешно создан"
 
 #: .\product\templates\product\categories.html:6
-#: .\product\templates\product\categories.html:10 .\templates\base.html:49
+#: .\product\templates\product\categories.html:10
+#: .\templates\includes\footer.html:16 .\templates\includes\navbar.html:25
 msgid "Категорії"
 msgstr "Категории"
 
@@ -287,28 +288,94 @@ msgstr "Производитель"
 msgid "Додати до кошику"
 msgstr "Добавить в корзину"
 
-#: .\product\templates\product\detail.html:148
+#: .\product\templates\product\detail.html:146
+#: .\product\templates\product\detail.html:160
+msgid "Купити в один клік"
+msgstr "Купить в один клик"
+
+#: .\product\templates\product\detail.html:194
+msgid "Відравити"
+msgstr "Отправить"
+
+#: .\product\templates\product\detail.html:199
+msgid "Закрити"
+msgstr "Закрыть"
+
+#: .\product\templates\product\detail.html:210
 #: .\product\templates\product\includes\variation_detail.html:92
 msgid "Характеристики"
 msgstr "Характеристики"
 
-#: .\product\templates\product\detail.html:160
+#: .\product\templates\product\detail.html:222
 msgid "Схожі товари"
 msgstr "Похожие товары"
 
-#: .\product\templates\product\detail.html:196
+#: .\product\templates\product\detail.html:258
 msgid "Варіацій"
 msgstr "Вариаций"
 
-#: .\templates\base.html:55
-msgid "Админ"
+#: .\product\templates\product\index.html:10
+msgid "Популярні категорії"
+msgstr "Популярные категории"
+
+#: .\product\templates\product\index.html:44
+msgid "Хіти продажів"
+msgstr "Хиты продаж"
+
+#: .\templates\includes\footer.html:13
+msgid "Навігація"
+msgstr "Навигация"
+
+#: .\templates\includes\footer.html:17
+msgid "Доставка"
+msgstr "Доставка"
+
+#: .\templates\includes\footer.html:18
+msgid "Оплата"
+msgstr "Оплата"
+
+#: .\templates\includes\footer.html:23
+msgid "Мій аккаунт"
+msgstr "Мой аккаунт"
+
+#: .\templates\includes\footer.html:26
+msgid "Особистий кабінет"
+msgstr "Личный кабинет"
+
+#: .\templates\includes\footer.html:28 .\user\templates\user\user_orders.html:5
+#: .\user\templates\user\user_orders.html:15
+msgid "Мої замовлення"
+msgstr "Мои заказы"
+
+#: .\templates\includes\footer.html:33
+msgid "Підтримка"
+msgstr "Поддержка"
+
+#: .\templates\includes\footer.html:35
+msgid "Політика конфіденційності"
+msgstr "Политика конфиденциальности"
+
+#: .\templates\includes\footer.html:36
+msgid "Умови використання"
+msgstr "Условия использования"
+
+#: .\templates\includes\footer.html:37
+msgid "Контакти"
+msgstr "Контакты"
+
+#: .\templates\includes\footer.html:45
+msgid "Всі права захищені."
+msgstr "Все права защищены."
+
+#: .\templates\includes\navbar.html:31
+msgid "Адмін"
 msgstr "Админ"
 
-#: .\templates\base.html:60
+#: .\templates\includes\navbar.html:35
 msgid "Додати товар"
 msgstr "Добавить товар"
 
-#: .\templates\base.html:175
+#: .\templates\includes\navbar.html:154
 msgid "Кошик"
 msgstr "Корзина"
 
@@ -405,11 +472,6 @@ msgstr "Подтвердите пароль"
 #: .\user\templates\user\register.html:110
 msgid "Вже маєте акаунт?"
 msgstr "Уже есть аккаунт?"
-
-#: .\user\templates\user\user_orders.html:5
-#: .\user\templates\user\user_orders.html:15
-msgid "Мої замовлення"
-msgstr "Мои заказы"
 
 #: .\user\templates\user\user_orders.html:44
 msgid "У вас ще немає замовлень"
@@ -2511,6 +2573,9 @@ msgstr ""
 #: .\venv\Lib\site-packages\modeltranslation\widgets.py:32
 msgid "None"
 msgstr ""
+
+#~ msgid "Админ"
+#~ msgstr "Админ"
 
 #~ msgid "Поштове відділення УКР почти"
 #~ msgstr "Отделение «Укрпочта»"

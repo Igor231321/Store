@@ -73,6 +73,8 @@ class Category(MPTTModel):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse("product:category_detail", args=[self.slug])
 
 class Attribute(AbstractNamedModel):
     class Meta:
