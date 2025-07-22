@@ -9,6 +9,7 @@ from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 
+from django.utils.translation import gettext_lazy as _
 from order.forms import QuickOrderForm
 from product.forms import ReviewForm, UploadDataForm
 from product.mixins import ProductOrderByMixin
@@ -84,7 +85,8 @@ def variation_data(request):
         "price": f"{variation.get_price()} грн.",
         "price_with_discount": f"{variation.get_price_with_discount()} грн.",
         "characteristics": characteristics,
-        "reviews": reviews
+        "reviews": reviews,
+        "in_stock": variation.status == "IN_STOCK"
     }
     return JsonResponse(data)
 
