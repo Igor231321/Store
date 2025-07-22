@@ -7,17 +7,17 @@
 
 {% block content %}
   <div class="max-w-4xl mx-auto px-6 py-10">
-  <h1 class="text-3xl font-medium text-teal-700 text-center mb-8">{% trans 'Деталі замовлення' %} №{{ order.id }}</h1>
+    <h1 class="text-3xl font-medium text-teal-700 text-center mb-8">{% trans 'Деталі замовлення' %} №{{ order.id }}</h1>
 
-  <div class="bg-white rounded-2xl shadow-md border border-teal-200 divide-y divide-gray-100">
-    <div class="p-6 flex flex-col sm:flex-row justify-between gap-4">
-      <div>
-        <h2 class="text-lg font-medium text-gray-900">{% trans 'Оформлено' %}:</h2>
-        <p class="text-gray-600">{{ order.created_at|date:'d.m.Y H:i' }}</p>
-      </div>
-      <div>
-        <h2 class="text-lg font-medium text-gray-900">{% trans 'Статус' %}:</h2>
-        <span class="inline-block mt-1 px-3 py-1 rounded-full text-sm font-medium
+    <div class="bg-white rounded-2xl shadow-md border border-teal-200 divide-y divide-gray-100">
+      <div class="p-6 flex flex-col sm:flex-row justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-medium text-gray-900">{% trans 'Оформлено' %}:</h2>
+          <p class="text-gray-600">{{ order.created_at|date:'d.m.Y H:i' }}</p>
+        </div>
+        <div>
+          <h2 class="text-lg font-medium text-gray-900">{% trans 'Статус' %}:</h2>
+          <span class="inline-block mt-1 px-3 py-1 rounded-full text-sm font-medium
           {% if order.status == 'PR' %}
               bg-yellow-100 text-yellow-800
             {% elif order.status == 'RC' %}
@@ -27,72 +27,73 @@
             {% endif %}">
             {{ order.get_status_display }}
           </span>
+        </div>
       </div>
-    </div>
 
-    <div class="p-6 grid sm:grid-cols-2 gap-6">
-      <div>
-        <h3 class="text-teal-700 font-medium mb-1">{% trans 'Інформація про клієнта' %}</h3>
-        <p>
-          <strong>{% trans "Ім'я" %}:</strong> {{ order.first_name }}
-        </p>
-        <p>
-          <strong>{% trans 'Фамілія' %}:</strong> {{ order.last_name }}
-        </p>
-        <p>
-          <strong>Телефон:</strong> {{ order.phone_number }}
-        </p>
-        <p>
-          <strong>Email:</strong> {{ order.email|default_if_none:'Не вказано' }}
-        </p>
-      </div>
-      <div>
-        <h3 class="text-teal-700 font-medium mb-1">Доставка</h3>
-        <p>
-          <strong>{% trans 'Місто' %}:</strong> {{ order.city }}
-        </p>
-        <p>
-          <strong>{% trans 'Відділення НП' %}:</strong> {{ order.warehouse }}
-        </p>
-        {% if order.comment %}
-          <p class="mt-2 text-sm text-gray-500">
-            <strong>{% trans 'Коментар' %}:</strong> {{ order.comment }}
+      <div class="p-6 grid sm:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-teal-700 font-medium mb-1">{% trans 'Інформація про клієнта' %}</h3>
+          <p>
+            <strong>{% trans "Ім'я" %}:</strong> {{ order.first_name }}
           </p>
-        {% endif %}
+          <p>
+            <strong>{% trans 'Фамілія' %}:</strong> {{ order.last_name }}
+          </p>
+          <p>
+            <strong>Телефон:</strong> {{ order.phone_number }}
+          </p>
+          <p>
+            <strong>Email:</strong> {{ order.email|default_if_none:'Не вказано' }}
+          </p>
+        </div>
+        <div>
+          <h3 class="text-teal-700 font-medium mb-1">Доставка</h3>
+          <p>
+            <strong>{% trans 'Місто' %}:</strong> {{ order.city }}
+          </p>
+          <p>
+            <strong>{% trans 'Відділення НП' %}:</strong> {{ order.warehouse }}
+          </p>
+          {% if order.comment %}
+            <p class="mt-2 text-sm text-gray-500">
+              <strong>{% trans 'Коментар' %}:</strong> {{ order.comment }}
+            </p>
+          {% endif %}
+        </div>
       </div>
-    </div>
 
-    <!-- Товары -->
-    <div class="p-6">
-      <h3 class="text-teal-700 font-medium">{% trans 'Товари в замовленні' %}</h3>
-      <div class="">
-        {% for item in order.items.all %}
-          <div class="flex border-b border-gray-400 py-3 gap-2">
-            {% if item.product_variation.image %}
-              <img src="{{ item.product_variation.image.url }}" alt="{{ item.product_variation.product.name }}"
-                   class="w-24 h-24 object-cover rounded-md"/>
-            {% endif %}
-
-            <div class="flex-1 relative">
-              <a href="{{ item.product_variation.product.get_absolute_url }}"><h2
-                  class="inline-block font-medium text-lg hover:text-teal-500 transition-colors mb-1">{{ item.product_variation.product.name }}</h2>
-              </a>
-              <p class="font-medium mb-1">{{ item.products_sum }} грн.</p>
-
-              {% if item.product_variation.attribute_value %}
-                <div class="flex gap-2 text-sm font-medium">
-                  <span class="text-gray-400">{{ item.product_variation.attribute_value.attribute }}</span>
-                  <span>{{ item.product_variation.attribute_value.value }}</span>
-                </div>
+      <!-- Товары -->
+      <div class="p-6">
+        <h3 class="text-teal-700 font-medium">{% trans 'Товари в замовленні' %}</h3>
+        <div class="">
+          {% for item in order.items.all %}
+            <div class="flex border-b border-gray-400 py-3 gap-2">
+              {% if item.product_variation.image %}
+                <img src="{{ item.product_variation.image.url }}" alt="{{ item.product_variation.product.name }}"
+                     class="w-24 h-24 object-cover rounded-md"/>
               {% endif %}
 
-              <div class="flex gap-2 text-sm font-medium">
-                <span class="text-gray-400">{% trans 'Кількість' %}:</span>
-                <span>{{ item.quantity }}</span>
+              <div class="flex-1 relative">
+                <a href="{{ item.product_variation.product.get_absolute_url }}"><h2
+                    class="inline-block font-medium text-lg hover:text-teal-500 transition-colors mb-1">{{ item.product_variation.product.name }}</h2>
+                </a>
+                <p class="font-medium mb-1">{{ item.products_sum }} грн.</p>
+
+                {% if item.product_variation.attribute_value %}
+                  <div class="flex gap-2 text-sm font-medium">
+                    <span class="text-gray-400">{{ item.product_variation.attribute_value.attribute }}</span>
+                    <span>{{ item.product_variation.attribute_value.value }}</span>
+                  </div>
+                {% endif %}
+
+                <div class="flex gap-2 text-sm font-medium">
+                  <span class="text-gray-400">{% trans 'Кількість' %}:</span>
+                  <span>{{ item.quantity }}</span>
+                </div>
               </div>
             </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>

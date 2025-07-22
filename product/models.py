@@ -1,6 +1,8 @@
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 from mptt.models import MPTTModel, TreeForeignKey
 from unidecode import unidecode
 
@@ -75,6 +77,7 @@ class Category(MPTTModel):
 
     def get_absolute_url(self):
         return reverse("product:category_detail", args=[self.slug])
+
 
 class Attribute(AbstractNamedModel):
     class Meta:
@@ -203,3 +206,25 @@ class ProductCharacteristics(AbstractNamedModel):
         db_table = "product_characteristics"
         verbose_name = "Характеристика"
         verbose_name_plural = "Характеристики"
+
+
+class Review(models.Model):
+    product_variation = models.ForeignKey(to=ProductVariation, on_delete=models.CASCADE, related_name="reviews",
+                                          verbose_name=_("Варіація продукта"))
+    first_name = models.CharField(_("Ім'я"), max_length=100)
+    last_name = models.CharField(_("Фамілія"), max_length=100)
+    comment = models.CharField(_("Коментар"), max_length=255)
+    created_at = models.DateTimeField(_("Дата створення"), auto_now_add=True)
+    rating = models.PositiveIntegerField(_("Рейтинг"),
+                                         validators=[MaxValueValidator(5,
+                                                                       message=_("Максимальна оцінка 5"))])
+    advantages = models.CharField(_("Переваги"), max_length=255, blank=True)
+    disadvantages = models.CharField(_("Недоліки"), max_length=255, blank=True)
+
+    class Meta:
+        db_table = "review"
+        verbose_name = "Відгук"
+        verbose_name_plural = "Відгуки"
+
+    def __str__(self):
+        return self.comment

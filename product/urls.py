@@ -13,4 +13,5 @@ urlpatterns = [
     path("variation_data/", views.variation_data, name="variation_data"),
     path("search_data/", views.ProductSearch.as_view(), name="search_data"),
     path("search_list/", views.ProductSearchTemplateView.as_view(), name="search_list"),
+    path("review_form/", views.review_form, name="review_form")
  ]

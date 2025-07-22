@@ -1,14 +1,16 @@
 import csv
 
+from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views import View
+from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 
 from order.forms import QuickOrderForm
-from product.forms import UploadDataForm
+from product.forms import ReviewForm, UploadDataForm
 from product.mixins import ProductOrderByMixin
 from product.models import Category, Product, ProductVariation
 from product.services.product_search import product_search
@@ -63,13 +65,8 @@ class ProductDetail(DetailView):
         )
 
         context["form"] = QuickOrderForm()
-
-        variation_article = self.request.GET.get("variation_article", None)
-        if variation_article:
-            context["variation"] = ProductVariation.objects.get(article=variation_article)
-            context["variation_article"] = variation_article
-        else:
-            context["variation"] = self.get_object().variations.first()
+        context["variation"] = self.get_object().variations.first()
+        context["review_form"] = ReviewForm()
 
         return context
 
@@ -77,12 +74,17 @@ class ProductDetail(DetailView):
 def variation_data(request):
     article = request.GET.get("variation_article")
     variation = ProductVariation.objects.get(article=article)
+    characteristics = render_to_string("product/includes/variation_characteristics.html",
+                                       {"characteristics": variation.characteristics.values("name", "value")})
+    reviews = render_to_string("product/includes/variation_reviews.html",
+                               {"reviews": variation.reviews.all()})
     data = {
         "variation_id": variation.id,
         "article": variation.article,
         "price": f"{variation.get_price()} грн.",
         "price_with_discount": f"{variation.get_price_with_discount()} грн.",
-        "characteristics": list(variation.characteristics.values("name", "value"))
+        "characteristics": characteristics,
+        "reviews": reviews
     }
     return JsonResponse(data)
 
@@ -136,3 +138,21 @@ class ProductSearchTemplateView(TemplateView):
         context["products"] = product_search(query=q)
 
         return context
+
+
+@require_POST
+def review_form(request):
+    variation_id = request.POST.get("variation_id")
+    variation = ProductVariation.objects.get(id=variation_id)
+    rating = request.POST.get("rating")
+
+    form = ReviewForm(request.POST)
+    if form.is_valid():
+        review = form.save(commit=False)
+        review.product_variation = variation
+        review.rating = int(rating)
+        review.save()
+        messages.success(request, _("Відгук успішно додано"))
+        return redirect(request.META.get("HTTP_REFERER", "/"))
+
+    return redirect(request.META.get("HTTP_REFERER", "/"))

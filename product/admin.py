@@ -5,7 +5,7 @@ from mptt.admin import DraggableMPTTAdmin
 from product.mixins import ProductSlugMixin
 from product.models import (Attribute, AttributeValue, Brand, Category,
                             Currency, Product, ProductCharacteristics,
-                            ProductVariation)
+                            ProductVariation, Review)
 
 
 class ProductVariationInline(admin.StackedInline):
@@ -78,3 +78,8 @@ class ProductVariationAdmin(ProductSlugMixin, admin.ModelAdmin):
 class CurrencyAdmin(ProductSlugMixin, admin.ModelAdmin):
     list_display = ["name", "rate"]
     list_display_links = ["name", "rate"]
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ["product_variation", "comment", "first_name", "last_name", "created_at"]
