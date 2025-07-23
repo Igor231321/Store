@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-22 17:39+0300\n"
+"POT-Creation-Date: 2025-07-23 07:54+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -142,8 +142,8 @@ msgstr "Фамилия"
 msgid "По батькові"
 msgstr "Отчество"
 
-#: .\order\templates\order\create.html:52 .\user\templates\user\account.html:57
-#: .\user\templates\user\register.html:67
+#: .\order\templates\order\create.html:52 .\product\models.py:239
+#: .\user\templates\user\account.html:57 .\user\templates\user\register.html:67
 msgid "Номер телефону"
 msgstr "Номер телефона"
 
@@ -217,12 +217,13 @@ msgstr "Статус"
 msgid "Інформація про клієнта"
 msgstr "Информация о клиенте"
 
-#: .\order\templates\order\detail.html:37 .\product\models.py:214
-#: .\user\templates\user\register.html:15
+#: .\order\templates\order\detail.html:37 .\product\models.py:216
+#: .\product\models.py:237 .\user\templates\user\register.html:15
 msgid "Ім'я"
 msgstr "Имя"
 
-#: .\order\templates\order\detail.html:40 .\product\models.py:215
+#: .\order\templates\order\detail.html:40 .\product\models.py:217
+#: .\product\models.py:238
 msgid "Фамілія"
 msgstr "Фамилия"
 
@@ -230,7 +231,7 @@ msgstr "Фамилия"
 msgid "Відділення НП"
 msgstr "Отделение НП"
 
-#: .\order\templates\order\detail.html:59 .\product\models.py:216
+#: .\order\templates\order\detail.html:59 .\product\models.py:218
 msgid "Коментар"
 msgstr "Комментарий"
 
@@ -246,29 +247,49 @@ msgstr "Количество"
 msgid "Ваше замовлення успішно створено"
 msgstr "Ваш заказ успешно создан"
 
-#: .\product\models.py:213
+#: .\product\models.py:215
 msgid "Варіація продукта"
 msgstr "Вариация продукта"
 
-#: .\product\models.py:217
+#: .\product\models.py:219 .\product\models.py:241
 msgid "Дата створення"
 msgstr "Дата создания"
 
-#: .\product\models.py:218
+#: .\product\models.py:220
 msgid "Рейтинг"
 msgstr "Рейтинг"
 
-#: .\product\models.py:220
+#: .\product\models.py:222
 msgid "Максимальна оцінка 5"
 msgstr "Максимальная оценка 5"
 
-#: .\product\models.py:221 .\product\templates\product\detail.html:258
+#: .\product\models.py:223
 msgid "Переваги"
 msgstr "Преимущества"
 
-#: .\product\models.py:222 .\product\templates\product\detail.html:259
+#: .\product\models.py:224
 msgid "Недоліки"
 msgstr "Недостатки"
+
+#: .\product\models.py:236
+msgid "Варіація товару"
+msgstr "Вариация товара"
+
+#: .\product\models.py:245
+msgid "Запит на наявність"
+msgstr "Запрос на наличие"
+
+#: .\product\models.py:246
+msgid "Запити на наявність"
+msgstr "Запросы на наличие"
+
+#: .\product\models.py:250
+msgid "Сповіщено"
+msgstr "Уведомлён"
+
+#: .\product\models.py:252
+msgid "Не сповіщено"
+msgstr "Не уведомлён"
 
 #: .\product\templates\product\categories.html:6
 #: .\product\templates\product\categories.html:10
@@ -305,55 +326,61 @@ msgstr "От низкой цены"
 msgid "Виробник"
 msgstr "Производитель"
 
-#: .\product\templates\product\detail.html:142
+#: .\product\templates\product\detail.html:144
 msgid "Додати до кошику"
 msgstr "Добавить в корзину"
 
-#: .\product\templates\product\detail.html:146
-#: .\product\templates\product\detail.html:160
+#: .\product\templates\product\detail.html:148
+#: .\product\templates\product\detail.html:162
 msgid "Купити в один клік"
 msgstr "Купить в один клик"
 
-#: .\product\templates\product\detail.html:194
+#: .\product\templates\product\detail.html:196
+#: .\product\templates\product\detail.html:260
 msgid "Відправити"
 msgstr "Отправить"
 
-#: .\product\templates\product\detail.html:199
+#: .\product\templates\product\detail.html:201
+#: .\product\templates\product\detail.html:265
 msgid "Закрити"
 msgstr "Закрыть"
 
-#: .\product\templates\product\detail.html:209
+#: .\product\templates\product\detail.html:214
+#: .\product\templates\product\detail.html:226
+msgid "Повідомити о наявності"
+msgstr "Сообщить о наличии"
+
+#: .\product\templates\product\detail.html:278
 msgid "Характеристики"
 msgstr "Характеристики"
 
-#: .\product\templates\product\detail.html:230
+#: .\product\templates\product\detail.html:295
 msgid "Відгуки"
 msgstr "Отзывы"
 
-#: .\product\templates\product\detail.html:234
+#: .\product\templates\product\detail.html:299
 msgid "Залишити відгук"
 msgstr "Оставить отзыв"
 
-#: .\product\templates\product\detail.html:262
-#: .\product\templates\product\includes\variation_reviews.html:30
-msgid "Відгуків поки що немає"
-msgstr "Отзывов пока нет"
-
-#: .\product\templates\product\detail.html:276
+#: .\product\templates\product\detail.html:311
 msgid "Додати відгук"
 msgstr "Добавить отзыв"
 
-#: .\product\templates\product\detail.html:319
+#: .\product\templates\product\detail.html:354
 msgid "Надіслати"
 msgstr "Отправить"
 
-#: .\product\templates\product\detail.html:329
+#: .\product\templates\product\detail.html:369
 msgid "Схожі товари"
 msgstr "Похожие товары"
 
-#: .\product\templates\product\detail.html:369
+#: .\product\templates\product\detail.html:408
 msgid "Варіацій"
 msgstr "Вариаций"
+
+#: .\product\templates\product\includes\variation_reviews.html:30
+msgid "Відгуків поки що немає"
+msgstr "Отзывов пока нет"
 
 #: .\product\templates\product\index.html:8
 msgid "Популярні категорії"
@@ -363,9 +390,13 @@ msgstr "Популярные категории"
 msgid "Хіти продажів"
 msgstr "Хиты продаж"
 
-#: .\product\views.py:161
+#: .\product\views.py:158
 msgid "Відгук успішно додано"
 msgstr "Отзыв успешно добавлен"
+
+#: .\product\views.py:173
+msgid "Дякуємо! Ми повідомимо вас, щойно товар з’явиться в наявності"
+msgstr "Спасибо! Мы сообщим вам, как только товар появится в наличии"
 
 #: .\templates\includes\footer.html:13
 msgid "Навігація"

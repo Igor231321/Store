@@ -27,8 +27,6 @@
     --color-orange-700: #9C4221;
     --color-orange-800: #7B341E;
     --color-orange-900: #652B19;
-    --color-amber-400: oklch(82.8% 0.189 84.429);
-    --color-amber-500: oklch(76.9% 0.188 70.08);
     --color-yellow-50: #FFFBEB;
     --color-yellow-100: #FEF3C7;
     --color-yellow-200: #FDE68A;
@@ -141,7 +139,6 @@
     --container-lg: 32rem;
     --container-xl: 36rem;
     --container-2xl: 42rem;
-    --container-3xl: 48rem;
     --container-4xl: 56rem;
     --container-5xl: 64rem;
     --container-7xl: 80rem;
@@ -2320,9 +2317,6 @@
   .bg-gray-200 {
     background-color: var(--color-gray-200);
   }
-  .bg-gray-400 {
-    background-color: var(--color-gray-400);
-  }
   .bg-gray-800 {
     background-color: var(--color-gray-800);
   }
@@ -2821,9 +2815,6 @@
   }
   .opacity-0 {
     opacity: 0%;
-  }
-  .opacity-50 {
-    opacity: 50%;
   }
   .opacity-100 {
     opacity: 100%;

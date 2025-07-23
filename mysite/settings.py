@@ -44,8 +44,8 @@ INSTALLED_APPS = [
 
     "mptt",
     "rest_framework",
-
-    "rest_framework.authtoken"
+    "rest_framework.authtoken",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -57,6 +57,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "mysite.urls"
@@ -79,6 +80,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "mysite.wsgi.application"
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "localhost"
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
