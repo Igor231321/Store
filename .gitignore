@@ -9,6 +9,7 @@ cache/
 # Node.js
 node_modules/
 package-lock.json
+output.css
 
 # Editors / IDEs
 .vscode/

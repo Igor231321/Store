@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.cache import cache
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -17,6 +18,15 @@ from product.models import ProductVariation
 class OrderDetailView(LoginRequiredMixin, generic.DetailView):
     model = Order
     template_name = "order/detail.html"
+
+    def get_object(self, queryset=None):
+        order_id = self.kwargs["pk"]
+
+        order = cache.get(f"order_{order_id}")
+        if not order:
+            order = Order.objects.get(id=order_id)
+            cache.set(f"order_{order_id}", order, 60)
+        return order
 
 
 class OrderCreateView(SuccessMessageMixin, generic.CreateView):

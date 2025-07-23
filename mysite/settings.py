@@ -62,8 +62,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "mysite.urls"
 
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -97,6 +95,15 @@ DATABASES = {
         "PASSWORD": "admin",
         "HOST": "localhost",
         "PORT": "5432",
+    }
+}
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR / "cache",
     }
 }
 

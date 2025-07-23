@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.cache import cache
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -86,6 +87,11 @@ class UserOrders(LoginRequiredMixin, generic.ListView):
     context_object_name = "orders"
 
     def get_queryset(self):
+        orders = cache.get(f"orders_for_{self.request.user.email}")
+        if not orders:
+            orders = super().get_queryset().filter(user=self.request.user)
+            cache.set(f"orders_for_{self.request.user.email}", orders, 60)
+
         return super().get_queryset().filter(user=self.request.user)
 
 

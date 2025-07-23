@@ -1,17 +1,18 @@
 import csv
 
 from django.contrib import messages
+from django.core.cache import cache
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, FormView, ListView, TemplateView
 
-from django.utils.translation import gettext_lazy as _
 from order.forms import QuickOrderForm
-from product.forms import ReviewForm, UploadDataForm, InStockNotificationForm
+from product.forms import InStockNotificationForm, ReviewForm, UploadDataForm
 from product.mixins import ProductOrderByMixin
 from product.models import Category, Product, ProductVariation
 from product.services.product_search import product_search
@@ -23,8 +24,26 @@ class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["categories"] = Category.objects.filter(in_home_page=True)
-        context["popular_products"] = Product.objects.filter(in_home_page=True).with_min_max_prices()
+        cached = cache.get_many(["categories", "popular_products"])
+
+        categories = cached.get("categories")
+        popular_products = cached.get("popular_products")
+
+        to_cache = {}
+
+        if not categories:
+            categories = Category.objects.filter(in_home_page=True)
+            to_cache["categories"] = categories
+
+        if not popular_products:
+            popular_products = Product.objects.filter(in_home_page=True).with_min_max_prices()
+            to_cache["popular_products"] = popular_products
+
+        if to_cache:
+            cache.set_many(to_cache, timeout=10)
+
+        context["categories"] = categories
+        context["popular_products"] = popular_products
         return context
 
 
@@ -98,7 +117,11 @@ class CategoryListView(ListView):
     context_object_name = "categories"
 
     def get_queryset(self):
-        return Category.objects.root_nodes()
+        categories = cache.get("categories_root_nodes")
+        if not categories:
+            categories = Category.objects.root_nodes()
+            cache.set("categories_root_nodes", categories, 10)
+        return categories
 
 
 class CategoryDetailView(ProductOrderByMixin, DetailView):
@@ -107,17 +130,24 @@ class CategoryDetailView(ProductOrderByMixin, DetailView):
     context_object_name = "category"
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Category, slug=self.kwargs["slug"])
+        slug = self.kwargs["slug"]
+        category = cache.get(f"category_{slug}")
+        if not category:
+            category = get_object_or_404(Category, slug=self.kwargs["slug"])
+            cache.set(f"category_{slug}", category, 60)
+        return category
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         order_by = self.request.GET.get("order_by", None)
         category = self.get_object()
+        slug = category.slug
         products = category.products.with_min_max_prices()
 
         context["products"] = self.filters(products, order_by)
-        context["subcategories"] = category.get_children()
+
+        context["subcategories"] = cache.get_or_set(f"subcategories_{slug}", category.get_children, 60)
         return context
 
 

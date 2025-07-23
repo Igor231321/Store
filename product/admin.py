@@ -1,12 +1,11 @@
-from PIL.ImageQt import qt_is_installed
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 from mptt.admin import DraggableMPTTAdmin
 
 from product.mixins import ProductSlugMixin
 from product.models import (Attribute, AttributeValue, Brand, Category,
-                            Currency, Product, ProductCharacteristics,
-                            ProductVariation, Review, InStockNotification)
+                            Currency, InStockNotification, Product,
+                            ProductCharacteristics, ProductVariation, Review)
 
 
 @admin.action(description="Відобразити на головній сторінці")

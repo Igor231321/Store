@@ -1,6 +1,6 @@
 from django import forms
 
-from product.models import Review, InStockNotification
+from product.models import InStockNotification, Review
 
 
 class UploadDataForm(forms.Form):
@@ -24,7 +24,7 @@ class InStockNotificationForm(forms.ModelForm):
     class Meta:
         model = InStockNotification
         fields = ["first_name", "last_name", "phone_number"]
-        
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
