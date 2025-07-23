@@ -1,3 +1,4 @@
+from PIL.ImageQt import qt_is_installed
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 from mptt.admin import DraggableMPTTAdmin
@@ -5,7 +6,17 @@ from mptt.admin import DraggableMPTTAdmin
 from product.mixins import ProductSlugMixin
 from product.models import (Attribute, AttributeValue, Brand, Category,
                             Currency, Product, ProductCharacteristics,
-                            ProductVariation, Review)
+                            ProductVariation, Review, InStockNotification)
+
+
+@admin.action(description="Відобразити на головній сторінці")
+def in_home_page_true(self, request, queryset):
+    queryset.update(in_home_page=True)
+
+
+@admin.action(description="Не відображати на головній сторінці")
+def in_home_page_false(self, request, queryset):
+    queryset.update(in_home_page=False)
 
 
 class ProductVariationInline(admin.StackedInline):
@@ -16,10 +27,11 @@ class ProductVariationInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(ProductSlugMixin, TranslationAdmin):
-    list_display = ["name", "category", "discount"]
-    list_editable = ["category", "discount"]
+    list_display = ["name", "category", "discount", "in_home_page"]
+    list_editable = ["category", "discount", "in_home_page"]
 
     inlines = [ProductVariationInline]
+    actions = [in_home_page_true, in_home_page_false]
 
 
 @admin.register(AttributeValue)
@@ -48,7 +60,9 @@ class ProductCharacteristicsAdmin(ProductSlugMixin, TranslationAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(ProductSlugMixin, DraggableMPTTAdmin, TranslationAdmin):
-    list_display = ["tree_actions", "indented_title", "name"]
+    list_display = ["tree_actions", "indented_title", "name", "in_home_page"]
+
+    actions = [in_home_page_true, in_home_page_false]
 
 
 @admin.register(Brand)
@@ -83,3 +97,8 @@ class CurrencyAdmin(ProductSlugMixin, admin.ModelAdmin):
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ["product_variation", "comment", "first_name", "last_name", "created_at"]
+
+
+@admin.register(InStockNotification)
+class InStockNotificationAdmin(admin.ModelAdmin):
+    list_display = ["product_variation", "first_name", "last_name", "phone_number", "created_at", "is_notified"]

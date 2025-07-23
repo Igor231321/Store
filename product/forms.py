@@ -1,6 +1,6 @@
 from django import forms
 
-from product.models import Review
+from product.models import Review, InStockNotification
 
 
 class UploadDataForm(forms.Form):
@@ -18,3 +18,16 @@ class ReviewForm(forms.ModelForm):
             "advantages": forms.TextInput(attrs={"class": "input"}),
             "disadvantages": forms.TextInput(attrs={"class": "input"})
         }
+
+
+class InStockNotificationForm(forms.ModelForm):
+    class Meta:
+        model = InStockNotification
+        fields = ["first_name", "last_name", "phone_number"]
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update(
+                {"class": "input"}
+            )

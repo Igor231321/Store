@@ -11,7 +11,7 @@ from django.views.generic import DetailView, FormView, ListView, TemplateView
 
 from django.utils.translation import gettext_lazy as _
 from order.forms import QuickOrderForm
-from product.forms import ReviewForm, UploadDataForm
+from product.forms import ReviewForm, UploadDataForm, InStockNotificationForm
 from product.mixins import ProductOrderByMixin
 from product.models import Category, Product, ProductVariation
 from product.services.product_search import product_search
@@ -23,8 +23,8 @@ class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["categories"] = Category.objects.all()
-        context["popular_products"] = Product.objects.with_min_max_prices()
+        context["categories"] = Category.objects.filter(in_home_page=True)
+        context["popular_products"] = Product.objects.filter(in_home_page=True).with_min_max_prices()
         return context
 
 
@@ -65,7 +65,8 @@ class ProductDetail(DetailView):
             .exclude(pk=self.get_object().pk)[:4]
         )
 
-        context["form"] = QuickOrderForm()
+        context["quick_order_form"] = QuickOrderForm()
+        context["notification_form"] = InStockNotificationForm()
         context["variation"] = self.get_object().variations.first()
         context["review_form"] = ReviewForm()
 
@@ -158,3 +159,18 @@ def review_form(request):
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
     return redirect(request.META.get("HTTP_REFERER", "/"))
+
+
+class InStockNotificationView(View):
+    def post(self, *args, **kwargs):
+        variation_id = int(self.request.POST.get("variation_id"))
+        variation = ProductVariation.objects.get(id=variation_id)
+
+        form = InStockNotificationForm(self.request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.product_variation = variation
+            messages.success(self.request, _("Дякуємо! Ми повідомимо вас, щойно товар з’явиться в наявності"))
+            form.save()
+
+        return redirect(self.request.META.get("HTTP_REFERER", "/"))

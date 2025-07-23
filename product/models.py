@@ -59,6 +59,7 @@ class Category(MPTTModel):
     )
     slug = models.SlugField("Слаг", max_length=50, unique=True)
     image = models.ImageField(upload_to="categories_images/")
+    in_home_page = models.BooleanField("На головній сторінці?", null=True, default=False)
 
     class MPTTMeta:
         order_insertion_by = ["name"]
@@ -112,6 +113,7 @@ class Product(AbstractNamedModel):
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, verbose_name="Бренд")
     currency = models.ForeignKey(Currency, on_delete=models.PROTECT, verbose_name="Валюта", blank=True, null=True)
     discount = models.DecimalField("Знижка у %", max_digits=10, decimal_places=2, blank=True, null=True)
+    in_home_page = models.BooleanField("На головній сторінці?", null=True, default=False)
 
     class Meta:
         db_table = "product"
@@ -228,3 +230,24 @@ class Review(models.Model):
 
     def __str__(self):
         return self.comment
+
+
+class InStockNotification(models.Model):
+    product_variation = models.ForeignKey(ProductVariation, on_delete=models.CASCADE, verbose_name=_("Варіація товару"))
+    first_name = models.CharField(_("Ім'я"), max_length=100)
+    last_name = models.CharField(_("Фамілія"), max_length=100)
+    phone_number = models.CharField(_("Номер телефону"), max_length=20)
+    is_notified = models.BooleanField("Сповіщено", default=False)
+    created_at = models.DateTimeField(_("Дата створення"), auto_now_add=True)
+
+    class Meta:
+        db_table = "in_stock_notification"
+        verbose_name = _("Запит на наявність")
+        verbose_name_plural = _("Запити на наявність")
+
+    def __str__(self):
+        if self.is_notified:
+            notified_result = _("Сповіщено")
+        else:
+            notified_result = _("Не сповіщено")
+        return f"{self.first_name}, {self.last_name} ({self.phone_number}, {notified_result})"
