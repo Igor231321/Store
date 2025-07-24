@@ -1,17 +1,38 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.cache import cache
+from django.db.models import Prefetch
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views import generic
+from django.views.decorators.http import require_POST
 
 from cart.utils import get_user_carts
-from order.forms import OrderCreateForm
+from order.forms import OrderCreateForm, QuickOrderForm
 from order.models import Country, Order, OrderItem, Warehouse
+from product.models import ProductVariation
 
 
 class OrderDetailView(LoginRequiredMixin, generic.DetailView):
     model = Order
     template_name = "order/detail.html"
+
+    def get_object(self, queryset=None):
+        order_id = self.kwargs["pk"]
+
+        order = cache.get(f"order_{order_id}")
+        if not order:
+            order = Order.objects.prefetch_related(
+                Prefetch("items",
+                         queryset=OrderItem.objects.select_related("product_variation__product",
+                                                                   "product_variation__attribute_value",
+                                                                   "product_variation__attribute_value__attribute"))
+            ).get(id=order_id)
+            cache.set(f"order_{order_id}", order, 60)
+        return order
 
 
 class OrderCreateView(SuccessMessageMixin, generic.CreateView):
@@ -19,7 +40,7 @@ class OrderCreateView(SuccessMessageMixin, generic.CreateView):
     template_name = "order/create.html"
     form_class = OrderCreateForm
     success_url = reverse_lazy("product:сategories")
-    success_message = "Ваше замовлення успішно створено"
+    success_message = _("Ваше замовлення успішно створено")
 
     def get_initial(self):
         initial = super().get_initial()
@@ -35,11 +56,27 @@ class OrderCreateView(SuccessMessageMixin, generic.CreateView):
         order = form.save(commit=False)
         cd = form.cleaned_data
 
+        order.np_country = None
+        order.np_terminal = None
+        order.np_warehouse = None
+        order.ukr_address = None
+        order.ukr_post_code = None
+        order.meest_country = None
+        order.meest_warehouse = None
+
         delivery_method = cd.get("delivery_method")
-        if delivery_method == "TR":
-            order.terminal = cd.get("terminal")
-        else:
-            order.post_office = cd.get("post_office")
+        if delivery_method == "NP_TR":
+            order.np_country = cd.get("np_country")
+            order.np_terminal = cd.get("np_terminal")
+        elif delivery_method == "NP_WH":
+            order.np_country = cd.get("np_country")
+            order.np_warehouse = cd.get("np_warehouse")
+        elif delivery_method == "UKR_WH":
+            order.ukr_address = cd.get("ukr_address")
+            order.ukr_post_code = cd.get("ukr_post_code")
+        elif delivery_method == "MEEST_WH":
+            order.meest_country = cd.get("meest_country")
+            order.meest_warehouse = cd.get("meest_warehouse")
 
         if self.request.user.is_authenticated:
             order.user = self.request.user
@@ -105,3 +142,21 @@ def get_warehouses(request):
     data = [{"description": wr.description, "id": wr.id} for wr in warehouses]
 
     return JsonResponse({"data": data})
+
+
+@require_POST
+def quick_order_form(request):
+    form = QuickOrderForm(request.POST)
+    product_variation_id = request.POST.get("variation_id")
+    product_variation = ProductVariation.objects.get(id=product_variation_id)
+    quantity = request.POST.get("quantity")
+    if form.is_valid():
+        order = form.save()
+        OrderItem.objects.create(
+            order=order,
+            product_variation=product_variation,
+            quantity=quantity
+        )
+        messages.success(request, "Очікуйте дзвінка — ми з вами скоро зв'яжемося!")
+        return redirect(request.META.get("HTTP_REFERER"))
+    return QuickOrderForm

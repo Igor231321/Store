@@ -1,17 +1,53 @@
 import csv
 
+from django.contrib import messages
+from django.core.cache import cache
+from django.db.models import Prefetch
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView, ListView
+from django.utils.translation import gettext_lazy as _
+from django.views import View
+from django.views.decorators.http import require_POST
+from django.views.generic import DetailView, FormView, ListView, TemplateView
 
-from product.forms import UploadDataForm
+from order.forms import QuickOrderForm
+from product.forms import InStockNotificationForm, ReviewForm, UploadDataForm
 from product.mixins import ProductOrderByMixin
-from product.models import Category, Product, ProductVariation
+from product.models import Category, Product, ProductVariation, ProductCharacteristics
+from product.services.product_search import product_search
 
 
-def home(request):
-    return render(request, "product/index.html")
+class HomeTemplateView(TemplateView):
+    template_name = "product/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        cached = cache.get_many(["categories", "popular_products"])
+
+        categories = cached.get("categories")
+        popular_products = cached.get("popular_products")
+
+        to_cache = {}
+
+        if not categories:
+            categories = Category.objects.filter(in_home_page=True)
+            to_cache["categories"] = categories
+
+        if not popular_products:
+            popular_products = Product.objects.filter(in_home_page=True).prefetch_related(
+                Prefetch("variations", queryset=ProductVariation.objects.select_related("attribute_value"))
+            ).with_min_max_prices()
+            to_cache["popular_products"] = popular_products
+
+        if to_cache:
+            cache.set_many(to_cache, timeout=60 * 5)
+
+        context["categories"] = categories
+        context["popular_products"] = popular_products
+        return context
 
 
 class UploadData(FormView):
@@ -36,40 +72,74 @@ class UploadData(FormView):
 
 class ProductDetail(DetailView):
     template_name = "product/detail.html"
+    context_object_name = "product"
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Product, slug=self.kwargs["slug"])
+        slug = self.kwargs["slug"]
+        cache_key = f"product_full_{slug}"
+
+        product = cache.get_or_set(cache_key,
+                                   lambda: Product.objects.select_related("brand").prefetch_related(
+                                       Prefetch(
+                                           "variations",
+                                           queryset=ProductVariation.objects
+                                           .select_related("attribute_value__attribute")
+                                           .prefetch_related("characteristics")
+                                           .order_by("price")
+                                       )
+                                   ).get(slug=slug), 60 * 5)
+
+        return product
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["has_attribute"] = (
-            self.get_object().variations.filter(attribute_value__isnull=False).exists()
-        )
-        context["products_brand"] = (
-            Product.objects.with_min_max_prices().filter(brand=self.get_object().brand)
-            .exclude(pk=self.get_object().pk)[:4]
-        )
+        product = self.object
 
-        variation_article = self.request.GET.get("variation_article", None)
-        if variation_article:
-            context["variation"] = ProductVariation.objects.get(article=variation_article)
-            context["variation_article"] = variation_article
-        else:
-            context["variation"] = self.get_object().variations.first()
+        first_variation = self.object.variations.first()
+        context["first_variation"] = cache.get_or_set(f"first_variation_{product.id}", first_variation, 60 * 5)
+
+        has_attribute = product.variations.filter(attribute_value__isnull=False)
+        context["has_attribute"] = cache.get_or_set(f"has_attribute_{product.id}", has_attribute, 60 * 5)
+
+        products_brand = Product.objects.filter(brand=product.brand).select_related("brand").prefetch_related(
+            Prefetch("variations", ProductVariation.objects.select_related("attribute_value"))
+        ).with_min_max_prices()[:4]
+        context["products_brand"] = cache.get_or_set(f"products_brand_{product.id}", products_brand, 60 * 5)
+
+        # forms
+        context["quick_order_form"] = QuickOrderForm()
+        context["notification_form"] = InStockNotificationForm()
+        context["review_form"] = ReviewForm()
 
         return context
 
 
 def variation_data(request):
     article = request.GET.get("variation_article")
-    variation = ProductVariation.objects.get(article=article)
+
+    variation_key = f"variation_{article}"
+    variation_query = ProductVariation.objects.select_related(
+            "attribute_value__attribute", "product"
+        ).prefetch_related("characteristics", "reviews").get(article=article)
+    variation = cache.get_or_set(variation_key, variation_query, 60 * 5)
+
+    characteristics_key = f"characteristics_{article}"
+    characteristics_query = render_to_string("product/includes/variation_characteristics.html",
+                                       {"characteristics": variation.characteristics.values("name", "value")})
+
+    characteristics = cache.get_or_set(characteristics_key, characteristics_query, 60 * 5)
+
+    reviews = render_to_string("product/includes/variation_reviews.html",
+                               {"reviews": variation.reviews.all()})
     data = {
         "variation_id": variation.id,
         "article": variation.article,
         "price": f"{variation.get_price()} грн.",
         "price_with_discount": f"{variation.get_price_with_discount()} грн.",
-        "characteristics": list(variation.characteristics.values("name", "value"))
+        "characteristics": characteristics,
+        "reviews": reviews,
+        "in_stock": variation.status == "IN_STOCK"
     }
     return JsonResponse(data)
 
@@ -80,7 +150,9 @@ class CategoryListView(ListView):
     context_object_name = "categories"
 
     def get_queryset(self):
-        return Category.objects.root_nodes()
+        query = Category.objects.root_nodes()
+        categories = cache.get_or_set("categories_root_nodes", query, 60 * 5)
+        return categories
 
 
 class CategoryDetailView(ProductOrderByMixin, DetailView):
@@ -89,15 +161,78 @@ class CategoryDetailView(ProductOrderByMixin, DetailView):
     context_object_name = "category"
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Category, slug=self.kwargs["slug"])
+        slug = self.kwargs["slug"]
+        query = get_object_or_404(Category, slug=self.kwargs["slug"])
+        category = cache.get_or_set(f"category_{slug}", query, 60 * 5)
+
+        return category
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         order_by = self.request.GET.get("order_by", None)
-        category = self.get_object()
-        products = category.products.with_min_max_prices()
+        category = self.object
+        slug = category.slug
+        products = Product.objects.select_related("category").filter(category=category).prefetch_related(
+            Prefetch("variations", ProductVariation.objects.select_related("attribute_value__attribute"))
+        ).with_min_max_prices()
 
-        context["products"] = self.filters(products, order_by)
-        context["subcategories"] = category.get_children()
+        context["products"] = self.filters(products, order_by) if products else None
+
+        context["subcategories"] = cache.get_or_set(f"subcategories_{slug}", category.get_children, 60 * 5)
         return context
+
+
+class ProductSearch(View):
+    def get(self, request, *args, **kwargs):
+        q = self.request.GET.get("q", "")
+        products = product_search(query=q)
+
+        context = {"products": products}
+        html = render_to_string("product/includes/search_results.html", context)
+        return JsonResponse({"html": html})
+
+
+class ProductSearchTemplateView(TemplateView):
+    template_name = "product/category_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        q = self.request.GET.get("q", "")
+        context["products"] = product_search(query=q)
+
+        return context
+
+
+@require_POST
+def review_form(request):
+    variation_id = request.POST.get("variation_id")
+    variation = ProductVariation.objects.get(id=variation_id)
+    rating = request.POST.get("rating")
+
+    form = ReviewForm(request.POST)
+    if form.is_valid():
+        review = form.save(commit=False)
+        review.product_variation = variation
+        review.rating = int(rating)
+        review.save()
+        messages.success(request, _("Відгук успішно додано"))
+        return redirect(request.META.get("HTTP_REFERER", "/"))
+
+    return redirect(request.META.get("HTTP_REFERER", "/"))
+
+
+class InStockNotificationView(View):
+    def post(self, *args, **kwargs):
+        variation_id = int(self.request.POST.get("variation_id"))
+        variation = ProductVariation.objects.get(id=variation_id)
+
+        form = InStockNotificationForm(self.request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.product_variation = variation
+            messages.success(self.request, _("Дякуємо! Ми повідомимо вас, щойно товар з’явиться в наявності"))
+            form.save()
+
+        return redirect(self.request.META.get("HTTP_REFERER", "/"))

@@ -40,8 +40,12 @@ INSTALLED_APPS = [
     "cart",
     "order",
     "user",
+    "api",
 
     "mptt",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -54,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "mysite.urls"
@@ -77,6 +82,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mysite.wsgi.application"
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "localhost"
+]
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -88,6 +98,15 @@ DATABASES = {
         "PASSWORD": "admin",
         "HOST": "localhost",
         "PORT": "5432",
+    }
+}
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 50000
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": BASE_DIR / "cache",
     }
 }
 
@@ -115,12 +134,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = "uk"
 
 LANGUAGES = [
-    ("uk", _("Український")),
-    ("ru", _("Русский")),
-]
-# Locale
-LOCALE_PATHS = [
-    BASE_DIR / "locale"
+    ("uk", _("Ukraine")),
+    ("ru", _("Russia")),
 ]
 
 TIME_ZONE = "Europe/Kiev"
@@ -146,3 +161,23 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Users
 AUTH_USER_MODEL = "user.User"
 LOGIN_URL = "user:login"
+AUTHENTICATION_BACKENDS = [
+    "user.authenticated.EmailOrPhoneNumberAuthlBackend",
+    "django.contrib.auth.backends.ModelBackend"
+]
+
+# Locale
+LOCALE_PATHS = [
+    BASE_DIR / "locale"
+]
+
+# Django REST framework
+REST_FRAMEWORK = {
+    'DATETIME_FORMAT': "%Y-%m-%d %H:%M:%S",
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20,
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}

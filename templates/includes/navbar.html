@@ -1,0 +1,175 @@
+{% load i18n static %}
+
+<nav class="bg-teal-700 text-white shadow-xl sticky top-0 z-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+
+      <div class="flex items-center sm:hidden">
+        <button type="button"
+                class="inline-flex items-center justify-center p-2 rounded-md text-white/70 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white"
+                aria-controls="mobile-menu" aria-expanded="false">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex-1 flex items-center justify-center sm:justify-start">
+        <div class="hidden sm:flex sm:gap-4">
+          <a href="{% url 'product:сategories' %}"
+             class="text-sm font-medium px-4 py-2 rounded-md transition
+             {% if 'сategories' in request.path %}
+               bg-white/10 text-white
+             {% else %}
+               text-white/80 hover:text-white hover:bg-white/10
+             {% endif %}">
+            {% trans 'Категорії' %}
+          </a>
+
+          {% if user.is_staff %}
+            <a href="{% url 'admin:index' %}"
+               class="text-sm font-medium px-4 py-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition">
+              {% trans "Адмін" %}
+            </a>
+            <a href="{% url 'product:upload_products' %}"
+               class="text-sm font-medium px-4 py-2 rounded-md text-white/80 hover:text-white hover:bg-white/10 transition">
+              {% trans "Додати товар" %}
+            </a>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if not order %}
+        <div class="flex items-center justify-center max-w-2xl mx-auto">
+
+        <div class="flex items-center gap-2">
+          <button class="hover:bg-white/10 rounded-full p-2 transition"
+                  data-modal-target="search"
+                  data-modal-show="search">
+            <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="27px" fill="#FFFFFF">
+              <path
+                  d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+            </svg>
+          </button>
+
+          <a href="{% url 'user:account' %}"
+             class="hover:bg-white/10 rounded-full p-2 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"
+                 fill="#FFFFFF">
+              <path
+                  d="M226-262q59-39.67 121-60.83Q409-344 480-344t133.33 21.17q62.34 21.16 121.34 60.83 41-49.67 59.83-103.67T813.33-480q0-141-96.16-237.17Q621-813.33 480-813.33t-237.17 96.16Q146.67-621 146.67-480q0 60.33 19.16 114.33Q185-311.67 226-262Zm253.88-184.67q-58.21 0-98.05-39.95Q342-526.58 342-584.79t39.96-98.04q39.95-39.84 98.16-39.84 58.21 0 98.05 39.96Q618-642.75 618-584.54t-39.96 98.04q-39.95 39.83-98.16 39.83ZM479.73-80q-83.1 0-156.18-31.5-73.09-31.5-127.15-85.83-54.07-54.34-85.23-127.23Q80-397.45 80-480.33q0-82.88 31.5-155.78Q143-709 197.33-763q54.34-54 127.23-85.5T480.33-880q82.88 0 155.78 31.5Q709-817 763-763t85.5 127Q880-563 880-480.18q0 82.83-31.5 155.67Q817-251.67 763-197.33 709-143 635.91-111.5 562.83-80 479.73-80Z"/>
+            </svg>
+          </a>
+
+          <button class="hover:bg-white/10 rounded-full p-2 transition"
+                  data-dropdown-toggle="dropdown-languages">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF">
+              <path
+                  d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Zm0-82q26-36 45-75t31-83H404q12 44 31 83t45 75Zm-104-16q-18-33-31.5-68.5T322-320H204q29 50 72.5 87t99.5 55Zm208 0q56-18 99.5-55t72.5-87H638q-9 38-22.5 73.5T584-178ZM170-400h136q-3-20-4.5-39.5T300-480q0-21 1.5-40.5T306-560H170q-5 20-7.5 39.5T160-480q0 21 2.5 40.5T170-400Zm216 0h188q3-20 4.5-39.5T580-480q0-21-1.5-40.5T574-560H386q-3 20-4.5 39.5T380-480q0 21 1.5 40.5T386-400Zm268 0h136q5-20 7.5-39.5T800-480q0-21-2.5-40.5T790-560H654q3 20 4.5 39.5T660-480q0 21-1.5 40.5T654-400Zm-16-240h118q-29-50-72.5-87T584-782q18 33 31.5 68.5T638-640Zm-234 0h152q-12-44-31-83t-45-75q-26 36-45 75t-31 83Zm-200 0h118q9-38 22.5-73.5T376-782q-56 18-99.5 55T204-640Z"/>
+            </svg>
+          </button>
+
+          <div id="dropdown-languages"
+               class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-34 py-1">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+
+            {% for language in languages %}
+              <a href="/{{ language.code }}/"
+                 class="block text-center font-medium text-sm px-2 py-2 rounded-md transition
+                 {% if language.code in request.path %}
+                   bg-teal-600 text-white
+                 {% else %}
+                   text-slate-700 hover:bg-teal-50 hover:text-teal-700
+                 {% endif %}">
+                {{ language.name_local }}
+              </a>
+            {% endfor %}
+          </div>
+
+          <div class="flex">
+            <button class="hover:bg-white/10 rounded-full p-2 transition"
+                    data-drawer-target="drawer-cart"
+                    data-drawer-placement="right"
+                    data-drawer-show="drawer-cart">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"
+                   fill="#FFFFFF">
+                <path
+                    d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM208-800h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Z"/>
+              </svg>
+            </button>
+            <span id="products-in-cart-count"
+                  class="w-6 h-6 flex items-center justify-center rounded-full bg-white text-black text-xs font-medium">{{ carts.total_quantity }}</span>
+          </div>
+        </div>
+      {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+{% if not order %}
+  <!-- Main modal -->
+  <div id="search" tabindex="-1"
+       class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full h-full md:h-auto">
+      <!-- Modal content -->
+      <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700 h-full">
+        <!-- Modal header -->
+        <div
+            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200 gap-4">
+          <form action="{% url 'product:search_list' %}" method="get" class="w-full">
+            <div class="relative w-full">
+              <input type="text" class="input" name="q" placeholder="Пошук" id="search-input">
+              <button class="absolute right-2 top-3">
+                <svg xmlns="http://www.w3.org/2000/svg" height="27px" viewBox="0 -960 960 960" width="27px" fill="#000">
+                  <path
+                      d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/>
+                </svg>
+              </button>
+            </div>
+
+          </form>
+          <button type="button"
+                  class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                  data-modal-hide="search">
+            <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+            </svg>
+
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div class="p-4 md:p-5 space-y-4" id="results">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <aside
+      class="fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-all duration-500 translate-x-full max-w-[500px] w-full bg-white"
+      id="drawer-cart" tabindex="-1">
+
+    <div class="offcanvas-header">
+      <h5 class="font-medium text-2xl">{% trans "Кошик" %}</h5>
+      <button type="button" data-drawer-hide="drawer-cart"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white">
+        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+        </svg>
+        <span class="sr-only">Close menu</span>
+      </button>
+    </div>
+    <div class="offcanvas-body">
+      <div id="cart-items-container">
+        {% comment %}Разметка кошику{% endcomment %}
+        {% include 'cart/includes/included_cart.html' %}
+        {% comment %}Кінець{% endcomment %}
+      </div>
+    </div>
+  </aside>
+
+{% endif %}

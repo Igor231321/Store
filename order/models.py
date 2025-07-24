@@ -1,4 +1,6 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from product.models import ProductVariation
 from user.models import User
@@ -6,11 +8,20 @@ from user.models import User
 
 class OrderItemQuerySet(models.QuerySet):
     def total_sum(self):
-        return sum(item.products_sum() for item in self)
+        if hasattr(self, '_result_cache') and self._result_cache is not None:
+            items = self._result_cache
+        else:
+            items = self.select_related(
+                "product_variation",
+                "product_variation__product",
+                "product_variation__product__currency"
+            ).all()
+
+        return sum(item.products_sum() for item in items)
 
 
 class Country(models.Model):
-    description = models.CharField(max_length=50)
+    description = models.CharField(max_length=50, db_index=True)
     area_description = models.CharField(max_length=50)
     country_type = models.CharField(max_length=36)
     ref = models.CharField(max_length=36)
@@ -47,6 +58,9 @@ class Warehouse(models.Model):
         db_table = "warehouses"
         verbose_name = "Відділення"
         verbose_name_plural = "Відділення"
+        indexes = [
+            models.Index(fields=["warehouse_type"])
+        ]
 
     def __str__(self):
         return self.description
@@ -54,12 +68,18 @@ class Warehouse(models.Model):
 
 class Order(models.Model):
     class Status(models.TextChoices):
-        PROCESSING = "PR", "Обробляється"
-        RECEIVED = "RC", "Отримано"
-        ACCEPT = "AC", "Прийнято"
-        CANCELLED = "CL", "Скасовано"
-        SENT = "SN", "Відправлено"
-        SHIPPED = "SP", "В дорозі"
+        PROCESSING = "PR", _("Обробляється")
+        RECEIVED = "RC", _("Отримано")
+        ACCEPT = "AC", _("Прийнято")
+        CANCELLED = "CL", _("Скасовано")
+        SENT = "SN", _("Відправлено")
+        SHIPPED = "SP", _("В дорозі")
+
+    class DeliveryMethod(models.TextChoices):
+        NP_WAREHOUSE = "NP_WH", _("Відділення Нової пошти")
+        NP_TERMINAL = "NP_TR", _("Поштомат Нової пошти")
+        UKR_WAREHOUSE = "UKR_WH", _("Відділення Укрпошти")
+        MEEST_WAREHOUSE = "MEEST_WH", _("Відділення Meest")
 
     user = models.ForeignKey(
         User, verbose_name="Користувач", on_delete=models.CASCADE, blank=True, null=True
@@ -67,21 +87,26 @@ class Order(models.Model):
     session_key = models.CharField("Сессия", max_length=32, blank=True, null=True)
     created_at = models.DateTimeField("Дата створення", auto_now_add=True)
     status = models.CharField(
-        "Статус", choices=Status.choices, max_length=2, default=Status.PROCESSING
+        "Статус", choices=Status, max_length=2, default=Status.PROCESSING
     )
-    phone_number = models.CharField("Номер телефону", max_length=15)
+    phone_number = models.CharField("Номер телефону", max_length=25)
     first_name = models.CharField("Ім'я", max_length=30)
     last_name = models.CharField("Прізвище", max_length=30)
     surname = models.CharField("По батькові", max_length=30)
     email = models.EmailField("Email", max_length=255, blank=True, null=True)
-
-    country = models.CharField("Місто", max_length=100)
+    np_country = models.CharField("Місто НП", max_length=100, blank=True, null=True)
     delivery_method = models.CharField("Спосіб доставки", max_length=50,
-                                       choices=Warehouse.WarehouseType, default=Warehouse.WarehouseType.POST_OFFICE)
-    post_office = models.CharField("Відділення НП", max_length=255, blank=True, null=True)
-    terminal = models.CharField("Поштомат НП", max_length=255, blank=True, null=True)
-
+                                       choices=DeliveryMethod, default=DeliveryMethod.NP_WAREHOUSE)
+    np_warehouse = models.CharField("Відділення НП", max_length=255, blank=True, null=True)
+    np_terminal = models.CharField("Поштомат НП", max_length=255, blank=True, null=True)
+    ukr_address = models.CharField("Адрес УКР", max_length=255, blank=True, null=True)
+    ukr_post_code = models.IntegerField('Поштовий індекс УКР', blank=True, null=True,
+                                        validators=[MinValueValidator(1),
+                                                    MaxValueValidator(99999)])
+    meest_country = models.CharField("Місто MEEST", max_length=100, blank=True, null=True)
+    meest_warehouse = models.CharField("Відділення Meest", max_length=255, blank=True, null=True)
     comment = models.TextField("Коментар", blank=True, null=True)
+    do_not_call = models.BooleanField("Не передзвонювати для підтвердження замовлення", default=False)
 
     class Meta:
         db_table = "order"
@@ -98,7 +123,7 @@ class OrderItem(models.Model):
         Order, on_delete=models.CASCADE, verbose_name="Замовлення", related_name="items"
     )
     product_variation = models.ForeignKey(
-        ProductVariation, on_delete=models.CASCADE, verbose_name="Варіація товара"
+        ProductVariation, on_delete=models.CASCADE, verbose_name="Варіація товара", related_name="variations"
     )
     quantity = models.PositiveIntegerField("Кількість", default=1)
 

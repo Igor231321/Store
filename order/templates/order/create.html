@@ -71,7 +71,7 @@
         <div class="border-t border-gray-400 py-4">
           <h2 class="text-lg font-medium text-gray-900 mb-4">{% trans 'Інформація про доставку' %}</h2>
 
-          <div id="delivery-method-wrapper" class="grid md:grid-cols-2 gap-3">
+          <div id="delivery-method-wrapper" class="flex flex-col gap-3">
 
             {% for value, label in form.fields.delivery_method.choices %}
               <label class="inline-flex items-center cursor-pointer">
@@ -100,64 +100,128 @@
           </div>
 
           {% comment %}Select county{% endcomment %}
-          <div>
-            <label for="{{ form.country.id_for_label }}" class="label">{% trans 'Ваш населений пункт' %} <span
+          <div id="np_countries" style="display: none;">
+            <label for="{{ form.np_country.id_for_label }}" class="label">{% trans 'Ваш населений пункт' %} <span
                 class="text-red-700 text-lg font-medium">*</span></label>
 
-            <select class="input" name="country" id="id_country">
+            <select class="input" name="np_country" id="id_np_country">
             </select>
 
-            {% if form.country.errors %}
-              <div class="text-sm text-red-600 mt-1">{{ form.country.errors }}</div>
+            {% if form.np_country.errors %}
+              <div class="text-sm text-red-600 mt-1">{{ form.np_country.errors }}</div>
             {% endif %}
           </div>
 
 
           <div id="post_offices" class="mb-3" style="display: none;">
             <div class="flex flex-col">
-              <label for="{{ form.post_office.id_for_label }}" class="label">{% trans 'Оберіть відділення' %}
+              <label for="{{ form.np_warehouse.id_for_label }}" class="label">{% trans 'Оберіть відділення' %}
                 <span class="text-red-700 text-lg font-medium">*</span></label>
-              <select name="post_office" id="id_post_office"
+              <select name="np_warehouse" id="id_np_warehouse"
                       style="max-width: 100%;"></select>
             </div>
 
-            {% if form.post_office.errors %}
+            {% if form.np_warehouse.errors %}
               <div class="text-sm text-red-600 mt-1">
-                {{ form.post_office.errors }}
+                {{ form.np_warehouse.errors }}
               </div>
             {% endif %}
           </div>
 
           <div id="terminals" class="mb-3" style="display: none;">
             <div class="flex flex-col">
-              <label for="{{ form.terminal.id_for_label }}" class="label">{% trans 'Оберіть поштомат' %}
+              <label for="{{ form.np_terminal.id_for_label }}" class="label">{% trans 'Оберіть поштомат' %}
                 <span class="text-red-700 text-lg font-medium">*</span></label>
-              <select name="terminal" id="id_terminal"
+              <select name="np_terminal" id="id_np_terminal"
                       style="max-width: 100%;"></select>
             </div>
 
-            {% if form.terminal.errors %}
+            {% if form.np_terminal.errors %}
               <div class="text-sm text-red-600 mt-1">
-                {{ form.terminal.errors }}
+                {{ form.np_terminal.errors }}
               </div>
             {% endif %}
           </div>
+
+          <div id="ukr_delivery" class="mb-3" style="display: none;">
+            <div>
+              <label for="{{ form.urk_address.id_for_label }}" class="label">{% trans 'Адреса відділення' %}
+                <span class="text-red-700 text-lg font-medium">*</span></label>
+              {{ form.ukr_address }}
+
+
+              {% if form.ukr_address.errors %}
+                <div class="text-sm text-red-600 mt-1">
+                  {{ form.ukr_address.errors }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div>
+              <label for="{{ form.ukr_post_code.id_for_label }}" class="label">{% trans 'Поштовий індекс' %}
+                <span class="text-red-700 text-lg font-medium">*</span></label>
+              {{ form.ukr_post_code }}
+
+
+              {% if form.ukr_post_code.errors %}
+                <div class="text-sm text-red-600 mt-1">
+                  {{ form.ukr_post_code.errors }}
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+
+          <div id="meest_delivery" class="mb-3" style="display: none;">
+            <div>
+              <label for="{{ form.meest_country.id_for_label }}" class="label">{% trans 'Місто' %}
+                <span class="text-red-700 text-lg font-medium">*</span></label>
+              {{ form.meest_country }}
+
+
+              {% if form.meest_country.errors %}
+                <div class="text-sm text-red-600 mt-1">
+                  {{ form.meest_country.errors }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div>
+              <label for="{{ form.meest_warehouse.id_for_label }}" class="label">{% trans 'Відділення' %}
+                <span class="text-red-700 text-lg font-medium">*</span></label>
+              {{ form.meest_warehouse }}
+              {% if form.meest_warehouse.errors %}
+                <div class="text-sm text-red-600 mt-1">
+                  {{ form.meest_warehouse.errors }}
+                </div>
+              {% endif %}
+            </div>
+          </div>
         </div>
 
-
         <div class="border-t border-gray-400 py-4">
-          <label for="{{ form.comment.id_for_label }}" class="label">{% trans 'Коментар' %}</label>
-          {{ form.comment }}
-          {% if form.comment.errors %}
-            <div class="text-red-600 mt-1 text-sm">{{ form.comment.errors.0 }}</div>
-          {% endif %}
+          <h2 class="text-lg font-medium text-gray-900 mb-4">{% trans 'Додатково' %}</h2>
+
+          <div class="">
+            <label for="{{ form.comment.id_for_label }}" class="label">{% trans 'Коментар до замовлення' %}</label>
+            {{ form.comment }}
+            {% if form.comment.errors %}
+              <div class="text-red-600 mt-1 text-sm">{{ form.comment.errors.0 }}</div>
+            {% endif %}
+          </div>
+
+          <div class="">
+            {{ form.do_not_call }}
+            <label for="{{ form.do_not_call.id_for_label }}" class="label">
+              {% trans 'Не передзвонювати для підтвердження замовлення' %}
+            </label>
+          </div>
         </div>
         <button type="submit"
                 class="w-full px-6 py-3 rounded-xl text-white font-medium bg-teal-600 hover:bg-teal-700
                   focus:outline-none focus:ring-4 focus:ring-teal-200 transition-all duration-200 ease-in-out shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
           {% trans 'Підтвердити замовлення' %}
         </button>
-
       </form>
     </div>
 
@@ -173,31 +237,42 @@
           let selectedCountryPk = '';
           let selectedDeliveryMethod = $('input[name="delivery_method"]:checked').val() || null;
 
-          function updateDeliveryBlocks() {
-              if (!selectedCountryPk) {
-                  $('#post_offices').hide();
-                  $('#terminals').hide();
-                  return;
-              }
+          localStorage.setItem('tab_active', 'true');
 
-              if (selectedDeliveryMethod === 'PO') {
-                  $('#post_offices').show();
-                  $('#terminals').hide();
-                  getWarehouses($('#id_post_office'), selectedCountryPk, 'post_offices');
-              } else if (selectedDeliveryMethod === 'TR') {
-                  $('#post_offices').hide();
-                  $('#terminals').show();
-                  getWarehouses($('#id_terminal'), selectedCountryPk, 'terminals');
-              } else {
-                  $('#post_offices').hide();
-                  $('#terminals').hide();
+          function updateDeliveryBlocks() {
+              $('#post_offices, #terminals, #meest_delivery, #ukr_delivery, #np_countries').hide();
+
+              if (selectedDeliveryMethod === 'NP_WH' || selectedDeliveryMethod === 'NP_TR') {
+                  $('#np_countries').show();
+
+                  if (selectedCountryPk) {
+                      if (selectedDeliveryMethod === 'NP_WH') {
+                          $('#post_offices').show();
+                          getWarehouses($('#id_np_warehouse'), selectedCountryPk, 'post_offices');
+                      } else if (selectedDeliveryMethod === 'NP_TR') {
+                          $('#terminals').show();
+                          getWarehouses($('#id_np_terminal'), selectedCountryPk, 'terminals');
+                      }
+                  }
+              } else if (selectedDeliveryMethod === 'UKR_WH') {
+                  $('#ukr_delivery').show();
+              } else if (selectedDeliveryMethod === 'MEEST_WH') {
+                  $('#meest_delivery').show();
               }
           }
 
-          $('#id_country').select2({
+          const savedCountryId = localStorage.getItem('selected_np_country_id');
+          const savedCountryText = localStorage.getItem('selected_np_country_text');
+
+          if (savedCountryId && savedCountryText) {
+              let newOption = new Option(savedCountryText, savedCountryId, true, true);
+              $('#id_np_country').append(newOption).trigger('change');
+              selectedCountryPk = savedCountryId;
+          }
+
+          $('#id_np_country').select2({
               placeholder: "Оберіть населений пункт",
               minimumInputLength: 2,
-              allowClear: true,
               language: {
                   noResults: () => "Нічого не знайдено",
                   inputTooShort: () => "Будь ласка, введіть 2 або більше символів"
@@ -235,27 +310,20 @@
               templateSelection: function (item) {
                   return item.text || item.id;
               }
-          })
-              .on('select2:select', function (e) {
-                  selectedCountryPk = e.params.data.pk || '';
+          }).on('select2:select', function (e) {
+              selectedCountryPk = e.params.data.pk || '';
 
-                  $('#post_offices').hide();
-                  $('#terminals').hide();
+              localStorage.setItem('selected_np_country_id', e.params.data.id);
+              localStorage.setItem('selected_np_country_text', e.params.data.text);
 
-                  $('#id_post_office').val(null).trigger('change');
-                  $('#id_terminal').val(null).trigger('change');
+              $('#post_offices').hide();
+              $('#terminals').hide();
 
-                  updateDeliveryBlocks();
-              })
-              .on('select2:clear', function () {
-                  selectedCountryPk = '';
+              $('#id_np_warehouse').val(null).trigger('change');
+              $('#id_np_terminal').val(null).trigger('change');
 
-                  $('#post_offices').hide();
-                  $('#terminals').hide();
-
-                  $('#id_post_office').val(null).trigger('change');
-                  $('#id_terminal').val(null).trigger('change');
-              });
+              updateDeliveryBlocks();
+          });
 
           $('input[name="delivery_method"]').on('change', function () {
               selectedDeliveryMethod = $(this).val();
@@ -272,7 +340,6 @@
 
           $select.select2({
               placeholder: "Знайти відділення",
-              allowClear: true,
               minimumInputLength: 0,
               ajax: {
                   url: '{% url "order:get_warehouses" %}',
@@ -300,6 +367,34 @@
               },
               width: '100%'
           });
+
+          const storageKey = warehouseType === 'post_offices' ? 'selected_np_warehouse' :
+              warehouseType === 'terminals' ? 'selected_np_terminal' : null;
+
+          if (storageKey) {
+              const savedId = localStorage.getItem(storageKey);
+              if (savedId) {
+                  const option = new Option(savedId, savedId, true, true);
+                  $select.append(option).trigger('change');
+              }
+
+              $select.off('select2:select').on('select2:select', function (e) {
+                  localStorage.setItem(storageKey, e.params.data.id);
+              });
+          }
       }
+
+      window.addEventListener('beforeunload', function () {
+          const navEntries = performance.getEntriesByType("navigation");
+          const isReload = navEntries.length && navEntries[0].type === "reload";
+
+          if (!isReload) {
+              localStorage.removeItem('selected_np_country_id');
+              localStorage.removeItem('selected_np_country_text');
+              localStorage.removeItem('selected_np_warehouse');
+              localStorage.removeItem('selected_np_terminal');
+              localStorage.removeItem('tab_active');
+          }
+      });
   </script>
 {% endblock %}

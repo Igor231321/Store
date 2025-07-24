@@ -19,18 +19,18 @@ from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework.authtoken import views
 
-urlpatterns = [
+urlpatterns = i18n_patterns(
     path('admin/', admin.site.urls),
-    path('i18n/', include('django.conf.urls.i18n')),
-]
-
-urlpatterns += i18n_patterns(
-    path('cart/', include('cart.urls', namespace='cart')),
-    path('order/', include('order.urls', namespace='order')),
-    path('user/', include('user.urls', namespace='user')),
-    path('', include('product.urls', namespace='product')),
+    path("cart/", include("cart.urls", namespace="cart")),
+    path("order/", include("order.urls", namespace="order")),
+    path("user/", include("user.urls", namespace="user")),
+    path("api/", include("api.urls", namespace="api")),
+    path('api-token-auth/', views.obtain_auth_token),
+    path("", include("product.urls", namespace="product"))
 )
 
 if settings.DEBUG:
+    urlpatterns += [path("__debug__/", include('debug_toolbar.urls'))]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -4,8 +4,18 @@ from mptt.admin import DraggableMPTTAdmin
 
 from product.mixins import ProductSlugMixin
 from product.models import (Attribute, AttributeValue, Brand, Category,
-                            Currency, Product, ProductCharacteristics,
-                            ProductVariation)
+                            Currency, InStockNotification, Product,
+                            ProductCharacteristics, ProductVariation, Review)
+
+
+@admin.action(description="Відобразити на головній сторінці")
+def in_home_page_true(self, request, queryset):
+    queryset.update(in_home_page=True)
+
+
+@admin.action(description="Не відображати на головній сторінці")
+def in_home_page_false(self, request, queryset):
+    queryset.update(in_home_page=False)
 
 
 class ProductVariationInline(admin.StackedInline):
@@ -16,10 +26,11 @@ class ProductVariationInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(ProductSlugMixin, TranslationAdmin):
-    list_display = ["name", "category", "discount"]
-    list_editable = ["category", "discount"]
+    list_display = ["name", "category", "discount", "in_home_page"]
+    list_editable = ["category", "discount", "in_home_page"]
 
     inlines = [ProductVariationInline]
+    actions = [in_home_page_true, in_home_page_false]
 
 
 @admin.register(AttributeValue)
@@ -48,7 +59,9 @@ class ProductCharacteristicsAdmin(ProductSlugMixin, TranslationAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(ProductSlugMixin, DraggableMPTTAdmin, TranslationAdmin):
-    list_display = ["tree_actions", "indented_title", "name"]
+    list_display = ["tree_actions", "indented_title", "name", "in_home_page"]
+
+    actions = [in_home_page_true, in_home_page_false]
 
 
 @admin.register(Brand)
@@ -56,13 +69,35 @@ class BrandAdmin(ProductSlugMixin, admin.ModelAdmin):
     list_display = ["name"]
 
 
+@admin.action(description="Позначити як 'В наявності'")
+def set_status_in_stock(self, request, queryset):
+    queryset.update(status=ProductVariation.StatusTextChoices.IN_STOCK)
+
+
+@admin.action(description="Позначити як 'Нема в наявності'")
+def set_status_out_in_stock(self, request, queryset):
+    queryset.update(status=ProductVariation.StatusTextChoices.OUT_OF_STOCK)
+
+
 @admin.register(ProductVariation)
 class ProductVariationAdmin(ProductSlugMixin, admin.ModelAdmin):
-    list_display = ["product", "article", "attribute_value", "price"]
-    list_editable = ["price", "attribute_value"]
+    list_display = ["product", "article", "attribute_value", "price", "status"]
+    list_editable = ["price", "attribute_value", "status"]
+
+    actions = [set_status_in_stock, set_status_out_in_stock]
 
 
 @admin.register(Currency)
 class CurrencyAdmin(ProductSlugMixin, admin.ModelAdmin):
     list_display = ["name", "rate"]
     list_display_links = ["name", "rate"]
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ["product_variation", "comment", "first_name", "last_name", "created_at"]
+
+
+@admin.register(InStockNotification)
+class InStockNotificationAdmin(admin.ModelAdmin):
+    list_display = ["product_variation", "first_name", "last_name", "phone_number", "created_at", "is_notified"]

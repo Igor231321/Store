@@ -9,14 +9,14 @@ class User(AbstractUser):
 
     email = models.EmailField("Email", unique=True)
     phone_number = models.CharField(
-        "Номер телефону", max_length=20, blank=True, null=True
+        "Номер телефону", max_length=20, unique=True
     )
     surname = models.CharField("По батьківськи", max_length=50)
     city = models.CharField("Місто", max_length=100, blank=True, null=True)
     warehouse = models.CharField("Відділення НП", max_length=255, blank=True, null=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ["phone_number"]
 
     objects = UserManager()
 

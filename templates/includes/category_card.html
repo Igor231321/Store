@@ -1,0 +1,19 @@
+<div class="group border border-teal-600 rounded-xl overflow-hidden shadow-sm hover:shadow-2xl
+    transition duration-300 w-full max-w-sm mx-auto bg-white">
+
+  {% if category.image %}
+    <a href="{{ category.get_absolute_url }}" class="block w-full  bg-gray-100 overflow-hidden">
+      <img
+        src="{{ category.image.url }}"
+        alt="{{ category.name }}"
+        class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+      />
+    </a>
+  {% endif %}
+
+  <a href="{{ category.get_absolute_url }}"
+     class="block border-t border-teal-600 px-4 py-3 text-center text-sm sm:text-base font-semibold
+     text-gray-800 transition duration-200 group-hover:bg-teal-700 group-hover:text-white truncate">
+    {{ category.name }}
+  </a>
+</div>

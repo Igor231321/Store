@@ -65,7 +65,7 @@
           <div class="flex items-center justify-center md:justify-start gap-2">
               <span class="line-through text-gray-500 text-base"
                     id="price">
-                {{ variation.get_price }} грн.
+                {{ first_variation.get_price }} грн.
               </span>
             <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
                 -{{ product.discount|floatformat }}%
@@ -74,7 +74,7 @@
         {% endif %}
         <div class="text-2xl font-bold text-teal-500 text-shadow-cyan-200"
              id="price_with_discount">
-          {{ variation.get_price_with_discount }} грн.
+          {{ first_variation.get_price_with_discount }} грн.
         </div>
       </div>
 
@@ -85,7 +85,7 @@
         </p>
         <p class="font-medium">
           {% trans 'Артикул' %}:
-          <span id="article">{{ variation.article }}</span>
+          <span id="article">{{ first_variation.article }}</span>
         </p>
       </div>
 
@@ -112,7 +112,7 @@
           {% endfor %}
         </div>
       {% else %}
-        <input type="hidden" id="single-variation-id" value="{{ product.variations.first.id }}">
+        <input type="hidden" id="single-variation-id" value="{{ first_variation.id }}">
       {% endif %}
 
       <div>
@@ -132,30 +132,240 @@
           </button>
         </div>
 
-        <div class="mt-6">
-          <a href="{% url 'cart:cart_add' %}"
-             class="add-to-cart drawer-trigger px-4 py-3 lg:text-lg bg-teal-600 hover:bg-teal-700 text-white  hover:shadow-2xl font-medium transition rounded-full">
-            {% csrf_token %}
-            {% trans 'Додати до кошику' %}
-          </a>
+        <div class="mt-6 flex flex-col gap-3 md:flex-row">
+          <div id="buy-in-stock" class="{% if first_variation.status != 'IN_STOCK' %}hidden{% endif %}">
+            <div class="flex flex-col gap-3 md:flex-row">
+              <a href="{% url 'cart:cart_add' %}"
+                 class="add-to-cart inline-block px-5 py-2.5 lg:text-lg bg-teal-600 hover:bg-teal-700 text-white hover:shadow-xl font-medium transition rounded-full"
+                 data-drawer-target="drawer-cart"
+                 data-drawer-placement="right"
+                 data-drawer-show="drawer-cart">
+                {% csrf_token %}
+                {% trans 'Додати до кошику' %}
+              </a>
+              <button data-modal-target="order-form" data-modal-toggle="order-form"
+                      class="px-5 py-2.5 lg:text-lg text-gray-900 focus:outline-none bg-white border border-gray-200 hover:bg-gray-100 hover:text-teal-700 hover:shadow-xl font-medium transition rounded-full">
+                {% trans "Купити в один клік" %}
+              </button>
+            </div>
 
+            <div id="order-form" tabindex="-1" aria-hidden="true"
+                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+              <div class="relative p-4 w-full max-w-2xl max-h-full">
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+                  <!-- Modal header -->
+                  <div
+                      class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                      {% trans "Купити в один клік" %}
+                    </h3>
+                    <button type="button"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-hide="order-form">
+                      <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                           viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <!-- Modal body -->
+                  <form action="{% url 'order:quick_order_form' %}" method="post" class="p-4 md:p-5 space-y-4">
+                    {% csrf_token %}
+
+                    {% for f in quick_order_form %}
+                      <div class="">
+
+                        <label for="{{ f.id_for_label }}" class="label">{{ f.label }}</label>
+                        {{ f }}
+
+                        {% for error in f.errors %}
+                          <p class="text-red-500 text-sm">{{ error }}</p>
+                        {% endfor %}
+                      </div>
+                    {% endfor %}
+
+                    <input type="hidden" id="variation_id" name="variation_id" value="{{ first_variation.id }}">
+                    <input type="hidden" name="quantity" class="product__quantity2" value="1">
+
+                    <div class="flex items-center gap-3 py-4 md:py-5 border-t border-gray-200 rounded-b">
+                      <button type="submit"
+                              class="text-white bg-teal-600 hover:bg-teal-700 font-medium rounded-lg px-5 py-2.5 text-center ">
+                        {% trans "Відправити" %}
+                      </button>
+
+                      <button data-modal-hide="order-form" type="button"
+                              class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-teal-700">
+                        {% trans "Закрити" %}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="buy-out-of-stock" class="{% if first_variation.status == 'IN_STOCK' %}hidden{% endif %}">
+            <button data-modal-target="in-stock-notification-form"
+                    data-modal-toggle="in-stock-notification-form"
+                    class="px-5 py-2.5 lg:text-lg text-gray-900 focus:outline-none bg-white border border-gray-200 hover:bg-gray-100 hover:text-teal-700 hover:shadow-xl font-medium transition rounded-full">
+              {% trans 'Повідомити о наявності' %}
+            </button>
+
+            <div id="in-stock-notification-form" tabindex="-1" aria-hidden="true"
+                 class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+              <div class="relative p-4 w-full max-w-2xl max-h-full">
+                <!-- Modal content -->
+                <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+                  <!-- Modal header -->
+                  <div
+                      class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                      {% trans "Повідомити о наявності" %}
+                    </h3>
+                    <button type="button"
+                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                            data-modal-hide="in-stock-notification-form">
+                      <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                           viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <!-- Modal body -->
+                  <form action="{% url 'product:in_stock_notification_form' %}" method="post"
+                        class="p-4 md:p-5 space-y-4">
+                    {% csrf_token %}
+
+                    {% for f in notification_form %}
+                      <div class="">
+
+                        <label for="{{ f.id_for_label }}" class="label">{{ f.label }}</label>
+                        {{ f }}
+
+                        {% for error in f.errors %}
+                          <p class="text-red-500 text-sm">{{ error }}</p>
+                        {% endfor %}
+                      </div>
+                    {% endfor %}
+
+                    <input type="hidden" id="variation_id" name="variation_id" value="{{ first_variation.id }}">
+
+                    <div class="flex items-center gap-3 py-4 md:py-5 border-t border-gray-200 rounded-b">
+                      <button type="submit"
+                              class="text-white bg-teal-600 hover:bg-teal-700 font-medium rounded-lg px-5 py-2.5 text-center ">
+                        {% trans "Відправити" %}
+                      </button>
+
+                      <button data-modal-hide="in-stock-notification-form" type="button"
+                              class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-teal-700">
+                        {% trans "Закрити" %}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
+
       <div>
         <h5 class="text-slate-600 text-xl sm:text-2xl mb-3">{% trans 'Характеристики' %}</h5>
-        <div id="characteristics-block"></div>
+        <div id="characteristics-block">
+          {% include 'product/includes/variation_characteristics.html' with characteristics=first_variation.characteristics.all %}
+        </div>
       </div>
 
       <div>
         <p class="text-slate-500">{{ product.description }}</p>
       </div>
+
     </section>
   </div>
 
+  {# Variation reviews #}
+  <section>
+    <div class="flex items-center justify-between mt-10 mb-5 pb-4 border-b border-b-gray-300">
+      <h2 class="text-2xl sm:text-3xl font-medium text-slate-500">
+        {% trans "Відгуки" %}
+      </h2>
+      <button data-modal-target="review-modal" data-modal-toggle="review-modal"
+              class="px-5 py-2  bg-teal-600 hover:bg-teal-700 text-white  hover:shadow-xl font-medium transition rounded-full">
+        {% trans "Залишити відгук" %}
+      </button>
+
+      <div id="review-modal" tabindex="-1" aria-hidden="true"
+           class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-xl max-h-full">
+          <!-- Modal content -->
+          <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                {% trans "Додати відгук" %}
+              </h3>
+              <button type="button"
+                      class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                      data-modal-toggle="review-modal">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                     viewBox="0 0 14 14">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+              </button>
+            </div>
+            <!-- Modal body -->
+            <form class="p-4 md:p-5 space-y-3" action="{% url 'product:review_form' %}" method="post">{% csrf_token %}
+              <input type="hidden" id="variation_id" name="variation_id" value="{{ variation.id }}">
+
+              <div id="rating" class="flex justify-center gap-1 text-3xl text-gray-300">
+                {% for i in "12345" %}
+                  <button type="button"
+                          class="star"
+                          data-value="{{ i }}"
+                          aria-label="Оценка {{ i }}">
+                    ★
+                  </button>
+                {% endfor %}
+              </div>
+
+              <input type="hidden" name="rating" id="rating-input" required>
+              {% for f in review_form %}
+                <div class="">
+                  <label for="{{ f.id_for_label }}" class="label">{{ f.label }}</label>
+                  {{ f }}
+
+                  {% for error in f.errors %}
+                    {{ error }}
+                  {% endfor %}
+                </div>
+              {% endfor %}
+
+              <button type="submit"
+                      class="px-5 py-2  bg-teal-600 hover:bg-teal-700 text-white  hover:shadow-xl font-medium transition rounded-full">
+
+                {% trans "Надіслати" %}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="reviews-block">
+      {% include 'product/includes/variation_reviews.html' with reviews=first_variation.reviews.all %}
+    </div>
+  </section>
+
   <!-- Схожі товари -->
-  <div class="mt-10">
-    <h4 class="text-2xl sm:text-3xl text-slate-500 font-medium mb-5">{% trans 'Схожі товари' %}</h4>
+  <section class="mt-10">
+    <h4 class="text-2xl sm:text-3xl text-slate-500 font-medium mb-5 text-center">{% trans 'Схожі товари' %}</h4>
 
     <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {% for product in products_brand %}
@@ -175,7 +385,7 @@
               {% if product.discount %}
                 <span class="line-through text-gray-500 text-sm">
                     {{ product.display_price }}
-                  </span>
+                </span>
               {% endif %}
               <p class="text-base font-semibold text-slate-600">{{ product.display_price_with_discount }}</p>
             </div>
@@ -185,13 +395,16 @@
                 <div class="group-hover:flex hidden  justify-center gap-2 transition-all flex-wrap">
                   {% for variation in product.variations.all|dictsort:"price" %}
                     <span
-                        class="px-2 py-1 bg-black text-white font-medium rounded-2xl text-sm">{{ variation.attribute_value.value }}</span>
+                        class="px-2 py-1 bg-black text-white font-medium rounded-2xl text-sm">
+                      {{ variation.attribute_value.value }}
+                    </span>
                   {% endfor %}
                 </div>
 
                 <div class="group-hover:hidden flex justify-center transition-all">
                     <span
-                        class="px-2 py-1 bg-teal-600 text-white font-medium text-sm rounded-2xl">{% trans 'Варіацій' %}: {{ product.variations.count }}</span>
+                        class="px-2 py-1 bg-teal-600 text-white font-medium text-sm rounded-2xl">
+                      {% trans 'Варіацій' %}: {{ product.variations.count }}</span>
                 </div>
 
               </div>
@@ -207,7 +420,7 @@
         </div>
       {% endfor %}
     </div>
-  </div>
+  </section>
 {% endblock %}
 
 {% block js %}
@@ -236,23 +449,8 @@
 
           document.getElementById('custom-next')?.addEventListener('click', () => swiper.slideNext())
           document.getElementById('custom-prev')?.addEventListener('click', () => swiper.slidePrev())
-
       })
   </script>
-
-  <script>
-      document.addEventListener('DOMContentLoaded', () => {
-          const links = document.querySelectorAll('.variation-link');
-          const urlParams = new URLSearchParams(window.location.search);
-          const selectedArticle = urlParams.get('variation_article');
-
-          if (!selectedArticle && links.length > 0) {
-              links[0].classList.add('text-white', 'bg-gray-800', 'border-gray-800', 'hover:border-gray-800');
-              links[0].classList.remove('border-gray-300', 'bg-white');
-          }
-      });
-  </script>
-
 
   <script>
       $(document).ready(function () {
@@ -281,18 +479,19 @@
                       $("#price").text(data.price);
                       $("#price_with_discount").text(data.price_with_discount);
 
-                      $(".add-to-cart").attr("data-variation-id", data.variation_id);
+                      $("#reviews-block").html(data.reviews);
+                      $("#characteristics-block").html(data.characteristics);
 
-                      const charBlock = $("#characteristics-block");
-                      charBlock.empty();
-                      data.characteristics.forEach(function (char) {
-                          const html = `
-                        <div class="border-b border-slate-300 flex justify-between py-2 text-slate-500">
-                          <span class="font-medium text-slate-500">${char.name}</span>
-                          <span>${char.value}</span>
-                        </div>`;
-                          charBlock.append(html);
-                      });
+                      $(".add-to-cart").attr("data-variation-id", data.variation_id);
+                      $('input[name="variation_id"]').val(data.variation_id);
+
+                      if (data.in_stock) {
+                          $("#buy-in-stock").removeClass("hidden");
+                          $("#buy-out-of-stock").addClass("hidden");
+                      } else {
+                          $("#buy-in-stock").addClass("hidden");
+                          $("#buy-out-of-stock").removeClass("hidden");
+                      }
                   },
                   error: function () {
                       alert("Помилка завантаження варіації.");
@@ -303,7 +502,7 @@
           const firstRadio = $('input.variation-radio').first();
           if (firstRadio.length) {
               firstRadio.prop('checked', true);
-              loadVariation(firstRadio.val());
+              // loadVariation(firstRadio.val());
               updateVariationStyles();
           }
 
@@ -355,4 +554,36 @@
           });
       });
   </script>
+
+  <script>
+      const stars = document.querySelectorAll('#rating .star');
+      const input = document.getElementById('rating-input');
+      let selected = 0;
+
+      stars.forEach(star => {
+          const value = parseInt(star.dataset.value);
+
+          star.addEventListener('mouseover', () => {
+              highlightStars(value);
+          });
+
+          star.addEventListener('mouseleave', () => {
+              highlightStars(selected);
+          });
+
+          star.addEventListener('click', () => {
+              selected = value;
+              input.value = value;
+              highlightStars(selected);
+          });
+      });
+
+      function highlightStars(count) {
+          stars.forEach(star => {
+              star.classList.toggle('text-yellow-400', parseInt(star.dataset.value) <= count);
+              star.classList.toggle('text-gray-300', parseInt(star.dataset.value) > count);
+          });
+      }
+  </script>
+
 {% endblock %}
