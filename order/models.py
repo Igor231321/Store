@@ -8,7 +8,16 @@ from user.models import User
 
 class OrderItemQuerySet(models.QuerySet):
     def total_sum(self):
-        return sum(item.products_sum() for item in self)
+        if hasattr(self, '_result_cache') and self._result_cache is not None:
+            items = self._result_cache
+        else:
+            items = self.select_related(
+                "product_variation",
+                "product_variation__product",
+                "product_variation__product__currency"
+            ).all()
+
+        return sum(item.products_sum() for item in items)
 
 
 class Country(models.Model):
@@ -114,7 +123,7 @@ class OrderItem(models.Model):
         Order, on_delete=models.CASCADE, verbose_name="Замовлення", related_name="items"
     )
     product_variation = models.ForeignKey(
-        ProductVariation, on_delete=models.CASCADE, verbose_name="Варіація товара"
+        ProductVariation, on_delete=models.CASCADE, verbose_name="Варіація товара", related_name="variations"
     )
     quantity = models.PositiveIntegerField("Кількість", default=1)
 

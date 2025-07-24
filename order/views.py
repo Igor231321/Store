@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
+from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -24,7 +25,12 @@ class OrderDetailView(LoginRequiredMixin, generic.DetailView):
 
         order = cache.get(f"order_{order_id}")
         if not order:
-            order = Order.objects.get(id=order_id)
+            order = Order.objects.prefetch_related(
+                Prefetch("items",
+                         queryset=OrderItem.objects.select_related("product_variation__product",
+                                                                   "product_variation__attribute_value",
+                                                                   "product_variation__attribute_value__attribute"))
+            ).get(id=order_id)
             cache.set(f"order_{order_id}", order, 60)
         return order
 

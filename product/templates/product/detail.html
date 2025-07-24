@@ -65,7 +65,7 @@
           <div class="flex items-center justify-center md:justify-start gap-2">
               <span class="line-through text-gray-500 text-base"
                     id="price">
-                {{ variation.get_price }} грн.
+                {{ first_variation.get_price }} грн.
               </span>
             <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
                 -{{ product.discount|floatformat }}%
@@ -74,7 +74,7 @@
         {% endif %}
         <div class="text-2xl font-bold text-teal-500 text-shadow-cyan-200"
              id="price_with_discount">
-          {{ variation.get_price_with_discount }} грн.
+          {{ first_variation.get_price_with_discount }} грн.
         </div>
       </div>
 
@@ -85,7 +85,7 @@
         </p>
         <p class="font-medium">
           {% trans 'Артикул' %}:
-          <span id="article">{{ variation.article }}</span>
+          <span id="article">{{ first_variation.article }}</span>
         </p>
       </div>
 
@@ -112,7 +112,7 @@
           {% endfor %}
         </div>
       {% else %}
-        <input type="hidden" id="single-variation-id" value="{{ product.variations.first.id }}">
+        <input type="hidden" id="single-variation-id" value="{{ first_variation.id }}">
       {% endif %}
 
       <div>
@@ -133,7 +133,7 @@
         </div>
 
         <div class="mt-6 flex flex-col gap-3 md:flex-row">
-          <div id="buy-in-stock" class="{% if variation.status != 'IN_STOCK' %}hidden{% endif %}">
+          <div id="buy-in-stock" class="{% if first_variation.status != 'IN_STOCK' %}hidden{% endif %}">
             <div class="flex flex-col gap-3 md:flex-row">
               <a href="{% url 'cart:cart_add' %}"
                  class="add-to-cart inline-block px-5 py-2.5 lg:text-lg bg-teal-600 hover:bg-teal-700 text-white hover:shadow-xl font-medium transition rounded-full"
@@ -149,7 +149,6 @@
               </button>
             </div>
 
-            {# Modal #}
             <div id="order-form" tabindex="-1" aria-hidden="true"
                  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
               <div class="relative p-4 w-full max-w-2xl max-h-full">
@@ -187,7 +186,7 @@
                       </div>
                     {% endfor %}
 
-                    <input type="hidden" id="variation_id" name="variation_id" value="{{ variation.id }}">
+                    <input type="hidden" id="variation_id" name="variation_id" value="{{ first_variation.id }}">
                     <input type="hidden" name="quantity" class="product__quantity2" value="1">
 
                     <div class="flex items-center gap-3 py-4 md:py-5 border-t border-gray-200 rounded-b">
@@ -207,7 +206,7 @@
             </div>
           </div>
 
-          <div id="buy-out-of-stock" class="{% if variation.status == 'IN_STOCK' %}hidden{% endif %}">
+          <div id="buy-out-of-stock" class="{% if first_variation.status == 'IN_STOCK' %}hidden{% endif %}">
             <button data-modal-target="in-stock-notification-form"
                     data-modal-toggle="in-stock-notification-form"
                     class="px-5 py-2.5 lg:text-lg text-gray-900 focus:outline-none bg-white border border-gray-200 hover:bg-gray-100 hover:text-teal-700 hover:shadow-xl font-medium transition rounded-full">
@@ -252,7 +251,7 @@
                       </div>
                     {% endfor %}
 
-                    <input type="hidden" id="variation_id" name="variation_id" value="{{ variation.id }}">
+                    <input type="hidden" id="variation_id" name="variation_id" value="{{ first_variation.id }}">
 
                     <div class="flex items-center gap-3 py-4 md:py-5 border-t border-gray-200 rounded-b">
                       <button type="submit"
@@ -277,7 +276,7 @@
       <div>
         <h5 class="text-slate-600 text-xl sm:text-2xl mb-3">{% trans 'Характеристики' %}</h5>
         <div id="characteristics-block">
-          {% include 'product/includes/variation_characteristics.html' with characteristics=variation.characteristics.all %}
+          {% include 'product/includes/variation_characteristics.html' with characteristics=first_variation.characteristics.all %}
         </div>
       </div>
 
@@ -360,7 +359,7 @@
     </div>
 
     <div id="reviews-block">
-      {% include 'product/includes/variation_reviews.html' with reviews=variation.reviews.all %}
+      {% include 'product/includes/variation_reviews.html' with reviews=first_variation.reviews.all %}
     </div>
   </section>
 

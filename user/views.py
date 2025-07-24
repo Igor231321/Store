@@ -5,12 +5,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
+from django.db.models import Prefetch
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
 
-from order.models import Order
+from order.models import Order, OrderItem
 from user.forms import (UserAccountForm, UserLoginForm, UserPasswordChangeForm,
                         UserRegisterForm)
 from user.utils import transfer_session_cart_to_user
@@ -82,17 +83,17 @@ class UserAccountView(LoginRequiredMixin, SuccessMessageMixin, generic.UpdateVie
 
 
 class UserOrders(LoginRequiredMixin, generic.ListView):
-    model = Order
     template_name = "user/user_orders.html"
     context_object_name = "orders"
 
     def get_queryset(self):
-        orders = cache.get(f"orders_for_{self.request.user.email}")
-        if not orders:
-            orders = super().get_queryset().filter(user=self.request.user)
-            cache.set(f"orders_for_{self.request.user.email}", orders, 60)
+        query = Order.objects.filter(user=self.request.user).prefetch_related(
+            Prefetch("items", queryset=OrderItem.objects.select_related("product_variation__product__currency")))
 
-        return super().get_queryset().filter(user=self.request.user)
+
+        orders = cache.get_or_set(f"orders_for_{self.request.user.email}",
+                                 query, 300)
+        return orders
 
 
 class UserPasswordChangeView(SuccessMessageMixin, PasswordChangeView):

@@ -2,6 +2,7 @@ import csv
 
 from django.contrib import messages
 from django.core.cache import cache
+from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -14,7 +15,7 @@ from django.views.generic import DetailView, FormView, ListView, TemplateView
 from order.forms import QuickOrderForm
 from product.forms import InStockNotificationForm, ReviewForm, UploadDataForm
 from product.mixins import ProductOrderByMixin
-from product.models import Category, Product, ProductVariation
+from product.models import Category, Product, ProductVariation, ProductCharacteristics
 from product.services.product_search import product_search
 
 
@@ -36,11 +37,13 @@ class HomeTemplateView(TemplateView):
             to_cache["categories"] = categories
 
         if not popular_products:
-            popular_products = Product.objects.filter(in_home_page=True).with_min_max_prices()
+            popular_products = Product.objects.filter(in_home_page=True).prefetch_related(
+                Prefetch("variations", queryset=ProductVariation.objects.select_related("attribute_value"))
+            ).with_min_max_prices()
             to_cache["popular_products"] = popular_products
 
         if to_cache:
-            cache.set_many(to_cache, timeout=10)
+            cache.set_many(to_cache, timeout=60 * 5)
 
         context["categories"] = categories
         context["popular_products"] = popular_products
@@ -69,24 +72,44 @@ class UploadData(FormView):
 
 class ProductDetail(DetailView):
     template_name = "product/detail.html"
+    context_object_name = "product"
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Product, slug=self.kwargs["slug"])
+        slug = self.kwargs["slug"]
+        cache_key = f"product_full_{slug}"
+
+        product = cache.get_or_set(cache_key,
+                                   lambda: Product.objects.select_related("brand").prefetch_related(
+                                       Prefetch(
+                                           "variations",
+                                           queryset=ProductVariation.objects
+                                           .select_related("attribute_value__attribute")
+                                           .prefetch_related("characteristics")
+                                           .order_by("price")
+                                       )
+                                   ).get(slug=slug), 60 * 5)
+
+        return product
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context["has_attribute"] = (
-            self.get_object().variations.filter(attribute_value__isnull=False).exists()
-        )
-        context["products_brand"] = (
-            Product.objects.with_min_max_prices().filter(brand=self.get_object().brand)
-            .exclude(pk=self.get_object().pk)[:4]
-        )
+        product = self.object
 
+        first_variation = self.object.variations.first()
+        context["first_variation"] = cache.get_or_set(f"first_variation_{product.id}", first_variation, 60 * 5)
+
+        has_attribute = product.variations.filter(attribute_value__isnull=False)
+        context["has_attribute"] = cache.get_or_set(f"has_attribute_{product.id}", has_attribute, 60 * 5)
+
+        products_brand = Product.objects.filter(brand=product.brand).select_related("brand").prefetch_related(
+            Prefetch("variations", ProductVariation.objects.select_related("attribute_value"))
+        ).with_min_max_prices()[:4]
+        context["products_brand"] = cache.get_or_set(f"products_brand_{product.id}", products_brand, 60 * 5)
+
+        # forms
         context["quick_order_form"] = QuickOrderForm()
         context["notification_form"] = InStockNotificationForm()
-        context["variation"] = self.get_object().variations.first()
         context["review_form"] = ReviewForm()
 
         return context
@@ -94,9 +117,19 @@ class ProductDetail(DetailView):
 
 def variation_data(request):
     article = request.GET.get("variation_article")
-    variation = ProductVariation.objects.get(article=article)
-    characteristics = render_to_string("product/includes/variation_characteristics.html",
+
+    variation_key = f"variation_{article}"
+    variation_query = ProductVariation.objects.select_related(
+            "attribute_value__attribute", "product"
+        ).prefetch_related("characteristics", "reviews").get(article=article)
+    variation = cache.get_or_set(variation_key, variation_query, 60 * 5)
+
+    characteristics_key = f"characteristics_{article}"
+    characteristics_query = render_to_string("product/includes/variation_characteristics.html",
                                        {"characteristics": variation.characteristics.values("name", "value")})
+
+    characteristics = cache.get_or_set(characteristics_key, characteristics_query, 60 * 5)
+
     reviews = render_to_string("product/includes/variation_reviews.html",
                                {"reviews": variation.reviews.all()})
     data = {
@@ -117,10 +150,8 @@ class CategoryListView(ListView):
     context_object_name = "categories"
 
     def get_queryset(self):
-        categories = cache.get("categories_root_nodes")
-        if not categories:
-            categories = Category.objects.root_nodes()
-            cache.set("categories_root_nodes", categories, 10)
+        query = Category.objects.root_nodes()
+        categories = cache.get_or_set("categories_root_nodes", query, 60 * 5)
         return categories
 
 
@@ -131,23 +162,24 @@ class CategoryDetailView(ProductOrderByMixin, DetailView):
 
     def get_object(self, queryset=None):
         slug = self.kwargs["slug"]
-        category = cache.get(f"category_{slug}")
-        if not category:
-            category = get_object_or_404(Category, slug=self.kwargs["slug"])
-            cache.set(f"category_{slug}", category, 60)
+        query = get_object_or_404(Category, slug=self.kwargs["slug"])
+        category = cache.get_or_set(f"category_{slug}", query, 60 * 5)
+
         return category
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         order_by = self.request.GET.get("order_by", None)
-        category = self.get_object()
+        category = self.object
         slug = category.slug
-        products = category.products.with_min_max_prices()
+        products = Product.objects.select_related("category").filter(category=category).prefetch_related(
+            Prefetch("variations", ProductVariation.objects.select_related("attribute_value__attribute"))
+        ).with_min_max_prices()
 
-        context["products"] = self.filters(products, order_by)
+        context["products"] = self.filters(products, order_by) if products else None
 
-        context["subcategories"] = cache.get_or_set(f"subcategories_{slug}", category.get_children, 60)
+        context["subcategories"] = cache.get_or_set(f"subcategories_{slug}", category.get_children, 60 * 5)
         return context
 
 
