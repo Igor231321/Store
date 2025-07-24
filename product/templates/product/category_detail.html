@@ -16,21 +16,18 @@
       {% else %}{{ category.name }}{% endif %}</h1>
 
     {% if products %}
-      <div class="relative">
-        <button id="dropdownButton"
-                class="font-medium flex gap-1 border border-transparent px-3 py-2 transition-colors rounded-xl cursor-pointer focus:border-gray-300 hover:border-gray-300">
-            <span>
-              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                   fill="#000000">
-                <path
-                    d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/>
-              </svg>
-            </span>
-          {% trans "Сортувати" %}
-        </button>
+      <button id="dropdown-ordering" data-dropdown-toggle="dropdown"
+              class="font-medium flex gap-1 border border-transparent px-3 py-2 transition-colors rounded-xl cursor-pointer focus:border-gray-300 hover:border-gray-300"
+              type="button">{% trans "Сортувати" %}
+        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000">
+          <path
+              d="M320-440v-287L217-624l-57-56 200-200 200 200-57 56-103-103v287h-80ZM600-80 400-280l57-56 103 103v-287h80v287l103-103 57 56L600-80Z"/>
+        </svg>
+      </button>
 
-        <ul class="absolute hidden border border-gray-300 w-48 right-0 mt-1 bg-white shadow-xl rounded-lg overflow-y-auto max-h-60 transition-all duration-300 opacity-0 transform scale-95"
-            id="dropdownMenu">
+      <div id="dropdown"
+           class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
+        <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-ordering">
           <li>
             <a href="?{% change_params order_by='default' %}"
                class="block px-4 py-2 text-sm text-gray-800 font-semibold
@@ -43,9 +40,9 @@
             </a>
           </li>
           <li>
-            <a href="?{% change_params order_by='-min_price' %}"
+            <a href="?{% change_params order_by='-min_price_after_discount' %}"
                class="block px-4 py-2 text-sm text-gray-800 font-semibold
-                {% if request.GET.order_by == '-min_price' %}
+                {% if request.GET.order_by == '-min_price_after_discount' %}
                   bg-teal-600 text-white
                 {% else %}
                   hover:bg-gray-200
@@ -54,9 +51,9 @@
             </a>
           </li>
           <li>
-            <a href="?{% change_params order_by='min_price' %}"
+            <a href="?{% change_params order_by='min_price_after_discount' %}"
                class="block px-4 py-2 text-sm text-gray-800 font-semibold
-                {% if request.GET.order_by == 'min_price' %}
+                {% if request.GET.order_by == 'min_price_after_discount' %}
                   bg-teal-600 text-white
                 {% else %}
                   hover:bg-gray-200
@@ -66,24 +63,12 @@
           </li>
         </ul>
       </div>
-
     {% endif %}
   </div>
 
   {% if subcategories %}
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {% for sub in subcategories %}
-{#        <div#}
-{#            class="border border-teal-600 rounded-xl p-4 group cursor-pointer overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">#}
-{#          {% if sub.image %}#}
-{#            <a href="{% url 'product:category_detail' sub.slug %}" class="block overflow-hidden rounded-lg"><img#}
-{#                src="{{ sub.image.url }}" alt="{{ sub.name }}"#}
-{#                class="w-full object-cover mb-4 transform transition-transform duration-300 group-hover:scale-110"/></a>#}
-{#          {% endif %}#}
-{##}
-{#          <a href="{% url 'product:category_detail' sub.slug %}"#}
-{#             class="block bg-white border border-teal-700 rounded-md p-3 text-center font-medium text-gray-800 transition-colors duration-200 hover:bg-teal-700 hover:text-white">{{ sub.name }}</a>#}
-{#        </div>#}
         {% include "includes/category_card.html" with category=sub %}
       {% endfor %}
     </div>
