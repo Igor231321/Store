@@ -9,7 +9,7 @@
   <div class="max-w-4xl mx-auto px-6 py-10">
     <h1 class="text-3xl font-medium text-teal-700 text-center mb-8">{% trans 'Деталі замовлення' %} №{{ order.id }}</h1>
 
-    <div class="bg-white rounded-2xl shadow-md border border-teal-200 divide-y divide-gray-100">
+    <div class="bg-white rounded-2xl shadow-md border border-gray-200 divide-y divide-gray-100">
       <div class="p-6 flex flex-col sm:flex-row justify-between gap-4">
         <div>
           <h2 class="text-lg font-medium text-gray-900">{% trans 'Оформлено' %}:</h2>
@@ -48,12 +48,24 @@
         </div>
         <div>
           <h3 class="text-teal-700 font-medium mb-1">Доставка</h3>
-          <p>
-            <strong>{% trans 'Місто' %}:</strong> {{ order.city }}
-          </p>
-          <p>
-            <strong>{% trans 'Відділення НП' %}:</strong> {{ order.warehouse }}
-          </p>
+
+          {% if order.delivery_method == "NP_WH" %}
+            <p><strong>{% trans "Місто доставки" %}:</strong> {{ order.np_country }}</p>
+            <p><strong>{% trans "Відділення Нової пошти" %}:</strong> {{ order.np_warehouse }}</p>
+
+          {% elif order.delivery_method == "NP_TR" %}
+            <p><strong>{% trans "Місто доставки" %}:</strong> {{ order.np_country }}</p>
+            <p><strong>{% trans "Поштомат Нової пошти" %}:</strong> {{ order.np_terminal }}</p>
+
+          {% elif order.delivery_method == "UKR_WH" %}
+            <p><strong>{% trans "Адреса доставки" %}:</strong> {{ order.ukr_address }}</p>
+            <p><strong>{% trans "Поштовий індекс" %}:</strong> {{ order.ukr_post_code }}</p>
+
+          {% else %}
+            <p><strong>{% trans "Місто доставки" %}:</strong> {{ order.meest_country }}</p>
+            <p><strong>{% trans "Відділення Meest" %}:</strong> {{ order.meest_warehouse }}</p>
+          {% endif %}
+
           {% if order.comment %}
             <p class="mt-2 text-sm text-gray-500">
               <strong>{% trans 'Коментар' %}:</strong> {{ order.comment }}
