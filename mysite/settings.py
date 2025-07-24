@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "order",
     "user",
     "api",
+    "main",
 
     "mptt",
     "rest_framework",
