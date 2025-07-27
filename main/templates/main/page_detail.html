@@ -6,6 +6,9 @@
 {% endblock %}
 
 {% block content %}
-  <h3>{{ page.title }}</h3>
-  <p>{{ page.content }}</p>
+  <h1 class="text-3xl sm:text-4xl font-medium tracking-tight text-slate-600 text-center pb-3 mb-5">
+    {{ page.title }}
+  </h1>
+
+  <p>{{ page.content|safe }}</p>
 {% endblock %}

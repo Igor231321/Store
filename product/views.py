@@ -89,13 +89,13 @@ def variation_data(request):
 
     variation_key = f"variation_{article}"
     variation_query = ProductVariation.objects.select_related(
-            "attribute_value__attribute", "product"
-        ).prefetch_related("characteristics", "reviews").get(article=article)
+        "attribute_value__attribute", "product"
+    ).prefetch_related("characteristics", "reviews").get(article=article)
     variation = cache.get_or_set(variation_key, variation_query, 60 * 5)
 
     characteristics_key = f"characteristics_{article}"
     characteristics_query = render_to_string("product/includes/variation_characteristics.html",
-                                       {"characteristics": variation.characteristics.values("name", "value")})
+                                             {"characteristics": variation.characteristics.values("name", "value")})
 
     characteristics = cache.get_or_set(characteristics_key, characteristics_query, 60 * 5)
 

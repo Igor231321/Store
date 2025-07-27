@@ -90,9 +90,8 @@ class UserOrders(LoginRequiredMixin, generic.ListView):
         query = Order.objects.filter(user=self.request.user).prefetch_related(
             Prefetch("items", queryset=OrderItem.objects.select_related("product_variation__product__currency")))
 
-
         orders = cache.get_or_set(f"orders_for_{self.request.user.email}",
-                                 query, 300)
+                                  query, 300)
         return orders
 
 

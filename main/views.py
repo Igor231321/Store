@@ -43,4 +43,7 @@ class PageDetailView(DetailView):
     template_name = "main/page_detail.html"
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Page, slug=self.kwargs["slug"])
+        page_slug = self.kwargs["slug"]
+        page = cache.get_or_set(f"page_{page_slug}", lambda: get_object_or_404(Page, slug=page_slug), 60 * 10)
+
+        return page
