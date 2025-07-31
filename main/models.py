@@ -33,3 +33,22 @@ class Page(models.Model):
 
     def get_absolute_url(self):
         return reverse("main:page_detail", args=[self.slug])
+
+
+class Slider(models.Model):
+    title = models.CharField(_("Назва"), max_length=100, unique=True)
+    short_description = models.CharField(_("Короткий опис"), max_length=255)
+    image = models.ImageField(_("Зображення"), unique=True, upload_to="slides/")
+    is_active = models.BooleanField(_("Активне?"))
+    url = models.URLField(_("Посилання"))
+    url_text = models.CharField(_("Текст кнопки"), max_length=50)
+    order = models.PositiveIntegerField(_("Порядок"), default=0)
+
+    class Meta:
+        db_table = "slider"
+        verbose_name = "Слайдер"
+        verbose_name_plural = "Слайдери"
+        ordering = ["-order"]
+
+    def __str__(self):
+        return f"{self.title} ({self.is_active})"

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Group, Page
+from .models import Group, Page, Slider
 
 
 class PageTabAdmin(admin.StackedInline):
@@ -20,3 +20,9 @@ class GroupAdmin(admin.ModelAdmin):
 class PageAdmin(admin.ModelAdmin):
     list_display = ["title", "content", "created"]
     prepopulated_fields = {"slug": ["title"]}
+
+
+@admin.register(Slider)
+class SlideAdmin(admin.ModelAdmin):
+    list_display = ["title", "short_description", "url_text", "order", "is_active"]
+    list_editable = ["order", "is_active"]

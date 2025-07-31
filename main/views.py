@@ -3,7 +3,7 @@ from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, TemplateView
 
-from main.models import Page
+from main.models import Page, Slider
 from product.models import Category, Product, ProductVariation
 
 
@@ -13,10 +13,11 @@ class HomeTemplateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        cached = cache.get_many(["categories", "popular_products"])
+        cached = cache.get_many(["categories", "popular_products", "sliders"])
 
         categories = cached.get("categories")
         popular_products = cached.get("popular_products")
+        sliders = cached.get("sliders")
 
         to_cache = {}
 
@@ -30,11 +31,16 @@ class HomeTemplateView(TemplateView):
             ).with_min_max_prices()
             to_cache["popular_products"] = popular_products
 
+        if not sliders:
+            sliders = Slider.objects.filter(is_active=True)
+            to_cache["sliders"] = sliders
+
         if to_cache:
             cache.set_many(to_cache, timeout=60 * 5)
 
         context["categories"] = categories
         context["popular_products"] = popular_products
+        context["sliders"] = sliders
         return context
 
 
