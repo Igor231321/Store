@@ -29,7 +29,6 @@ urlpatterns = i18n_patterns(
     path("api/", include("api.urls", namespace="api")),
     path("api-token-auth/", views.obtain_auth_token),
     path("products/", include("product.urls", namespace="product")),
-    path("ckeditor5/", include('django_ckeditor_5.urls')),
     path("", include("main.urls", namespace="main"))
 )
 

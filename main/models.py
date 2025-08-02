@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django_ckeditor_5.fields import CKEditor5Field
 
 
 class Group(models.Model):
@@ -20,7 +19,7 @@ class Page(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="pages", verbose_name=_("Група"), null=True)
     title = models.CharField(_("Назва"), max_length=155, unique=True)
     slug = models.SlugField("URL", max_length=155, unique=True)
-    content = CKEditor5Field(_("Контент сторінки"), config_name="extends")
+    content = models.TextField(_("Контент сторінки"))
     created = models.DateTimeField(_("Дата створення"), auto_now_add=True)
 
     class Meta:
