@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-31 07:58+0300\n"
+"POT-Creation-Date: 2025-08-02 22:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,43 +44,75 @@ msgstr "Ваша корзина пуста"
 msgid "Повернутись до покупок"
 msgstr "Вернуться к покупкам"
 
-#: .\main\models.py:8 .\main\models.py:21 .\main\models.py:39
+#: .\integrations\apps.py:8
+msgid "Інтеграції"
+msgstr "Интеграции"
+
+#: .\integrations\models.py:8
+msgid "Нова почта"
+msgstr "Новая почта"
+
+#: .\integrations\models.py:9
+msgid "Wayforpay"
+msgstr "Wayforpay"
+
+#: .\integrations\models.py:12
+msgid "Користувач"
+msgstr "Пользователь"
+
+#: .\integrations\models.py:13
+msgid "Сервіс"
+msgstr "Сервис"
+
+#: .\integrations\models.py:14
+msgid "Ключ"
+msgstr "Ключ"
+
+#: .\integrations\models.py:18
+msgid "Ключ API"
+msgstr "Ключ API"
+
+#: .\integrations\models.py:19
+msgid "Ключі API"
+msgstr "Ключи API"
+
+#: .\main\models.py:7 .\main\models.py:20 .\main\models.py:38
 msgid "Назва"
 msgstr "Название"
 
-#: .\main\models.py:20
+#: .\main\models.py:19
 msgid "Група"
 msgstr "Группа"
 
-#: .\main\models.py:23
+#: .\main\models.py:22
 msgid "Контент сторінки"
 msgstr "Контент страницы"
 
-#: .\main\models.py:24 .\product\models.py:219 .\product\models.py:241
+#: .\main\models.py:23 .\product\models.py:219 .\product\models.py:241
 msgid "Дата створення"
 msgstr "Дата создания"
 
-#: .\main\models.py:40
+#: .\main\models.py:39
 msgid "Короткий опис"
 msgstr "Краткое описание"
 
-#: .\main\models.py:41
+#: .\main\models.py:40
 msgid "Зображення"
 msgstr "Изображение"
 
-#: .\main\models.py:42
+#: .\main\models.py:41
 msgid "Активне?"
 msgstr "Активно?"
 
-#: .\main\models.py:43
+#: .\main\models.py:42
 msgid "Посилання"
 msgstr "Ссылка"
 
-#: .\main\models.py:44
+#: .\main\models.py:43
 msgid "Текст кнопки"
 msgstr "Текст кнопки"
 
-#: .\main\models.py:45
+#: .\main\models.py:44
 msgid "Порядок"
 msgstr "Порядок"
 
