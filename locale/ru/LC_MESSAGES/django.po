@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-02 22:10+0300\n"
+"POT-Creation-Date: 2025-08-04 12:50+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,11 +24,13 @@ msgid "Ваше замовлення"
 msgstr "Ваш заказ"
 
 #: .\cart\templates\cart\includes\included_cart.html:33
+#: .\order\templates\order\thanks_order.html:102
 #: .\product\templates\product\detail.html:87
 msgid "Артикул"
 msgstr "Артикул"
 
 #: .\cart\templates\cart\includes\included_cart.html:92
+#: .\order\templates\order\thanks_order.html:132
 msgid "Сума"
 msgstr "Сумма"
 
@@ -124,11 +126,11 @@ msgstr "Популярные категории"
 msgid "Хіти продажів"
 msgstr "Хиты продаж"
 
-#: .\mysite\settings.py:136
+#: .\mysite\settings.py:140
 msgid "Ukraine"
 msgstr ""
 
-#: .\mysite\settings.py:137
+#: .\mysite\settings.py:141
 msgid "Russia"
 msgstr ""
 
@@ -200,6 +202,14 @@ msgstr "Отделение Укрпочты"
 msgid "Відділення Meest"
 msgstr "Отделение Meest"
 
+#: .\order\models.py:92 .\order\templates\order\thanks_order.html:17
+msgid "Номер замовлення"
+msgstr "Номер заказа"
+
+#: .\order\models.py:93
+msgid "Сплачено?"
+msgstr "Оплачено?"
+
 #: .\order\templates\order\create.html:5 .\order\templates\order\create.html:12
 msgid "Оформлення замовлення"
 msgstr "Оформление заказа"
@@ -208,17 +218,21 @@ msgstr "Оформление заказа"
 msgid "Контактна інформація"
 msgstr "Контактная информация"
 
-#: .\order\templates\order\create.html:25 .\user\templates\user\account.html:30
+#: .\order\templates\order\create.html:25
+#: .\order\templates\order\thanks_order.html:60
+#: .\user\templates\user\account.html:30
 msgid "Ім’я"
 msgstr "Имя"
 
-#: .\order\templates\order\create.html:34 .\user\templates\user\account.html:39
-#: .\user\templates\user\register.html:28
+#: .\order\templates\order\create.html:34
+#: .\order\templates\order\thanks_order.html:62
+#: .\user\templates\user\account.html:39 .\user\templates\user\register.html:28
 msgid "Прізвище"
 msgstr "Фамилия"
 
-#: .\order\templates\order\create.html:43 .\user\templates\user\account.html:48
-#: .\user\templates\user\register.html:41
+#: .\order\templates\order\create.html:43
+#: .\order\templates\order\thanks_order.html:64
+#: .\user\templates\user\account.html:48 .\user\templates\user\register.html:41
 msgid "По батькові"
 msgstr "Отчество"
 
@@ -249,6 +263,7 @@ msgstr "Адрес отделения"
 
 #: .\order\templates\order\create.html:164
 #: .\order\templates\order\detail.html:62
+#: .\order\templates\order\thanks_order.html:43
 msgid "Поштовий індекс"
 msgstr "Почтовый индекс"
 
@@ -257,6 +272,8 @@ msgid "Місто"
 msgstr "Город"
 
 #: .\order\templates\order\create.html:193
+#: .\order\templates\order\thanks_order.html:30
+#: .\order\templates\order\thanks_order.html:50
 msgid "Відділення"
 msgstr "Отделение"
 
@@ -328,10 +345,57 @@ msgstr "Товары в заказе"
 #: .\order\templates\order\detail.html:102
 msgid "Кількість"
 msgstr "Количество"
+#: .\order\templates\order\thanks_order.html:8
+msgid "Дякуємо за замовлення!"
+msgstr "Спасибо за заказ!"
 
-#: .\order\views.py:43
-msgid "Ваше замовлення успішно створено"
-msgstr "Ваш заказ успешно создан"
+#: .\order\templates\order\thanks_order.html:10
+msgid ""
+"Ваше замовлення буде оброблене протягом 24 годин у робочі дні. Ми повідомимо "
+"вас електронною поштою, щойно воно буде надіслано."
+msgstr ""
+"Ваш заказ будет обработан в течение 24 часов в рабочие дни. Мы уведомим вас по электронной почте, как только он будет отправлен."
+
+#: .\order\templates\order\thanks_order.html:20
+msgid "Дата"
+msgstr "Дата"
+
+#: .\order\templates\order\thanks_order.html:22
+msgid "Спосіб доставки"
+msgstr "Способ доставки"
+
+#: .\order\templates\order\thanks_order.html:27
+msgid "Нова Пошта (відділення), місто"
+msgstr "Новая почта (отделение), город"
+
+#: .\order\templates\order\thanks_order.html:34
+msgid "Нова Пошта (поштомат), місто"
+msgstr "Новая почта (постамат), город"
+
+#: .\order\templates\order\thanks_order.html:37
+msgid "Поштомат"
+msgstr "Постамат"
+
+#: .\order\templates\order\thanks_order.html:40
+msgid "Укрпошта, адреса"
+msgstr "Укрпочта, адрес"
+
+#: .\order\templates\order\thanks_order.html:47
+msgid "Meest, місто"
+msgstr "Meest, город"
+
+#: .\order\templates\order\thanks_order.html:66
+msgid "Телефон"
+msgstr "Телефон"
+
+#: .\order\templates\order\thanks_order.html:68
+msgid "Електронна пошта"
+msgstr "Электронная почта"
+
+#: .\order\templates\order\thanks_order.html:73
+msgid "Повернутися до покупок"
+msgstr "Вернуться к покупкам"
+
 
 #: .\product\models.py:215
 msgid "Варіація продукта"
@@ -619,14 +683,14 @@ msgstr "Аккаунт успешно обновлён"
 msgid "Пароль успішно змінено"
 msgstr "Пароль успешно изменён"
 
+#~ msgid "Ваше замовлення успішно створено"
+#~ msgstr "Ваш заказ успешно создан"
+
 #~ msgid "Навігація"
 #~ msgstr "Навигация"
 
 #~ msgid "Доставка"
 #~ msgstr "Доставка"
-
-#~ msgid "Оплата"
-#~ msgstr "Оплата"
 
 #~ msgid "Підтримка"
 #~ msgstr "Поддержка"
@@ -641,11 +705,6 @@ msgstr "Пароль успешно изменён"
 #~ msgstr "Контакты"
 
 #, fuzzy
-#~| msgid "Поштомат Нової пошти"
-#~ msgid "Поштомат Нової"
-#~ msgstr "Почтомат «Новая почта»"
-
-#, fuzzy
 #~| msgid "адреса"
 #~ msgid "Адреса"
 #~ msgstr "адрес"
@@ -655,9 +714,6 @@ msgstr "Пароль успешно изменён"
 
 #~ msgid "Админ"
 #~ msgstr "Админ"
-
-#~ msgid "Поштове відділення УКР почти"
-#~ msgstr "Отделение «Укрпочта»"
 
 #~ msgid "Поштове відділення Meest"
 #~ msgstr "Отделение «Meest»"

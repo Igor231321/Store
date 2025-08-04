@@ -29,6 +29,7 @@ urlpatterns = i18n_patterns(
     path("api/", include("api.urls", namespace="api")),
     path("api-token-auth/", views.obtain_auth_token),
     path("products/", include("product.urls", namespace="product")),
+    path("integrations/", include("integrations.urls", namespace="integrations")),
     path("", include("main.urls", namespace="main"))
 )
 

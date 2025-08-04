@@ -10,7 +10,7 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ["id", "status", "user", "delivery_method"]
+    list_display = ["reference", "status", "user", "delivery_method"]
     list_editable = ["status"]
     empty_value_display = 'Не вказано'
     readonly_fields = "created_at",
@@ -24,8 +24,9 @@ class OrderAdmin(admin.ModelAdmin):
         ("Деталі замовлення",
          {
              "classes": ["collapse"],
-             'fields': ['delivery_method', 'np_country', 'np_warehouse', 'np_terminal', 'ukr_address', 'ukr_post_code',
-                        'meest_country', 'meest_warehouse', 'do_not_call', 'created_at', 'status', 'comment']})
+             'fields': ['status', 'paid', "reference", 'delivery_method', 'np_country', 'np_warehouse', 'np_terminal',
+                        'ukr_address', 'ukr_post_code',
+                        'meest_country', 'meest_warehouse', 'do_not_call', 'created_at', 'comment']})
     ]
     list_per_page = 20
 

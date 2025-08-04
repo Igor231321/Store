@@ -1,19 +1,40 @@
 from cart.models import Cart
 
 
-def get_user_carts(request):
-    if request.user.is_authenticated:
-        return (Cart.objects.filter(user=request.user)
-                .select_related("product_variation",
-                                "product_variation__product",
-                                "product_variation__attribute_value__attribute",
-                                "product_variation__attribute_value"))
-    else:
-        if not request.session.session_key:
-            request.session.create()
+def get_user_carts(request=None, user=None, session_key=None):
+    filters = {}
 
-        return (Cart.objects.filter(session_key=request.session.session_key)
-                .select_related("product_variation",
-                                "product_variation__product",
-                                "product_variation__attribute_value__attribute",
-                                "product_variation__attribute_value"))
+    if user:
+        filters["user"] = user
+    elif session_key:
+        filters["session_key"] = session_key
+    else:
+        if request.user.is_authenticated:
+            filters["user"] = request.user
+        else:
+            if not request.session.session_key:
+                request.session.create()
+            filters["session_key"] = request.session.session_key
+
+    carts = Cart.objects.filter(**filters).select_related("product_variation",
+                                                          "product_variation__product",
+                                                          "product_variation__attribute_value__attribute",
+                                                          "product_variation__attribute_value")
+    return carts
+#
+# if request.user.is_authenticated or user:
+#     current_user = user if user else request.user
+#     return (Cart.objects.filter(user=current_user)
+#             .select_related("product_variation",
+#                             "product_variation__product",
+#                             "product_variation__attribute_value__attribute",
+#                             "product_variation__attribute_value"))
+# else:
+#     if not request.session.session_key:
+#         request.session.create()
+#
+#     return (Cart.objects.filter(session_key=request.session.session_key)
+#             .select_related("product_variation",
+#                             "product_variation__product",
+#                             "product_variation__attribute_value__attribute",
+#                             "product_variation__attribute_value"))

@@ -2,111 +2,143 @@
 {% load static i18n %}
 
 {% block title %}
-  {% trans 'Замовлення' %} №{{ order.id }}
+  {% trans 'Замовлення' %} №{{ order.reference }}
 {% endblock %}
 
 {% block content %}
-  <div class="max-w-4xl mx-auto px-6 py-10">
-    <h1 class="text-3xl font-medium text-teal-700 text-center mb-8">{% trans 'Деталі замовлення' %} №{{ order.id }}</h1>
+  <div class="mx-auto">
 
-    <div class="bg-white rounded-2xl shadow-md border border-gray-200 divide-y divide-gray-100">
-      <div class="p-6 flex flex-col sm:flex-row justify-between gap-4">
-        <div>
-          <h2 class="text-lg font-medium text-gray-900">{% trans 'Оформлено' %}:</h2>
-          <p class="text-gray-600">{{ order.created_at|date:'d.m.Y H:i' }}</p>
-        </div>
-        <div>
-          <h2 class="text-lg font-medium text-gray-900">{% trans 'Статус' %}:</h2>
-          <span class="inline-block mt-1 px-3 py-1 rounded-full text-sm font-medium
-          {% if order.status == 'PR' %}
-              bg-yellow-100 text-yellow-800
-            {% elif order.status == 'RC' %}
-              bg-green-100 text-green-700
-            {% elif order.status == 'CL' %}
-              bg-red-100 text-red-700
-            {% endif %}">
-            {{ order.get_status_display }}
-          </span>
-        </div>
-      </div>
+  <div class="border-b border-b-gray-200 mb-6">
+    <h1 class="text-3xl font-semibold text-slate-600 mb-3 ">{% trans "Дякуємо за замовлення!" %}</h1>
+    {% if info %}
+      <p class="text-gray-700 mb-8">
+        {% trans "Ваше замовлення буде оброблене протягом 24 годин у робочі дні. Ми повідомимо вас електронною поштою, щойно воно буде надіслано." %}
+      </p>
+    {% endif %}
+  </div>
 
-      <div class="p-6 grid sm:grid-cols-2 gap-6">
-        <div>
-          <h3 class="text-teal-700 font-medium mb-1">{% trans 'Інформація про клієнта' %}</h3>
-          <p>
-            <strong>{% trans "Ім'я" %}:</strong> {{ order.first_name }}
-          </p>
-          <p>
-            <strong>{% trans 'Фамілія' %}:</strong> {{ order.last_name }}
-          </p>
-          <p>
-            <strong>Телефон:</strong> {{ order.phone_number }}
-          </p>
-          <p>
-            <strong>Email:</strong> {{ order.email|default_if_none:'Не вказано' }}
-          </p>
-        </div>
-        <div>
-          <h3 class="text-teal-700 font-medium mb-1">Доставка</h3>
+  <div class="grid md:grid-cols-2 gap-10 text-sm md:text-base">
+    <div class="space-y-2">
+      <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+          class="text-slate-700 font-semibold">{% trans "Номер замовлення" %}</span> {{ order.reference|default:"—" }}
+      </p>
+      <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+          class="text-slate-700 font-semibold">{% trans "Дата" %}</span> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+      <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+          class="text-slate-700 font-semibold">{% trans "Спосіб доставки" %}</span> {{ order.get_delivery_method_display }}
+      </p>
 
-          {% if order.delivery_method == "NP_WH" %}
-            <p><strong>{% trans "Місто доставки" %}:</strong> {{ order.np_country }}</p>
-            <p><strong>{% trans "Відділення Нової пошти" %}:</strong> {{ order.np_warehouse }}</p>
+      {% if order.delivery_method == order.DeliveryMethod.NP_WAREHOUSE %}
+        <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+            class="text-gray-800 font-semibold">{% trans "Нова Пошта (відділення), місто" %}</span> {{ order.np_country|default:"—" }}
+        </p>
+        <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+            class="text-gray-800 font-semibold">{% trans "Відділення" %}</span> {{ order.np_warehouse|default:"—" }}
+        </p>
+      {% elif order.delivery_method == order.DeliveryMethod.NP_TERMINAL %}
+        <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+            class="text-gray-800 font-semibold">{% trans "Нова Пошта (поштомат), місто" %}</span> {{ order.np_country|default:"—" }}
+        </p>
+        <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+            class="text-gray-800 font-semibold">{% trans "Поштомат" %}</span> {{ order.np_terminal|default:"—" }}</p>
+      {% elif order.delivery_method == order.DeliveryMethod.UKR_WAREHOUSE %}
+        <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+            class="text-gray-800 font-semibold">{% trans "Укрпошта, адреса" %}</span> {{ order.ukr_address|default:"—" }}
+        </p>
+        <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+            class="text-gray-800 font-semibold">{% trans "Поштовий індекс" %}</span> {{ order.ukr_post_code|default:"—" }}
+        </p>
+      {% elif order.delivery_method == order.DeliveryMethod.MEEST_WAREHOUSE %}
+        <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+            class="text-gray-800 font-semibold">{% trans "Meest, місто" %}</span> {{ order.meest_country|default:"—" }}
+        </p>
+        <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+            class="text-gray-800 font-semibold">{% trans "Відділення" %}</span> {{ order.meest_warehouse|default:"—" }}
+        </p>
+      {% else %}
+        <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+            class="text-gray-800 font-semibold">—</span></p>
+      {% endif %}
 
-          {% elif order.delivery_method == "NP_TR" %}
-            <p><strong>{% trans "Місто доставки" %}:</strong> {{ order.np_country }}</p>
-            <p><strong>{% trans "Поштомат Нової пошти" %}:</strong> {{ order.np_terminal }}</p>
+      <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+          class="text-slate-700 font-semibold">{% trans "Сплачено" %}</span> {{ order.paid|yesno:"Так,Ні" }}</p>
+      <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+          class="text-slate-700 font-semibold">{% trans "Ім’я" %}</span> {{ order.first_name }}</p>
+      <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+          class="text-slate-700 font-semibold">{% trans "Прізвище" %}</span> {{ order.last_name }}</p>
+      <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+          class="text-slate-700 font-semibold">{% trans "По батькові" %}</span> {{ order.surname|default:"—" }}</p>
+      <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+          class="text-slate-700 font-semibold">{% trans "Телефон" %}</span> {{ order.phone_number }}</p>
+      <p class="flex justify-between py-2 border-b border-b-gray-200"><span
+          class="text-slate-700 font-semibold">{% trans "Електронна пошта" %}</span> {{ order.email }}</p>
 
-          {% elif order.delivery_method == "UKR_WH" %}
-            <p><strong>{% trans "Адреса доставки" %}:</strong> {{ order.ukr_address }}</p>
-            <p><strong>{% trans "Поштовий індекс" %}:</strong> {{ order.ukr_post_code }}</p>
+      <p class="mt-8">
+        <a href="{% url 'main:home' %}"
+           class="px-5 py-2  bg-teal-600 hover:bg-teal-700 text-white  hover:shadow-xl font-medium transition rounded-full">
+          {% trans "Повернутися до покупок" %}
+        </a>
+      </p>
+    </div>
 
-          {% else %}
-            <p><strong>{% trans "Місто доставки" %}:</strong> {{ order.meest_country }}</p>
-            <p><strong>{% trans "Відділення Meest" %}:</strong> {{ order.meest_warehouse }}</p>
-          {% endif %}
+    <div class="bg-gray-100 p-4 md:p-8 rounded-2xl h-min shadow-sm sticky top-20">
+      <h2 class="text-center border-b pb-3 border-gray-400 text-2xl text-slate-800 mb-3 font-medium">
+        {% trans 'Ваше замовлення' %}
+      </h2>
+      <div class="flex flex-col gap-y-3">
+        {% for item in order.items.all %}
+          <div class="flex border-b border-gray-400 pb-3 gap-2 md:gap-4 relative">
+            {% if item.product_variation.image %}
+              <img src="{{ item.product_variation.image.url }}" alt="{{ item.product_variation.product.name }}"
+                   class="w-24 h-24 md:w-32 md:h-32 object-cover rounded-md"/>
+            {% endif %}
 
-          {% if order.comment %}
-            <p class="mt-2 text-sm text-gray-500">
-              <strong>{% trans 'Коментар' %}:</strong> {{ order.comment }}
-            </p>
-          {% endif %}
-        </div>
-      </div>
+            {% if item.product_variation.product.discount %}
+              <span
+                  class="bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-0 left-0">
+              -{{ item.product_variation.product.discount|floatformat }}%
+            </span>
+            {% endif %}
 
-      <!-- Товары -->
-      <div class="p-6">
-        <h3 class="text-teal-700 font-medium">{% trans 'Товари в замовленні' %}</h3>
-        <div class="">
-          {% for item in order.items.all %}
-            <div class="flex border-b border-gray-400 py-3 gap-2">
-              {% if item.product_variation.image %}
-                <img src="{{ item.product_variation.image.url }}" alt="{{ item.product_variation.product.name }}"
-                     class="w-24 h-24 object-cover rounded-md"/>
+            <div class="flex-1 relative">
+              <a href="{{ item.product_variation.product.get_absolute_url }}">
+                <h2 class="inline-block font-medium text-lg hover:text-teal-500 transition-colors mb-2">
+                  {{ item.product_variation.product.name }}
+                </h2>
+              </a>
+
+              <div class="flex gap-2 text-sm font-medium">
+                <span class="text-gray-400">{% trans 'Артикул' %}:</span>
+                <span>{{ item.product_variation.article }}</span>
+              </div>
+
+              {% if item.product_variation.attribute_value %}
+                <div class="flex gap-2 text-sm font-medium">
+                  <span class="text-gray-400">{{ item.product_variation.attribute_value.attribute }}:</span>
+                  <span>{{ item.product_variation.attribute_value.value }}</span>
+                </div>
               {% endif %}
 
-              <div class="flex-1 relative">
-                <a href="{{ item.product_variation.product.get_absolute_url }}"><h2
-                    class="inline-block font-medium text-lg hover:text-teal-500 transition-colors mb-1">{{ item.product_variation.product.name }}</h2>
-                </a>
-                <p class="font-medium mb-1">{{ item.products_sum }} грн.</p>
-
-                {% if item.product_variation.attribute_value %}
-                  <div class="flex gap-2 text-sm font-medium">
-                    <span class="text-gray-400">{{ item.product_variation.attribute_value.attribute }}</span>
-                    <span>{{ item.product_variation.attribute_value.value }}</span>
+              <div class="mt-2">
+                {% if item.product_variation.product.discount %}
+                  <div class="flex items-center gap-2">
+                  <span class="line-through text-gray-500 text-base">
+                    {{ item.product_variation.get_price }} грн.
+                  </span>
                   </div>
                 {% endif %}
 
-                <div class="flex gap-2 text-sm font-medium">
-                  <span class="text-gray-400">{% trans 'Кількість' %}:</span>
-                  <span>{{ item.quantity }}</span>
-                </div>
+                <p class="font-medium">
+                  {{ item.quantity }} x {{ item.product_variation.get_price_with_discount }} грн.
+                </p>
               </div>
             </div>
-          {% endfor %}
-        </div>
+          </div>
+        {% endfor %}
       </div>
+
+      <p class="text-xl font-medium flex justify-between mt-5">
+        <span>{% trans "Сума" %}</span> {{ order.items.total_sum }} грн.</p>
     </div>
   </div>
 {% endblock %}

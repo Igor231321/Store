@@ -7,7 +7,7 @@ from order.models import Order
 class OrderCreateForm(forms.ModelForm):
     class Meta:
         model = Order
-        exclude = ["user", "session_key", "status", "created_at"]
+        exclude = ["user", "session_key", "status", "created_at", "paid", "reference"]
         widgets = {
             "phone_number": forms.TextInput(attrs={'class': 'input'}),
             "first_name": forms.TextInput(attrs={'class': 'input'}),
