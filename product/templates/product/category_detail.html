@@ -11,7 +11,7 @@
 
 {% block content %}
   <div class="flex flex-col sm:flex-row gap-3 items-baseline justify-between border-b border-gray-300 pb-3 mb-5">
-    <h1 class="text-4xl font-medium tracking-tight text-slate-600">
+    <h1 class="text-3xl md:text-4xl font-semibold text-gray-700">
       {% if request.GET.q %}{% trans "Результат пошуку за запитом" %} "{{ request.GET.q }}"
       {% else %}{{ category.name }}{% endif %}</h1>
 

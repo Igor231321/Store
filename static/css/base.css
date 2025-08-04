@@ -3,6 +3,7 @@
 body {
     font-family: "Rubik", sans-serif;
 }
+
 button {
     cursor: pointer;
 }
@@ -22,7 +23,7 @@ button {
 
 .offcanvas-body {
     flex-grow: 1;
-    padding: 1rem;
+    padding: 2rem 1rem;
     overflow-y: auto;
 }
 
