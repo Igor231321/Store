@@ -89,6 +89,8 @@ class Order(models.Model):
     status = models.CharField(
         "Статус", choices=Status, max_length=2, default=Status.PROCESSING
     )
+    reference = models.CharField(_("Номер замовлення"), max_length=6, null=True)
+    paid = models.BooleanField(_("Сплачено?"), default=False)
     phone_number = models.CharField("Номер телефону", max_length=25)
     first_name = models.CharField("Ім'я", max_length=30)
     last_name = models.CharField("Прізвище", max_length=30)
@@ -115,7 +117,7 @@ class Order(models.Model):
         ordering = ("-id",)
 
     def __str__(self):
-        return f"Замовлення №{self.pk})"
+        return f"Замовлення №{self.reference}"
 
 
 class OrderItem(models.Model):

@@ -59,7 +59,7 @@ class Category(MPTTModel):
     )
     slug = models.SlugField("Слаг", max_length=50, unique=True)
     image = models.ImageField(upload_to="categories_images/")
-    in_home_page = models.BooleanField("На головній сторінці?", null=True, default=False)
+    in_home_page = models.BooleanField("На головній сторінці?", default=False)
 
     class MPTTMeta:
         order_insertion_by = ["name"]
@@ -113,7 +113,7 @@ class Product(AbstractNamedModel):
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, verbose_name="Бренд")
     currency = models.ForeignKey(Currency, on_delete=models.PROTECT, verbose_name="Валюта", blank=True, null=True)
     discount = models.DecimalField("Знижка у %", max_digits=10, decimal_places=2, blank=True, null=True)
-    in_home_page = models.BooleanField("На головній сторінці?", null=True, default=False)
+    in_home_page = models.BooleanField("На головній сторінці?", default=False)
 
     class Meta:
         db_table = "product"

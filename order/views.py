@@ -1,18 +1,22 @@
+import time
+
+import requests
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.messages.views import SuccessMessageMixin
 from django.core.cache import cache
 from django.db.models import Prefetch
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
 from django.views import generic
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from cart.utils import get_user_carts
+from integrations.services.wayforpay_services import generate_signature
 from order.forms import OrderCreateForm, QuickOrderForm
 from order.models import Country, Order, OrderItem, Warehouse
+from order.services import generate_reference
 from product.models import ProductVariation
 
 
@@ -35,12 +39,11 @@ class OrderDetailView(LoginRequiredMixin, generic.DetailView):
         return order
 
 
-class OrderCreateView(SuccessMessageMixin, generic.CreateView):
+class OrderCreateView(generic.CreateView):
     model = Order
     template_name = "order/create.html"
     form_class = OrderCreateForm
-    success_url = reverse_lazy("product:сategories")
-    success_message = _("Ваше замовлення успішно створено")
+    success_url = reverse_lazy("product:categories")
 
     def get_initial(self):
         initial = super().get_initial()
@@ -82,18 +85,47 @@ class OrderCreateView(SuccessMessageMixin, generic.CreateView):
             order.user = self.request.user
         else:
             order.session_key = self.request.session.session_key
+        order.reference = generate_reference()
 
         order.save()
 
         user_carts = get_user_carts(self.request)
+        products_name = []
+        products_price = []
+        products_count = []
         for cart in user_carts:
-            OrderItem.objects.create(
-                order=order,
-                product_variation=cart.product_variation,
-                quantity=cart.quantity,
-            )
+            products_name.append(str(cart.product_variation))
+            products_price.append(cart.product_variation.get_price_with_discount())
+            products_count.append(cart.quantity)
 
-        user_carts.delete()
+        order_data = {
+            "transactionType": "CREATE_INVOICE",
+            "merchantAccount": "test_merch_n1",
+            "merchantAuthType": "SimpleSignature",
+            "merchantDomainName": "127.0.0.1",
+            "orderReference": f"{order.reference}",
+            "apiVersion": 1,
+            "orderDate": int(time.time()),
+            "clientFirstName": order.first_name,
+            "clientLastName": order.last_name,
+            "clientPhone": order.phone_number,
+            "clientEmail": order.email if order.email else "",
+            "productName": products_name,
+            "productPrice": list(map(str, products_price)),
+            "productCount": list(map(str, products_count)),
+            "amount": str(user_carts.total_sum()),
+            "currency": "UAH",
+            "serviceUrl": "https://25d911808be1.ngrok-free.app//uk/integrations/wayforpay_callback/",
+            "approvedUrl": "https://25d911808be1.ngrok-free.app//uk/order/thanks_order/",
+        }
+
+        order_data["merchantSignature"] = generate_signature(order_data)
+
+        res = requests.post("https://api.wayforpay.com/api", json=order_data).json()
+        if res["reason"] == "Ok":
+            return redirect(res["invoiceUrl"])
+        else:
+            print(res)
 
         return super().form_valid(form)
 
@@ -160,3 +192,19 @@ def quick_order_form(request):
         messages.success(request, "Очікуйте дзвінка — ми з вами скоро зв'яжемося!")
         return redirect(request.META.get("HTTP_REFERER"))
     return QuickOrderForm
+
+
+@csrf_exempt
+def thanks_order(request):
+    order_reference = request.POST["orderReference"]
+
+    order = cache.get(f"order-{order_reference}")
+    if not order:
+        order = Order.objects.prefetch_related(
+            Prefetch("items", queryset=OrderItem.objects.select_related("product_variation__product",
+                                                                        "product_variation__attribute_value__attribute",
+                                                                        "product_variation__attribute_value"))
+        ).get(reference=order_reference)
+        cache.set(f"order-{order_reference}", order, 600)
+
+    return render(request, "order/detail.html", {"order": order, "info": True})

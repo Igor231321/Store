@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n static %}
+{% load queries %}
+
+{% block title %}
+  {{ page.title }}
+{% endblock %}
+
+{% block content %}
+  <h1 class="text-3xl sm:text-4xl font-medium tracking-tight text-slate-600 text-center pb-3 mb-5">
+    {{ page.title }}
+  </h1>
+
+  <div class="prose max-w-full">
+    {{ page.content|render_markdown }}
+  </div>
+{% endblock %}

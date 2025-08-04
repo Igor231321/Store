@@ -31,7 +31,7 @@ def login_view(request):
                 messages.success(
                     request, _("Ви успішно увійшли до свого облікового запису")
                 )
-                return redirect("product:сategories")
+                return redirect("product:categories")
     else:
         form = UserLoginForm()
 
@@ -44,13 +44,13 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.success(request, _("Ви успішно вийшли з облікового запису"))
-    return redirect("product:сategories")
+    return redirect("product:categories")
 
 
 class UserRegisterView(generic.CreateView):
     form_class = UserRegisterForm
     template_name = "user/register.html"
-    success_url = reverse_lazy("product:сategories")
+    success_url = reverse_lazy("product:categories")
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -90,9 +90,8 @@ class UserOrders(LoginRequiredMixin, generic.ListView):
         query = Order.objects.filter(user=self.request.user).prefetch_related(
             Prefetch("items", queryset=OrderItem.objects.select_related("product_variation__product__currency")))
 
-
         orders = cache.get_or_set(f"orders_for_{self.request.user.email}",
-                                 query, 300)
+                                  query, 300)
         return orders
 
 

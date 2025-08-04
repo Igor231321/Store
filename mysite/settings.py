@@ -25,7 +25,11 @@ SECRET_KEY = "django-insecure-(dga)+0p-f(!7^-uefk4!7s*ka03kf!a3b%e_ojfqhq(9=hfc(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://25d911808be1.ngrok-free.app",
+]
 
 INSTALLED_APPS = [
     "modeltranslation",
@@ -41,11 +45,13 @@ INSTALLED_APPS = [
     "order",
     "user",
     "api",
+    "main",
 
     "mptt",
     "rest_framework",
     "rest_framework.authtoken",
     "debug_toolbar",
+    "integrations"
 ]
 
 MIDDLEWARE = [
@@ -181,3 +187,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ]
 }
+
+# Wayforpay
+WAYFORPAY_SECRET_KEY = "flk3409refn54t54t*FNJRET"

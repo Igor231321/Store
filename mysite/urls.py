@@ -22,15 +22,17 @@ from django.urls import include, path
 from rest_framework.authtoken import views
 
 urlpatterns = i18n_patterns(
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
     path("cart/", include("cart.urls", namespace="cart")),
     path("order/", include("order.urls", namespace="order")),
     path("user/", include("user.urls", namespace="user")),
     path("api/", include("api.urls", namespace="api")),
-    path('api-token-auth/', views.obtain_auth_token),
-    path("", include("product.urls", namespace="product"))
+    path("api-token-auth/", views.obtain_auth_token),
+    path("products/", include("product.urls", namespace="product")),
+    path("integrations/", include("integrations.urls", namespace="integrations")),
+    path("", include("main.urls", namespace="main"))
 )
 
 if settings.DEBUG:
-    urlpatterns += [path("__debug__/", include('debug_toolbar.urls'))]
+    urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

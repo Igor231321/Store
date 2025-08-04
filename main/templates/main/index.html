@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block slider %}
+  <section class="relative w-full h-[550px] overflow-hidden">
+    <div class="swiper w-full h-full">
+      <div class="swiper-wrapper">
+        {% for slider in sliders %}
+          <div class="swiper-slide relative group">
+            <img src="{{ slider.image.url }}" alt="{{ slider.title }}"
+                 class="w-full h-full object-cover brightness-75 transition duration-300"/>
+
+            <div
+                class="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4 sm:px-6 md:px-12">
+              <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold drop-shadow-lg mb-2">
+                {{ slider.title }}
+              </h2>
+              <p class="text-sm sm:text-base md:text-lg drop-shadow-md mb-4">
+                {{ slider.short_description }}
+              </p>
+              {% if slider.url %}
+                <a href="{{ slider.url }}"
+                   class="inline-flex items-center gap-2 px-5 py-2 sm:px-6 sm:py-3 text-sm sm:text-base md:text-lg font-semibold text-white bg-teal-600 hover:bg-teal-700 active:bg-teal-800 rounded-full shadow-md hover:shadow-xl transition duration-300 ease-in-out">
+                  {{ slider.url_text }}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Стрелки: адаптивное смещение к краям -->
+      <div class="my-prev absolute top-1/2 -translate-y-1/2 left-2 sm:left-4 lg:left-8 z-10 text-white cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 -960 960 960" width="36" fill="white">
+          <path d="M561-240 320-481l241-241 43 43-198 198 198 198-43 43Z"/>
+        </svg>
+      </div>
+
+      <div
+          class="my-next absolute top-1/2 -translate-y-1/2 right-2 sm:right-4 lg:right-8 z-10 text-white cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 -960 960 960" width="36" fill="white">
+          <path d="M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
+{% block content %}
+  {# Swiper #}
+
+  <!-- Categories -->
+  <section class="mb-8">
+    <h2 class="text-3xl font-semibold text-slate-600 text-center mb-6 border-b border-b-gray-200 pb-4">
+      {% trans "Популярні категорії" %}
+    </h2>
+    <div class="hidden md:grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {% for category in categories %}
+        {% include "includes/category_card.html" with category=category %}
+      {% endfor %}
+    </div>
+
+    <div class="md:hidden">
+      <div class="swiper w-full max-w-5xl mx-auto">
+
+        <div class="swiper-wrapper">
+          {% for category in categories %}
+            <div class="swiper-slide flex flex-col items-center p-2">
+              {% include "includes/category_card.html" with category=category %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="my-prev absolute top-1/2 -translate-y-1/2 left-2 sm:left-4 lg:left-8 z-10 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000">
+            <path d="M560.67-240 320-480.67l240.67-240.66L608-674 414.67-480.67 608-287.33 560.67-240Z"></path>
+          </svg>
+        </div>
+
+        <div class="my-next absolute top-1/2 -translate-y-1/2 right-2 sm:right-4 lg:right-8 z-10 text-white cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#000000">
+            <path d="M521.33-480.67 328-674l47.33-47.33L616-480.67 375.33-240 328-287.33l193.33-193.34Z"></path>
+          </svg>
+        </div>
+
+        <div class="my-prev ">
+          <svg xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 -960 960 960" width="36" fill="white">
+            <path d="M561-240 320-481l241-241 43 43-198 198 198 198-43 43Z"/>
+          </svg>
+        </div>
+
+        <div
+            class="my-next absolute top-1/2 -translate-y-1/2 right-2 sm:right-4 lg:right-8 z-10 text-white cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" height="36" viewBox="0 -960 960 960" width="36" fill="white">
+            <path d="M530-481 332-679l43-43 241 241-241 241-43-43 198-198Z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Popular Products -->
+  <section>
+    <h2 class="text-3xl font-semibold text-slate-600 text-center mb-6 border-b border-b-gray-200 pb-4">
+      {% trans "Хіти продажів" %}
+    </h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+
+      {% for product in popular_products %}
+        <div
+            class="p-3 sm:p-4 bg-white rounded-2xl hover:shadow-[0_0_15px_rgba(0,0,0,0.4)] group transition-all relative">
+
+          {% if product.variations.first.image %}
+            <a href="{{ product.get_absolute_url }}"
+               class="block overflow-hidden rounded-xl bg-gray-100">
+              <img src="{{ product.variations.first.image.url }}" alt="{{ product.name }}"
+                   class="w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"/>
+            </a>
+          {% endif %}
+
+          <div class="text-center mt-3 sm:mt-4 px-2">
+            <a href="{{ product.get_absolute_url }}">
+              <h2 class="text-base sm:text-lg font-semibold text-slate-700 group-hover:text-teal-500 transition-colors">
+                {{ product.name }}
+              </h2>
+            </a>
+
+            <div class="mt-1">
+              {% if product.discount %}
+                <span class="line-through text-gray-500 text-sm">
+                {{ product.display_price }}
+              </span>
+              {% endif %}
+              <p class="text-base font-semibold text-slate-700">{{ product.display_price_with_discount }}</p>
+            </div>
+
+            {% if product.variations.count > 1 %}
+              <div class="mt-2">
+                <div class="group-hover:flex hidden justify-center gap-2 flex-wrap">
+                  {% for variation in product.variations.all|dictsort:"price" %}
+                    <span class="px-2 py-1 bg-black text-white font-medium rounded-2xl text-xs sm:text-sm">
+                        {{ variation.attribute_value.value }}
+                      </span>
+                  {% endfor %}
+                </div>
+                <div class="group-hover:hidden flex justify-center">
+                    <span class="px-2 py-1 bg-teal-600 text-white font-medium text-xs sm:text-sm rounded-2xl">
+                      Варіацій: {{ product.variations.count }}
+                    </span>
+                </div>
+              </div>
+            {% endif %}
+
+            <hr class="mt-4 text-gray-300 group-hover:opacity-0 transition-opacity duration-200"/>
+          </div>
+
+          {% if product.discount %}
+            <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full absolute top-2 left-2">
+            -{{ product.discount|floatformat }}%
+          </span>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endblock %}
+
+{% block js %}
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <script>
+      const swiper = new Swiper('.swiper', {
+          direction: 'horizontal',
+          loop: true,
+
+          slidesPerView: 1,
+          slidesPerGroup: 1,
+
+          navigation: {
+              prevEl: '.my-prev',  // класс твоей кнопки "назад"
+              nextEl: '.my-next',  // класс твоей кнопки "вперед"
+          },
+      });
+  </script>
+{% endblock %}

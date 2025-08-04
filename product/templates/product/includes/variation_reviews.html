@@ -22,10 +22,8 @@
         </div>
         <p class="mt-2 text-sm text-gray-700 leading-relaxed">{{ review.comment }}</p>
       </div>
-    {% empty %}
-      <p class="text-sm text-gray-500 text-center py-6"></p>
     {% endfor %}
-    {% else %}
+{% else %}
+    <h3 class="text-lg text-center font-semibold">{% trans "Відгуків поки що немає" %}</h3>
   </div>
-  <h3 class="text-lg text-center font-semibold">{% trans "Відгуків поки що немає" %}</h3>
 {% endif %}

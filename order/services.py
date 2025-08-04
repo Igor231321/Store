@@ -1,13 +1,17 @@
+import uuid
 
 import requests
 
-from order.models import Country, Warehouse
+from integrations.models import ApiKey
+
+#
 
 URL = 'https://api.novaposhta.ua/v2.0/json/'
-API_KEY = '3b5b8365494aa3aaa40ccb84fddc6468'
+API_KEY = ApiKey.objects.filter(service=ApiKey.ServiceChoices.NOVA_POST)
 
 
 def load_countries():
+    from order.models import Country
     page = 1
     limit = 100
 
@@ -51,6 +55,8 @@ def load_countries():
 
 
 def load_warehouses():
+    from order.models import Country, Warehouse
+
     Warehouse.objects.all().delete()
     print("База успішно оновлена...")
     print("Отримання данних від API...")
@@ -90,3 +96,9 @@ def load_warehouses():
     Warehouse.objects.bulk_create(result)
     print("Успішно")
     print(f"Загружено відділень: {len(result)}")
+
+
+def generate_reference():
+    text = uuid.uuid4().hex
+    digits = "".join(filter(str.isdigit, text))
+    return digits[:6]
