@@ -99,7 +99,9 @@ class AttributeValue(models.Model):
         verbose_name_plural = "Значення атрибутів"
 
     def __str__(self):
-        return f"{self.attribute.name} - {self.value}"
+        attr = self.attribute.name if self.attribute else "Без атрибута"
+        val = self.value or "Без значення"
+        return f"{attr}: {val}"
 
 
 class Product(AbstractNamedModel):
@@ -168,7 +170,7 @@ class ProductVariation(models.Model):
     )
     article = models.CharField("Артикул", max_length=255, unique=True)
     quantity = models.PositiveIntegerField("Кількість товару", default=0)
-    status = models.CharField("Статус", choices=StatusTextChoices, null=True)
+    status = models.CharField("Статус", choices=StatusTextChoices)
 
     class Meta:
         db_table = "product_variations"
@@ -192,7 +194,7 @@ class ProductVariation(models.Model):
         return price
 
     def __str__(self):
-        return f"{self.product.name} - {self.article}"
+        return f"{self.product.name} (Артикул: {self.article}, {self.attribute_value}, {self.get_status_display()})"
 
 
 class ProductCharacteristics(AbstractNamedModel):

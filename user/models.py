@@ -12,8 +12,6 @@ class User(AbstractUser):
         "Номер телефону", max_length=20, unique=True
     )
     surname = models.CharField("По батьківськи", max_length=50)
-    city = models.CharField("Місто", max_length=100, blank=True, null=True)
-    warehouse = models.CharField("Відділення НП", max_length=255, blank=True, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["phone_number"]
@@ -26,4 +24,6 @@ class User(AbstractUser):
         verbose_name_plural = "Користувачі"
 
     def __str__(self):
-        return self.email
+        full_name = f"{self.first_name} {self.surname}".strip()
+        phone = f" | Телефон: {self.phone_number}" if self.phone_number else ""
+        return f"{full_name or self.email}{phone}"

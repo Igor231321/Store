@@ -10,7 +10,7 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ["reference", "status", "user", "delivery_method"]
+    list_display = ["reference", "status", "user", "delivery_method", "paid"]
     list_editable = ["status"]
     empty_value_display = 'Не вказано'
     readonly_fields = "created_at",

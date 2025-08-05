@@ -24,8 +24,6 @@ class UserAdmin(UserAdmin):
                     "last_name",
                     "surname",
                     "phone_number",
-                    "city",
-                    "warehouse",
                 )
             },
         ),

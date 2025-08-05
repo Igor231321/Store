@@ -1,9 +1,10 @@
 from django.contrib import admin
+from modeltranslation.admin import TranslationAdmin, TranslationInlineModelAdmin
 
 from .models import Group, Page, Slider
 
 
-class PageTabAdmin(admin.StackedInline):
+class PageTabAdmin(TranslationInlineModelAdmin):
     model = Page
     prepopulated_fields = {"slug": ["title"]}
     extra = 1
@@ -17,12 +18,12 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 @admin.register(Page)
-class PageAdmin(admin.ModelAdmin):
+class PageAdmin(TranslationAdmin):
     list_display = ["title", "content", "created"]
     prepopulated_fields = {"slug": ["title"]}
 
 
 @admin.register(Slider)
-class SlideAdmin(admin.ModelAdmin):
-    list_display = ["title", "short_description", "url_text", "order", "is_active"]
-    list_editable = ["order", "is_active"]
+class PageAdmin(TranslationAdmin):
+    list_display = ["title", "short_description", "order"]
+
