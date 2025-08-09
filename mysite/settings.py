@@ -10,8 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 from pathlib import Path
-
+import environ
 from django.utils.translation import gettext_lazy as _
+
+env = environ.Env(
+    DEBUG=(bool),
+    SECRET_KEY=(str),
+    DOMAIN_NAME=(str),
+    DATABASE_NAME=(str),
+    DATABASE_USER=(str),
+    DATABASE_PASSWORD=(str),
+    DATABASE_HOST=(str),
+    DATABASE_PORT=(str),
+    WAYFORPAY_SECRET_KEY=(str)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +32,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(dga)+0p-f(!7^-uefk4!7s*ka03kf!a3b%e_ojfqhq(9=hfc("
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
@@ -96,11 +108,11 @@ INTERNAL_IPS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "shop_db",
-        "USER": "home",
-        "PASSWORD": "admin",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": env("DATABASE_NAME"),
+        "USER": env("DATABASE_USER"),
+        "PASSWORD": env("DATABASE_PASSWORD"),
+        "HOST": env("DATABASE_HOST"),
+        "PORT": env("DATABASE_PORT"),
     }
 }
 
@@ -186,4 +198,4 @@ REST_FRAMEWORK = {
 }
 
 # Wayforpay
-WAYFORPAY_SECRET_KEY = "flk3409refn54t54t*FNJRET"
+WAYFORPAY_SECRET_KEY = env("WAYFORPAY_SECRET_KEY")
