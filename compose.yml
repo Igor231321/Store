@@ -1,16 +1,26 @@
 services:
   web:
     build: .
-    image: store:1.0.0
     container_name: web
     command: python manage.py runserver 0.0.0.0:8000
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: usr/src/app
+          ignore:
+            - .venv
+        - action: rebuild
+          path: ./requirements.txt
+        - action: rebuild
+          path: ./entrypoint.sh
     env_file:
       - .env
     ports:
-      - 8000:8000
-
+      - 127.0.0.1:8000:8000
     depends_on:
       - db
+    restart: always
 
   db:
     image: postgres:17-bookworm
@@ -21,3 +31,5 @@ services:
       - POSTGRES_USER=home
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=shop_db
+
+    restart: always

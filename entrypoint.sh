@@ -1,17 +1,16 @@
 #!/bin/sh
 
-if [ "$POSTGRES_DB" = "store" ]
-then
-    echo "Запускаємо postgres"
+echo "Чекаємо на PostgreSQL..."
 
-    while ! nc -z "db" $POSTGRES POST; do
-      sleep 0.5
-    done
+until pg_isready -h db -p 5432 -U home; do
+  echo "PostgreSQL не доступний, чекаємо..."
+  sleep 2
+done
 
-    echo "PostgresSQL запущен"
-fi
+echo "PostgreSQL запущено"
 
 python manage.py makemigrations
 python manage.py migrate
 python manage.py loaddata fixtures/products/all.json
-python manage.py runserver 0.0.0.0:8000
+
+exec "$@"

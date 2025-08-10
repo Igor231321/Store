@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libjpeg-dev \
     zlib1g-dev \
-    netcat-openbsd \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/
 
 RUN pip install --upgrade pip
@@ -23,4 +23,4 @@ COPY . .
 RUN sed -i 's/\r$//g' /usr/src/app/entrypoint.sh
 RUN chmod +x /usr/src/app/entrypoint.sh
 
-ENTRYPOINT [ "./entrypoint.sh" ]
+ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]
