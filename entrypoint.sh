@@ -12,5 +12,6 @@ echo "PostgreSQL запущено"
 python manage.py makemigrations
 python manage.py migrate
 python manage.py loaddata fixtures/products/all.json
+python manage.py collectstatic --noinput
 
 exec "$@"

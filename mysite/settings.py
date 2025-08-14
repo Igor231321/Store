@@ -13,10 +13,16 @@ from pathlib import Path
 import environ
 from django.utils.translation import gettext_lazy as _
 
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 env = environ.Env(
-    DEBUG=(bool),
+    DEBUG=(bool, False),
     SECRET_KEY=(str),
+    ALLOWED_HOSTS=(str),
     DOMAIN_NAME=(str),
+    CSRF_TRUSTED_ORIGINS=(str),
     DATABASE_NAME=(str),
     DATABASE_USER=(str),
     DATABASE_PASSWORD=(str),
@@ -25,8 +31,7 @@ env = environ.Env(
     WAYFORPAY_SECRET_KEY=(str)
 )
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+environ.Env.read_env(BASE_DIR / ".env.dev")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -39,9 +44,7 @@ DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://25d911808be1.ngrok-free.app",
-]
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 INSTALLED_APPS = [
     "modeltranslation",
@@ -153,20 +156,23 @@ LANGUAGES = [
     ("ru", _("Russia")),
 ]
 
-TIME_ZONE = "Europe/Kiev"
+TIME_ZONE = "Europe/Kyiv"
 
 USE_I18N = True
 
 USE_TZ = True
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+
+if DEBUG:
+    STATICFILES_DIRS = [BASE_DIR / "static"]
+else:
+    STATIC_ROOT = BASE_DIR / "static"
+    MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
