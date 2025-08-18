@@ -1,9 +1,12 @@
+from django.utils import timezone
+
 from django.core.cache import cache
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Sum, F, Q
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView, TemplateView
 
 from main.models import Page, Slider
+from order.models import OrderItem
 from product.models import Category, Product, ProductVariation
 
 
@@ -53,3 +56,22 @@ class PageDetailView(DetailView):
         page = cache.get_or_set(f"page_{page_slug}", lambda: get_object_or_404(Page, slug=page_slug), 60 * 10)
 
         return page
+
+
+def dashboard_callback(request, context):
+    start_date = request.GET.get("start_date", timezone.now())
+    end_date = request.GET.get("end_date", timezone.now())
+
+    context.update({
+        "variations": ProductVariation.objects.annotate(
+            total_quantity=Sum(
+                "order_variations__quantity",
+                filter=Q(order_variations__order__created_at__date__range=[start_date, end_date])),
+            total_sum=Sum(
+                F("order_variations__price_with_discount") * F("order_variations__quantity"),
+                filter=Q(order_variations__order__created_at__date__range=[start_date, end_date]))).order_by("total_sum"),
+        "start_date": start_date,
+        "end_date": end_date
+    })
+
+    return context

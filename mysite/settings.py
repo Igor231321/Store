@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 
 import environ
+from django.templatetags.static import static
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
@@ -221,30 +222,15 @@ REST_FRAMEWORK = {
 WAYFORPAY_SECRET_KEY = env("WAYFORPAY_SECRET_KEY")
 
 UNFOLD = {
+    "DASHBOARD_CALLBACK": "main.views.dashboard_callback",
+    "STYLES": [
+        lambda request: static("css/output.css"),
+    ],
     "SIDEBAR": {
         "show_search": False,
         "command_search": False,
         "show_all_applications": True,
-        # "navigation": [
-        #     {
-        #         "title": _("Main"),       # Название приложения
-        #         "separator": False,
-        #         "collapsible": True,      # Делаем collapse
-        #         "items": [
-        #             {
-        #                 "title": _("Slider"),
-        #                 "icon": "image",
-        #                 "link": "/ru/admin/main/slider/",
-        #             },
-        #             {
-        #                 "title": _("OtherModel"),
-        #                 "icon": "layers",
-        #                 "link": "/ru/admin/main/othermodel/",
-        #             },
-        #         ],
-        #     },
-        #
-        # ],
+
         "navigation": [
             {
                 "title": _("Каталог товаров"),
