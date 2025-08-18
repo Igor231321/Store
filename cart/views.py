@@ -4,6 +4,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 
 from cart.models import Cart
+from cart.services import check_quantity
 from cart.utils import get_user_carts
 from product.models import ProductVariation
 
@@ -13,8 +14,10 @@ def cart_add(request):
     quantity = int(request.POST.get("quantity"))
 
     product_variation = ProductVariation.objects.get(id=variation_id)
+    variation_quantity = product_variation.quantity
 
     carts_query = {"product_variation": product_variation}
+    context = {"carts": get_user_carts(request)}
 
     if request.user.is_authenticated:
         carts_query["user"] = request.user
@@ -25,13 +28,21 @@ def cart_add(request):
 
     if carts.exists():
         cart = carts.first()
-        cart.quantity += quantity
+        new_quantity = cart.quantity + quantity
+
+        result = check_quantity(variation_quantity, new_quantity)
+        cart.quantity = result["quantity"]
+        context["message"] = result["message"]
+        context["cart_id"] = cart.id
         cart.save()
     else:
-        carts_query["quantity"] = quantity
-        Cart.objects.create(**carts_query)
+        result = check_quantity(variation_quantity, quantity)
+        carts_query["quantity"] = result["quantity"]
+        context["message"] = result["message"]
+        cart = Cart.objects.create(**carts_query)
+        context["cart_id"] = cart.id
 
-    context = {"carts": get_user_carts(request)}
+    context["variation_quantity"] = variation_quantity
 
     # if referer page is create_order add key orders: True to context
     referer = request.META.get("HTTP_REFERER")
@@ -44,6 +55,7 @@ def cart_add(request):
 
     response_data = {
         "cart_items_html": cart_items_html,
+        "carts_quantity": carts.total_quantity(),
     }
     return JsonResponse(response_data)
 
@@ -51,20 +63,28 @@ def cart_add(request):
 def cart_change(request):
     cart_id = request.POST.get("cart_id")
     quantity = int(request.POST.get("quantity"))
+    increment = request.POST.get("increment")
 
+    carts = get_user_carts(request)
+    context = {"carts": carts}
     cart = Cart.objects.get(id=cart_id)
-
-    cart.quantity = quantity
+    if increment:
+        result = check_quantity(variation_quantity=cart.product_variation.quantity, quantity=quantity)
+        cart.quantity = result.get("quantity")
+        message = result.get("message")
+        context.update({"message": message, "cart_id": cart.id})
+    else:
+        cart.quantity = quantity
     cart.save()
-    updated_quantity = cart.quantity
+
 
     cart_items_html = render_to_string(
-        "cart/includes/included_cart.html", {"carts": get_user_carts(request)}, request=request
+        "cart/includes/included_cart.html", context, request=request
     )
 
     response_data = {
         "cart_items_html": cart_items_html,
-        "quaantity": updated_quantity,
+        "carts_quantity": carts.total_quantity(),
     }
 
     return JsonResponse(response_data)

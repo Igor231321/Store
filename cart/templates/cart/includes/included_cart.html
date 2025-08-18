@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block content %}
+  {{ message_info }}
   {% if carts %}
     {% if order %}
       <h2 class="text-center border-b pb-3 border-gray-400 text-2xl text-slate-800 mb-3 font-medium">
@@ -53,6 +54,15 @@
               <p class="font-medium">
                 {{ cart.quantity }} x {{ cart.product_variation.get_price_with_discount }} грн.
               </p>
+
+              {% if message and cart.id == cart_id %}
+                <p class="text-red-600 text-sm mt-1">
+                  {{ message }}
+                </p>
+              {% endif %}
+
+              {% if cart.message %}
+              {% endif %}
 
               {% if not order %}
                 <div class="flex items-center gap-2 mt-2 input-group">

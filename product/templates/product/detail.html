@@ -567,8 +567,8 @@
                   data: postData,
                   success: function (data) {
                       const countEl = $("#products-in-cart-count");
-                      const current = parseInt(countEl.text() || 0);
-                      countEl.text(current + quantity);
+                      {#const current = parseInt(countEl.text() || 0);#}
+                      countEl.text(data.carts_quantity);
                       $("#cart-items-container").html(data.cart_items_html);
                   },
                   error: function (data) {

@@ -47,8 +47,7 @@ class ProductDetail(DetailView):
         slug = self.kwargs["slug"]
         cache_key = f"product_full_{slug}"
 
-        product = cache.get_or_set(cache_key,
-                                   lambda: Product.objects.select_related("brand").prefetch_related(
+        product = Product.objects.select_related("brand").prefetch_related(
                                        Prefetch(
                                            "variations",
                                            queryset=ProductVariation.objects
@@ -56,7 +55,7 @@ class ProductDetail(DetailView):
                                            .prefetch_related("characteristics")
                                            .order_by("price")
                                        )
-                                   ).get(slug=slug), 60 * 5)
+                                   ).get(slug=slug)
 
         return product
 
@@ -108,7 +107,7 @@ def variation_data(request):
         "price_with_discount": f"{variation.get_price_with_discount()} грн.",
         "characteristics": characteristics,
         "reviews": reviews,
-        "in_stock": variation.status == "IN_STOCK"
+        "in_stock": variation.status == "IN_STOCK",
     }
     return JsonResponse(data)
 
