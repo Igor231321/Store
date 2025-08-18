@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 from pathlib import Path
-import environ
-from django.utils.translation import gettext_lazy as _
 
+import environ
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,6 +48,16 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 INSTALLED_APPS = [
+    "unfold",  # before django.contrib.admin
+    "unfold.contrib.filters",  # optional, if special filters are needed
+    "unfold.contrib.forms",  # optional, if special form elements are needed
+    "unfold.contrib.inlines",  # optional, if special inlines are needed
+    "unfold.contrib.import_export",  # optional, if django-import-export package is used
+    "unfold.contrib.guardian",  # optional, if django-guardian package is used
+    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
+    "unfold.contrib.location_field",  # optional, if django-location-field package is used
+    "unfold.contrib.constance",  # optional, if django-constance package is used
+
     "modeltranslation",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -168,11 +179,14 @@ USE_TZ = True
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 
-if DEBUG:
-    STATICFILES_DIRS = [BASE_DIR / "static"]
-else:
-    STATIC_ROOT = BASE_DIR / "static"
-    MEDIA_ROOT = BASE_DIR / "media"
+# Папка со статикой приложений (для collectstatic)
+STATICFILES_DIRS = [BASE_DIR / "static"]  # локальная разработка
+
+# Папка, куда collectstatic собирает все файлы для продакшена
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Папка для загружаемых файлов
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -205,3 +219,152 @@ REST_FRAMEWORK = {
 
 # Wayforpay
 WAYFORPAY_SECRET_KEY = env("WAYFORPAY_SECRET_KEY")
+
+UNFOLD = {
+    "SIDEBAR": {
+        "show_search": False,
+        "command_search": False,
+        "show_all_applications": True,
+        # "navigation": [
+        #     {
+        #         "title": _("Main"),       # Название приложения
+        #         "separator": False,
+        #         "collapsible": True,      # Делаем collapse
+        #         "items": [
+        #             {
+        #                 "title": _("Slider"),
+        #                 "icon": "image",
+        #                 "link": "/ru/admin/main/slider/",
+        #             },
+        #             {
+        #                 "title": _("OtherModel"),
+        #                 "icon": "layers",
+        #                 "link": "/ru/admin/main/othermodel/",
+        #             },
+        #         ],
+        #     },
+        #
+        # ],
+        "navigation": [
+            {
+                "title": _("Каталог товаров"),
+                # "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Dashboard"),
+                        "icon": "dashboard",  # Supported icon set: https://fonts.google.com/icons
+                        "link": reverse_lazy("admin:index"),
+                        # "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Товар"),
+                        "link": reverse_lazy("admin:product_product_changelist"),
+                        "icon": "shopping_bag"
+                    },
+                    {
+                        "title": _("Варіації товару"),
+                        "link": reverse_lazy("admin:product_productvariation_changelist"),
+                        "icon": "layers"
+                    },
+                    {
+                        "title": _("Категорії"),
+                        "link": reverse_lazy("admin:product_category_changelist"),
+                        "icon": "category"
+                    },
+                    {
+                        "title": _("Атрибути товару"),
+                        "link": reverse_lazy("admin:product_attribute_changelist"),
+                        "icon": "list_alt"
+                    }
+                ],
+            },
+            {
+                "title": _("Заказы и корзины"),
+                "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Замовлення"),
+                        "link": reverse_lazy("admin:order_order_changelist"),
+                        "icon": "receipt_long"
+                    },
+                    {
+                        "title": _("Кошики"),
+                        "link": reverse_lazy("admin:cart_cart_changelist"),
+                        "icon": "shopping_cart"
+                    },
+
+                ],
+            },
+            {
+                "title": _("Взаимодействие с клиентами"),
+                "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Відгуки"),
+                        "link": reverse_lazy("admin:product_review_changelist"),
+                        "icon": "rate_review",
+                    },
+                    {
+                        "title": _("Запросы на наличие"),
+                        "link": reverse_lazy("admin:product_instocknotification_changelist"),
+                        "icon": "notifications_active"
+                    },
+                    {
+                        "title": _("Користувачі"),
+                        "link": reverse_lazy("admin:user_user_changelist"),
+                        "icon": "manage_accounts"
+                    },
+                ],
+            },
+            {
+                "title": _("Настройки"),
+                "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Сторінки"),
+                        "link": reverse_lazy("admin:main_page_changelist"),
+                        "icon": "receipt_long"
+                    },
+                    {
+                        "title": _("Валюти"),
+                        "link": reverse_lazy("admin:product_currency_changelist"),
+                        "icon": "currency_exchange"
+                    },
+                    {
+                        "title": _("Группи сторінок"),
+                        "link": reverse_lazy("admin:main_group_changelist"),
+                        "icon": "folder"
+                    },
+                    {
+                        "title": _("Слайдери"),
+                        "link": reverse_lazy("admin:main_slider_changelist"),
+                        "icon": "slideshow"
+                    },
+
+                ],
+            },
+            {
+                "title": _("Інтеграції та API"),
+                "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Ключі від API"),
+                        "link": reverse_lazy("admin:authtoken_tokenproxy_changelist"),
+                        "icon": "vpn_key"
+                    },
+                    {
+                        "title": _("Інтеграції"),
+                        "link": reverse_lazy("admin:integrations_apikey_changelist"),
+                        "icon": "hub"
+                    },
+
+                ],
+            },
+        ],
+    },
+}
