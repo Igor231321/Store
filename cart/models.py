@@ -28,7 +28,7 @@ class Cart(models.Model):
     objects = CartQuerySet().as_manager()
 
     def __str__(self):
-        return f"Кошик для {self.user.get_full_name()}: {self.product_variation.product.name} (x{self.quantity})"
+        return f"Кошик для: {self.product_variation.product.name} (x{self.quantity})"
 
     def products_sum(self):
         return self.quantity * self.product_variation.get_price_with_discount()

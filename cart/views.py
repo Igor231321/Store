@@ -77,7 +77,6 @@ def cart_change(request):
         cart.quantity = quantity
     cart.save()
 
-
     cart_items_html = render_to_string(
         "cart/includes/included_cart.html", context, request=request
     )

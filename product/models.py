@@ -86,7 +86,7 @@ class Attribute(models.Model):
 
 class AttributeValue(models.Model):
     attribute = models.ForeignKey(
-        Attribute, on_delete=models.CASCADE, null=True, verbose_name="Атрибут"
+        Attribute, on_delete=models.CASCADE, null=True, verbose_name="Атрибут", related_name="values"
     )
     value = models.CharField("Значення", max_length=50, null=True)
 

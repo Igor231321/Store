@@ -125,9 +125,10 @@ class OrderItem(models.Model):
         Order, on_delete=models.CASCADE, verbose_name="Замовлення", related_name="items"
     )
     product_variation = models.ForeignKey(
-        ProductVariation, on_delete=models.CASCADE, verbose_name="Варіація товара", related_name="variations"
+        ProductVariation, on_delete=models.CASCADE, verbose_name="Варіація товара", related_name="order_variations"
     )
     quantity = models.PositiveIntegerField("Кількість", default=1)
+    price_with_discount = models.DecimalField("Ціна на момент покупки", max_digits=10, decimal_places=2, null=True)
 
     class Meta:
         db_table = "order_item"
@@ -141,3 +142,7 @@ class OrderItem(models.Model):
 
     def products_sum(self):
         return self.quantity * self.product_variation.get_price_with_discount()
+
+    def save(self, *args, **kwargs):
+        self.price_with_discount = self.product_variation.get_price_with_discount()
+        return super().save(*args, **kwargs)

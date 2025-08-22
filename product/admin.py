@@ -1,6 +1,8 @@
 from django.contrib import admin
-from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
+from modeltranslation.admin import (TabbedTranslationAdmin,
+                                    TranslationTabularInline)
 from mptt.admin import DraggableMPTTAdmin
+from unfold.admin import ModelAdmin, StackedInline
 
 from product.mixins import ProductSlugMixin
 from product.models import (Attribute, AttributeValue, Brand, Category,
@@ -18,14 +20,15 @@ def in_home_page_false(self, request, queryset):
     queryset.update(in_home_page=False)
 
 
-class ProductVariationInline(admin.StackedInline):
+class ProductVariationInline(StackedInline):
     model = ProductVariation
     extra = 1
     autocomplete_fields = ("attribute_value",)
+    tab = True
 
 
 @admin.register(Product)
-class ProductAdmin(ProductSlugMixin, TranslationAdmin):
+class ProductAdmin(ProductSlugMixin, ModelAdmin, TabbedTranslationAdmin):
     list_display = ["name", "category", "discount", "in_home_page"]
     list_editable = ["category", "discount", "in_home_page"]
 
@@ -34,7 +37,7 @@ class ProductAdmin(ProductSlugMixin, TranslationAdmin):
 
 
 @admin.register(AttributeValue)
-class AttributeValueAdmin(ProductSlugMixin, TranslationAdmin):
+class AttributeValueAdmin(ProductSlugMixin, ModelAdmin, TabbedTranslationAdmin):
     list_display = ["attribute__name", "value"]
     search_fields = ["attribute__name", "value"]
 
@@ -45,7 +48,7 @@ class AttributeValueInline(TranslationTabularInline):
 
 
 @admin.register(Attribute)
-class AttributeAdmin(ProductSlugMixin, TranslationAdmin):
+class AttributeAdmin(ProductSlugMixin, ModelAdmin, TabbedTranslationAdmin):
     list_display = ["name"]
     search_fields = ["name"]
 
@@ -53,19 +56,19 @@ class AttributeAdmin(ProductSlugMixin, TranslationAdmin):
 
 
 @admin.register(ProductCharacteristics)
-class ProductCharacteristicsAdmin(ProductSlugMixin, TranslationAdmin):
+class ProductCharacteristicsAdmin(ProductSlugMixin, ModelAdmin, TabbedTranslationAdmin):
     list_display = ["name", "value", "product_variation"]
 
 
 @admin.register(Category)
-class CategoryAdmin(ProductSlugMixin, DraggableMPTTAdmin, TranslationAdmin):
+class CategoryAdmin(ProductSlugMixin, DraggableMPTTAdmin, ModelAdmin, TabbedTranslationAdmin):
     list_display = ["tree_actions", "indented_title", "name", "in_home_page"]
 
     actions = [in_home_page_true, in_home_page_false]
 
 
 @admin.register(Brand)
-class BrandAdmin(ProductSlugMixin, admin.ModelAdmin):
+class BrandAdmin(ProductSlugMixin, ModelAdmin):
     list_display = ["name"]
 
 
@@ -80,7 +83,7 @@ def set_status_out_in_stock(self, request, queryset):
 
 
 @admin.register(ProductVariation)
-class ProductVariationAdmin(ProductSlugMixin, admin.ModelAdmin):
+class ProductVariationAdmin(ProductSlugMixin, ModelAdmin):
     list_display = ["product", "article", "attribute_value", "price", "status"]
     list_editable = ["price", "attribute_value", "status"]
 
@@ -88,16 +91,16 @@ class ProductVariationAdmin(ProductSlugMixin, admin.ModelAdmin):
 
 
 @admin.register(Currency)
-class CurrencyAdmin(ProductSlugMixin, admin.ModelAdmin):
+class CurrencyAdmin(ProductSlugMixin, ModelAdmin):
     list_display = ["name", "rate"]
     list_display_links = ["name", "rate"]
 
 
 @admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
+class ReviewAdmin(ModelAdmin):
     list_display = ["product_variation", "comment", "first_name", "last_name", "created_at"]
 
 
 @admin.register(InStockNotification)
-class InStockNotificationAdmin(admin.ModelAdmin):
+class InStockNotificationAdmin(ModelAdmin):
     list_display = ["product_variation", "first_name", "last_name", "phone_number", "created_at", "is_notified"]

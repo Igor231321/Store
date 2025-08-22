@@ -47,7 +47,8 @@ class ProductDetail(DetailView):
         slug = self.kwargs["slug"]
         cache_key = f"product_full_{slug}"
 
-        product = Product.objects.select_related("brand").prefetch_related(
+        product = cache.get_or_set(cache_key,
+                                   lambda: Product.objects.select_related("brand").prefetch_related(
                                        Prefetch(
                                            "variations",
                                            queryset=ProductVariation.objects
@@ -55,7 +56,7 @@ class ProductDetail(DetailView):
                                            .prefetch_related("characteristics")
                                            .order_by("price")
                                        )
-                                   ).get(slug=slug)
+                                   ).get(slug=slug), 60 * 5)
 
         return product
 
