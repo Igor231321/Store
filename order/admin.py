@@ -16,6 +16,7 @@ class OrderAdmin(ModelAdmin):
     list_editable = ["status"]
     empty_value_display = 'Не вказано'
     readonly_fields = "created_at",
+    compressed_fields = True
 
     fieldsets = [
         ("Дані корустувача",

@@ -262,6 +262,11 @@ UNFOLD = {
                         "title": _("Атрибути товару"),
                         "link": reverse_lazy("admin:product_attribute_changelist"),
                         "icon": "list_alt"
+                    },
+                    {
+                        "title": _("Бренди"),
+                        "link": reverse_lazy("admin:product_brand_changelist"),
+                        "icon": "list_alt"
                     }
                 ],
             },

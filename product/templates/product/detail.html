@@ -39,10 +39,12 @@
             <div class="swiper mySwiper rounded-xl shadow-lg w-full min-w-0">
               <div class="swiper-wrapper flex flex-nowrap">
                 {% for product_variation in product.variations.all %}
-                  <div class="swiper-slide">
-                    <img src="{{ product_variation.image.url }}" alt="{{ product_variation.product.name }}"
-                         class="w-full object-cover rounded-xl"/>
-                  </div>
+                  {% if product_variation.image %}
+                    <div class="swiper-slide">
+                      <img src="{{ product_variation.image.url }}" alt="{{ product_variation.product.name }}"
+                           class="w-full object-cover rounded-xl"/>
+                    </div>
+                  {% endif %}
                 {% endfor %}
               </div>
             </div>

@@ -13,9 +13,12 @@ class PageTabAdmin(StackedInline):
 
 @admin.register(Group)
 class GroupAdmin(ModelAdmin):
-    list_display = ["title"]
+    list_display = ["title", "get_pages_name"]
 
     inlines = [PageTabAdmin]
+
+    def get_pages_name(self, obj):
+        return [page.title for page in obj.pages.all()]
 
 
 @admin.register(Page)
