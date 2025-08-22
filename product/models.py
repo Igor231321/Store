@@ -9,30 +9,21 @@ from unidecode import unidecode
 from product.managers import ProductQuerySet
 
 
-class AbstractNamedModel(models.Model):
+class Brand(models.Model):
     name = models.CharField("Название", max_length=155, unique=True, null=True)
     slug = models.SlugField("SLUG_URL", max_length=155, unique=True, null=True)
 
-    class Meta:
-        abstract = True
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(unidecode(self.name))
-        super().save(*args, **kwargs)
-
-
-class Brand(AbstractNamedModel):
     class Meta:
         db_table = "brand"
         verbose_name = "Бренд"
         verbose_name_plural = "Бренди"
 
+    def __str__(self):
+        return self.name
 
-class Currency(AbstractNamedModel):
+
+class Currency(models.Model):
+    name = models.CharField("Название", max_length=155, unique=True, null=True)
     rate = models.DecimalField("Курс",
                                decimal_places=2,
                                max_digits=4,
@@ -80,11 +71,17 @@ class Category(MPTTModel):
         return reverse("product:category_detail", args=[self.slug])
 
 
-class Attribute(AbstractNamedModel):
+class Attribute(models.Model):
+    name = models.CharField("Название", max_length=50, unique=True, null=True)
+    slug = models.SlugField("SLUG_URL", max_length=50, unique=True, null=True)
+
     class Meta:
         db_table = "attribute"
         verbose_name = "Атрибут"
         verbose_name_plural = "Атрибути"
+
+    def __str__(self):
+        return self.name
 
 
 class AttributeValue(models.Model):
@@ -102,7 +99,9 @@ class AttributeValue(models.Model):
         return f"{self.attribute.name} - {self.value}"
 
 
-class Product(AbstractNamedModel):
+class Product(models.Model):
+    name = models.CharField("Название", max_length=155, unique=True, null=True)
+    slug = models.SlugField("SLUG_URL", max_length=155, unique=True, null=True)
     description = models.TextField("Опис", null=True)
     category = models.ForeignKey(
         Category,
@@ -195,13 +194,14 @@ class ProductVariation(models.Model):
         return f"{self.product.name} - {self.article}"
 
 
-class ProductCharacteristics(AbstractNamedModel):
+class ProductCharacteristics(models.Model):
     product_variation = models.ForeignKey(
         "ProductVariation",
         on_delete=models.CASCADE,
         related_name="characteristics",
         verbose_name="Варіація товару",
     )
+    name = models.CharField("Название", max_length=155, null=True)
     value = models.CharField("Значення", max_length=50, null=True)
 
     class Meta:
