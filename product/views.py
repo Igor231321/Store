@@ -17,17 +17,16 @@ from django.views.generic import DetailView, FormView, ListView, TemplateView
 from unidecode import unidecode
 
 from order.forms import QuickOrderForm
-from product.forms import InStockNotificationForm, ReviewForm, UploadDataForm
+from product.forms import InStockNotificationForm, ReviewForm, UploadProductsForm
 from product.mixins import ProductOrderByMixin
-from product.models import (Attribute, AttributeValue, Brand, Category,
-                            Currency, Product, ProductCharacteristics,
+from product.models import (Attribute, AttributeValue, Brand, Category, Product, ProductCharacteristics,
                             ProductVariation)
 from product.services.product_search import product_search
 
 
-class UploadData(FormView):
+class UploadProducts(FormView):
     template_name = "product/upload_data.html"
-    form_class = UploadDataForm
+    form_class = UploadProductsForm
     success_url = reverse_lazy("admin:index")
 
     def form_valid(self, form):
@@ -53,7 +52,7 @@ class UploadData(FormView):
 
                 brand = Brand.objects.last()
 
-                currency, _ = Currency.objects.get_or_create(name=row_uk["currency"])
+                # currency, _ = Currency.objects.get_or_create(name=row_uk["currency"])
 
                 # Проверяем, что такого товара ещё не было
                 if name_uk not in products_names:
@@ -67,7 +66,7 @@ class UploadData(FormView):
                         category_id=int(row_uk["category_id"]),
                         brand=brand,
                         slug=slug,
-                        currency=currency,
+                        # currency=currency,
                         discount=discount)
 
                     # Добавляем товар в список

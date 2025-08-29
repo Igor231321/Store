@@ -3,9 +3,15 @@ from django import forms
 from product.models import InStockNotification, Review
 
 
-class UploadDataForm(forms.Form):
-    excel_uk = forms.FileField()
-    excel_ru = forms.FileField()
+class UploadProductsForm(forms.Form):
+    excel_uk = forms.FileField(
+        label="Файл з даними українською",
+        widget=forms.FileInput(attrs={"class": "input"})
+    )
+    excel_ru = forms.FileField(
+        label="Файл з даними російською",
+        widget=forms.FileInput(attrs={"class": "input"})
+    )
 
 
 class ReviewForm(forms.ModelForm):
