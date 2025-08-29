@@ -68,7 +68,7 @@ def dashboard_callback(request, context):
             total_sum=Sum(
                 F("order_variations__price_with_discount") * F("order_variations__quantity"),
                 filter=Q(order_variations__order__created_at__date__range=[start_date, end_date]))).order_by(
-            "total_sum"),
+            "total_sum").filter(total_quantity__gt=0),
         "start_date": start_date,
         "end_date": end_date
     })
