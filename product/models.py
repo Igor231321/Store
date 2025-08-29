@@ -130,6 +130,11 @@ class Product(models.Model):
 
     objects = ProductQuerySet().as_manager()
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super().save(*args, **kwargs)
+
     def display_price(self):
         if self.min_price_before_discount != self.max_price_before_discount:
             return f"{round(self.min_price_before_discount, 2)} грн. – {round(self.max_price_before_discount, 2)} грн."

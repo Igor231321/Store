@@ -4,7 +4,8 @@ from product.models import InStockNotification, Review
 
 
 class UploadDataForm(forms.Form):
-    csv_file = forms.FileField()
+    excel_uk = forms.FileField()
+    excel_ru = forms.FileField()
 
 
 class ReviewForm(forms.ModelForm):

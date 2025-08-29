@@ -1,6 +1,6 @@
 {% extends 'admin/base.html' %}
 
-{% load i18n static %}
+{% load i18n %}
 
 {% block breadcrumbs %}{% endblock %}
 
@@ -32,8 +32,7 @@
 
         <div class="flex items-center gap-2 mb-3">
           <label class="text-gray-700 font-medium" for="end_date">До:</label>
-          <input type="date" value="{% if end_date %}{{ end_date }}{% endif %}" id="end_date" name="end_date"
-                 class="border border-gray-300 rounded px-3 py-1">
+          <input type="date" value="{% if end_date %}{{ end_date }}{% endif %}" id="end_date" name="end_date" class="border border-gray-300 rounded px-3 py-1">
         </div>
 
 
