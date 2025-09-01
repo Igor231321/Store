@@ -167,7 +167,7 @@ class ProductDetail(DetailView):
         product = self.object
 
         first_variation = self.object.variations.first()
-        context["first_variation"] = cache.get_or_set(f"first_variation_{product.id}", first_variation, 60 * 5)
+        context["first_variation"] = first_variation
 
         has_attribute = product.variations.filter(attribute_value__isnull=False)
         context["has_attribute"] = cache.get_or_set(f"has_attribute_{product.id}", has_attribute, 60 * 5)
