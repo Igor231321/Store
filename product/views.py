@@ -1,41 +1,142 @@
-import csv
+from decimal import Decimal
 
+import pandas as pd
 from django.contrib import messages
 from django.core.cache import cache
+from django.db import transaction
 from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.http import require_POST
 from django.views.generic import DetailView, FormView, ListView, TemplateView
+from unidecode import unidecode
 
 from order.forms import QuickOrderForm
-from product.forms import InStockNotificationForm, ReviewForm, UploadDataForm
+from product.forms import InStockNotificationForm, ReviewForm, UploadProductsForm
 from product.mixins import ProductOrderByMixin
-from product.models import Category, Product, ProductVariation
+from product.models import (Attribute, AttributeValue, Brand, Category, Product, ProductCharacteristics,
+                            ProductVariation)
 from product.services.product_search import product_search
 
 
-class UploadData(FormView):
+class UploadProducts(FormView):
     template_name = "product/upload_data.html"
-    form_class = UploadDataForm
+    form_class = UploadProductsForm
     success_url = reverse_lazy("admin:index")
 
     def form_valid(self, form):
-        csv_file = form.cleaned_data["csv_file"]
-        decoded_file = csv_file.read().decode("utf-8").splitlines()
-        reader = csv.DictReader(decoded_file)
+        cd = form.cleaned_data
+        excel_uk = cd["excel_uk"]
+        excel_ru = cd["excel_ru"]
 
-        for row in reader:
-            Product.objects.create(
-                name=row["name"],
-                description=row["description"],
-                slug=row["slug"],
-                quantity=row["stock"],
-            )
+        products = []
+        products_names = set()
+        # df = pd.read_excel(csv_file)
+        df_uk = pd.read_excel(excel_uk)
+        df_ru = pd.read_excel(excel_ru)
+
+        df_uk.columns = df_uk.columns.str.strip()
+        df_ru.columns = df_ru.columns.str.strip()
+
+        with transaction.atomic():
+            for i in range(len(df_uk)):
+                row_uk = df_uk.iloc[i]
+                row_ru = df_ru.iloc[i]
+                name_uk = row_uk["name"]
+                name_ru = row_ru["name"]
+
+                brand = Brand.objects.last()
+
+                # currency, _ = Currency.objects.get_or_create(name=row_uk["currency"])
+
+                # Проверяем, что такого товара ещё не было
+                if name_uk not in products_names:
+                    discount = Decimal(str(row_uk["discount"]))
+                    slug = slugify(unidecode(name_uk))
+                    product = Product(
+                        name_uk=name_uk,
+                        name_ru=name_ru,
+                        description_uk=row_uk["description"],
+                        description_ru=row_ru["description"],
+                        category_id=int(row_uk["category_id"]),
+                        brand=brand,
+                        slug=slug,
+                        # currency=currency,
+                        discount=discount)
+
+                    # Добавляем товар в список
+                    products.append(product)
+                    products_names.add(name_uk)
+            Product.objects.bulk_create(products)
+
+            product_variations = []
+            for i in range(len(df_uk)):
+                # Получаем товар
+
+                row_uk = df_uk.iloc[i]
+                row_ru = df_ru.iloc[i]
+
+                product = Product.objects.get(name_uk=row_uk["name"])
+
+                price = Decimal(str(row_uk["price"]))
+                variation_data = {
+                    "product": product,
+                    "price": price,
+                    "image": row_uk["image"],
+                    "article": row_uk["article"],
+                    "quantity": row_uk["quantity"]
+                }
+
+                # Проверка наличия атрибута у вариации
+                if not pd.isna(row_uk["attribute"]) and not pd.isna(row_uk["attribute_value"]):
+                    attribute, _ = Attribute.objects.get_or_create(name_uk=row_uk["attribute"],
+                                                                   name_ru=row_ru["attribute"])
+                    attribute_value, _ = AttributeValue.objects.get_or_create(value_uk=row_uk["attribute_value"],
+                                                                              attribute=attribute,
+                                                                              defaults={"value_ru": row_ru[
+                                                                                  "attribute_value"]})
+                    variation_data.update({"attribute_value": attribute_value})
+
+                variation = ProductVariation(**variation_data)
+
+                product_variations.append(variation)
+
+            ProductVariation.objects.bulk_create(product_variations)
+
+            characteristics = []
+
+            quantity_index = df_uk.columns.get_loc("quantity")  # Расположение поля количества
+            characteristics_columns = df_uk.columns[quantity_index + 1:]  # Получаем все колонки после количества
+
+            for i in range(len(df_uk)):
+                row_uk = df_uk.iloc[i]
+                row_ru = df_ru.iloc[i]
+
+                variation = ProductVariation.objects.get(article=row_uk["article"])
+
+                for j, col in enumerate(characteristics_columns):
+                    # Название характеристики
+                    name_uk = col  # заголовок колонки в украинском файле
+                    name_ru = df_ru.columns[quantity_index + 1 + j]  # заголовок колонки в русском файле
+                    value_uk = row_uk[col]
+                    value_ru = row_ru.iloc[quantity_index + 1 + j]  # по индексу
+
+                    if not pd.isna(value_uk) or not pd.isna(value_ru):
+                        characteristic = ProductCharacteristics(
+                            product_variation=variation,
+                            name_uk=name_uk,
+                            name_ru=name_ru,
+                            value_uk=value_uk,
+                            value_ru=value_ru
+                        )
+                        characteristics.append(characteristic)
+
+            ProductCharacteristics.objects.bulk_create(characteristics)
         return super().form_valid(form)
 
 
@@ -66,7 +167,7 @@ class ProductDetail(DetailView):
         product = self.object
 
         first_variation = self.object.variations.first()
-        context["first_variation"] = cache.get_or_set(f"first_variation_{product.id}", first_variation, 60 * 5)
+        context["first_variation"] = first_variation
 
         has_attribute = product.variations.filter(attribute_value__isnull=False)
         context["has_attribute"] = cache.get_or_set(f"has_attribute_{product.id}", has_attribute, 60 * 5)
@@ -108,7 +209,7 @@ def variation_data(request):
         "price_with_discount": f"{variation.get_price_with_discount()} грн.",
         "characteristics": characteristics,
         "reviews": reviews,
-        "in_stock": variation.status == "IN_STOCK"
+        "in_stock": variation.status == "IN_STOCK",
     }
     return JsonResponse(data)
 

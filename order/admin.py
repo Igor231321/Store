@@ -1,29 +1,32 @@
 from django.contrib import admin
+from unfold.admin import ModelAdmin, TabularInline
 
 from order.models import Country, Order, OrderItem, Warehouse
 
 
-class OrderItemInline(admin.TabularInline):
+class OrderItemInline(TabularInline):
     model = OrderItem
     extra = 0
+    tab = True
 
 
 @admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ["reference", "status", "user", "delivery_method", "paid"]
+class OrderAdmin(ModelAdmin):
+    list_display = ["reference", "status", "user", "delivery_method"]
     list_editable = ["status"]
     empty_value_display = 'Не вказано'
     readonly_fields = "created_at",
+    compressed_fields = True
 
     fieldsets = [
         ("Дані корустувача",
          {
-             "classes": ["wide"],
+             "classes": ["tab"],
              "fields": ["user", "session_key", "first_name", "last_name", "surname", "phone_number", "email"]
          }),
         ("Деталі замовлення",
          {
-             "classes": ["collapse"],
+             "classes": ["tab"],
              'fields': ['status', 'paid', "reference", 'delivery_method', 'np_country', 'np_warehouse', 'np_terminal',
                         'ukr_address', 'ukr_post_code',
                         'meest_country', 'meest_warehouse', 'do_not_call', 'created_at', 'comment']})
@@ -34,13 +37,13 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 @admin.register(Country)
-class CountryAdmin(admin.ModelAdmin):
+class CountryAdmin(ModelAdmin):
     list_display = ["description", "area_description", "country_type"]
     list_per_page = 20
 
 
 @admin.register(Warehouse)
-class WarehouseAdmin(admin.ModelAdmin):
+class WarehouseAdmin(ModelAdmin):
     list_display = ["description", "warehouse_type", "number"]
     search_fields = ["warehouse_type"]
     list_per_page = 20

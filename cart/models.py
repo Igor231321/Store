@@ -28,11 +28,7 @@ class Cart(models.Model):
     objects = CartQuerySet().as_manager()
 
     def __str__(self):
-        user_display = self.user.username if self.user else "Гість"
-        return (
-            f"Кошик користувача: {user_display} | "
-            f"{self.product_variation} × {self.quantity}"
-        )
+        return f"Кошик для: {self.product_variation.product.name} (x{self.quantity})"
 
     def products_sum(self):
         return self.quantity * self.product_variation.get_price_with_discount()

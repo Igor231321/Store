@@ -11,27 +11,54 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 from pathlib import Path
 
+import environ
+from django.templatetags.static import static
+from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(
+    DEBUG=(bool, False),
+    SECRET_KEY=(str),
+    ALLOWED_HOSTS=(str),
+    DOMAIN_NAME=(str),
+    CSRF_TRUSTED_ORIGINS=(str),
+    DATABASE_NAME=(str),
+    DATABASE_USER=(str),
+    DATABASE_PASSWORD=(str),
+    DATABASE_HOST=(str),
+    DATABASE_PORT=(str),
+    WAYFORPAY_SECRET_KEY=(str)
+)
+
+environ.Env.read_env(BASE_DIR / ".env.dev")
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(dga)+0p-f(!7^-uefk4!7s*ka03kf!a3b%e_ojfqhq(9=hfc("
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 
-CSRF_TRUSTED_ORIGINS = [
-    "https://25d911808be1.ngrok-free.app",
-]
+CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS", default=[])
 
 INSTALLED_APPS = [
+    "unfold",  # before django.contrib.admin
+    "unfold.contrib.filters",  # optional, if special filters are needed
+    "unfold.contrib.forms",  # optional, if special form elements are needed
+    "unfold.contrib.inlines",  # optional, if special inlines are needed
+    "unfold.contrib.import_export",  # optional, if django-import-export package is used
+    "unfold.contrib.guardian",  # optional, if django-guardian package is used
+    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
+    "unfold.contrib.location_field",  # optional, if django-location-field package is used
+    "unfold.contrib.constance",  # optional, if django-constance package is used
+
     "modeltranslation",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -99,11 +126,11 @@ INTERNAL_IPS = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "shop_db",
-        "USER": "home",
-        "PASSWORD": "admin",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": env("DATABASE_NAME"),
+        "USER": env("DATABASE_USER"),
+        "PASSWORD": env("DATABASE_PASSWORD"),
+        "HOST": env("DATABASE_HOST"),
+        "PORT": env("DATABASE_PORT"),
     }
 }
 
@@ -144,20 +171,26 @@ LANGUAGES = [
     ("ru", _("Russia")),
 ]
 
-TIME_ZONE = "Europe/Kiev"
+TIME_ZONE = "Europe/Kyiv"
 
 USE_I18N = True
 
 USE_TZ = True
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+
+# Папка со статикой приложений (для collectstatic)
+STATICFILES_DIRS = [BASE_DIR / "static"]  # локальная разработка
+
+# Папка, куда collectstatic собирает все файлы для продакшена
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Папка для загружаемых файлов
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -189,4 +222,143 @@ REST_FRAMEWORK = {
 }
 
 # Wayforpay
-WAYFORPAY_SECRET_KEY = "flk3409refn54t54t*FNJRET"
+WAYFORPAY_SECRET_KEY = env("WAYFORPAY_SECRET_KEY")
+
+UNFOLD = {
+    "DASHBOARD_CALLBACK": "main.views.dashboard_callback",
+    "STYLES": [
+        lambda request: static("css/output.css"),
+    ],
+    "SIDEBAR": {
+        "show_search": False,
+        "command_search": False,
+        "show_all_applications": True,
+
+        "navigation": [
+            {
+                "title": _("Каталог товаров"),
+                # "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Dashboard"),
+                        "icon": "dashboard",  # Supported icon set: https://fonts.google.com/icons
+                        "link": reverse_lazy("admin:index"),
+                        # "permission": lambda request: request.user.is_superuser,
+                    },
+                    {
+                        "title": _("Товар"),
+                        "link": reverse_lazy("admin:product_product_changelist"),
+                        "icon": "shopping_bag"
+                    },
+                    {
+                        "title": _("Варіації товару"),
+                        "link": reverse_lazy("admin:product_productvariation_changelist"),
+                        "icon": "layers"
+                    },
+                    {
+                        "title": _("Категорії"),
+                        "link": reverse_lazy("admin:product_category_changelist"),
+                        "icon": "category"
+                    },
+                    {
+                        "title": _("Атрибути товару"),
+                        "link": reverse_lazy("admin:product_attribute_changelist"),
+                        "icon": "list_alt"
+                    },
+                    {
+                        "title": _("Бренди"),
+                        "link": reverse_lazy("admin:product_brand_changelist"),
+                        "icon": "list_alt"
+                    }
+                ],
+            },
+            {
+                "title": _("Заказы и корзины"),
+                "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Замовлення"),
+                        "link": reverse_lazy("admin:order_order_changelist"),
+                        "icon": "receipt_long"
+                    },
+                    {
+                        "title": _("Кошики"),
+                        "link": reverse_lazy("admin:cart_cart_changelist"),
+                        "icon": "shopping_cart"
+                    },
+
+                ],
+            },
+            {
+                "title": _("Взаимодействие с клиентами"),
+                "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Відгуки"),
+                        "link": reverse_lazy("admin:product_review_changelist"),
+                        "icon": "rate_review",
+                    },
+                    {
+                        "title": _("Запросы на наличие"),
+                        "link": reverse_lazy("admin:product_instocknotification_changelist"),
+                        "icon": "notifications_active"
+                    },
+                    {
+                        "title": _("Користувачі"),
+                        "link": reverse_lazy("admin:user_user_changelist"),
+                        "icon": "manage_accounts"
+                    },
+                ],
+            },
+            {
+                "title": _("Настройки"),
+                "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Сторінки"),
+                        "link": reverse_lazy("admin:main_page_changelist"),
+                        "icon": "receipt_long"
+                    },
+                    {
+                        "title": _("Валюти"),
+                        "link": reverse_lazy("admin:product_currency_changelist"),
+                        "icon": "currency_exchange"
+                    },
+                    {
+                        "title": _("Группи сторінок"),
+                        "link": reverse_lazy("admin:main_group_changelist"),
+                        "icon": "folder"
+                    },
+                    {
+                        "title": _("Слайдери"),
+                        "link": reverse_lazy("admin:main_slider_changelist"),
+                        "icon": "slideshow"
+                    },
+
+                ],
+            },
+            {
+                "title": _("Інтеграції та API"),
+                "separator": True,  # Top border
+                "collapsible": True,  # Collapsible group of links
+                "items": [
+                    {
+                        "title": _("Ключі від API"),
+                        "link": reverse_lazy("admin:authtoken_tokenproxy_changelist"),
+                        "icon": "vpn_key"
+                    },
+                    {
+                        "title": _("Інтеграції"),
+                        "link": reverse_lazy("admin:integrations_apikey_changelist"),
+                        "icon": "hub"
+                    },
+
+                ],
+            },
+        ],
+    },
+}

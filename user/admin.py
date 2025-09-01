@@ -1,13 +1,11 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+from unfold.admin import ModelAdmin
 
 from user.forms import UserCreationForm
 from user.models import User
 
-# admin.site.register(User)
 
-
-class UserAdmin(UserAdmin):
+class UserAdmin(ModelAdmin):
     add_form = UserCreationForm
     model = User
 
@@ -29,14 +27,21 @@ class UserAdmin(UserAdmin):
         ),
         (
             "Дозволи",
-            {"fields": ("is_staff", "is_active", "groups", "user_permissions")},
+            {
+                "fields": (
+                    "is_staff",
+                    "is_active",
+                    "groups",
+                    "user_permissions",
+                )
+            },
         ),
     )
     add_fieldsets = (
         (
             None,
             {
-                "classes": ("wide",),
+                "classes": ("tab",),
                 "fields": (
                     "email",
                     "password1",
