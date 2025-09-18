@@ -1,88 +1,73 @@
-## Как установить
+# Django E-commerce Store 🛒
+Online store built with Django featuring cart, payments, and delivery.
+---
 
-1. Скачай проект с GitHub:
 
+## ✨ Features
+
+- 📂 **Catalog** – brands, categories (tree structure with **MPTT**), product variations (size, color, SKU, stock).  
+- 📥 **Bulk import** – upload products, attributes, variations, and characteristics from Excel.  
+- ⚡ **Performance** – optimized queries with `select_related`, `prefetch_related`, indexes, caching.  
+- 💾 **Cache** – File-based caching for product pages and queries.  
+- 💳 **Payments** – integration with **WayForPay API** (signature validation, secure callbacks).  
+- 🚚 **Delivery methods** – Nova Poshta, Ukrposhta, Meest (cities & warehouses stored in DB).  
+- 🛒 **Cart & Orders** – persistent carts (per user/session), order statuses, discounts, stock tracking.  
+- ⭐ **Reviews** – ratings, comments, pros & cons.  
+- 🔔 **Stock notifications** – users can subscribe for "back in stock" alerts.  
+- 🌐 **Multilanguage** – Ukrainian / Russian support on model level.  
+- 🔧 **Custom Admin Panel** – styled with **django-unfold** (modern UI/UX).  
+- 📡 **REST API (DRF)** – endpoints for categories, products, variations with nested serializers.  
+- 🎨 **CMS elements** – static pages, homepage sliders, banners.  
+
+---
+
+## 🛠️ Tech Stack
+- Python 3.12, Django 5
+- PostgreSQL
+- TailwindCSS + Flowbite (UI)
+- Docker & Docker Compose
+
+---
+
+## 🚀 How to Run
+
+1. Clone the project from GitHub:
 ```bash
 git clone https://github.com/Igor231321/Store.git
 cd Store
 ```
 
-2. Создай виртуальное окружение и активируй его:
+2. Build and start containers:
+```bash
+docker compose up --build
+```
 
-- Для Windows:
+3. Entrypoint script will:
+
+- Wait for PostgreSQL
+- Run migrations
+- Load fixtures (fixtures/products/all.json)
+- Collect static files
+- Start Django server
+
+4. Create a superuser:
 
 ```bash
-python -m venv venv
-venv\Scripts\activate
+docker-compose exec web python manage.py createsuperuser
 ```
 
-- Для Mac/Linux:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-3. Установи зависимости:
-
-```bash
-pip install -r requirements.txt
-```
-
-4. Настрой базу данных (PostgreSQL):
-
-По умолчанию используется PostgreSQL. Чтобы переключиться на SQLite:
-
-- Открой файл `Store/mysite/settings.py`
-- Найди блок с настройками `DATABASES`
-- Замените
-
-```python
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "shop_db",
-        "USER": "home",
-        "PASSWORD": "admin",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
-```
-
-на
-
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-```
-
-5. Выполни миграции:
-
-```bash
-python manage.py migrate
-```
-
-6. Запусти проект:
-
-```bash
-python manage.py runserver
-```
-
-7. Создай администратора:
-
-```bash
-python manage.py createsuperuser
-```
-
-Введи email и пароль по запросу.
+Enter your email and password when prompted.
 
 ---
 
-## Готово!
+## 🎉 Done!
 
-Открой в браузере: http://127.0.0.1:8000
+Open in browser: http://127.0.0.1:8000
+
+Admin panel: http://127.0.0.1:8000/admin/
+
+---
+
+## Author
+Ihor Chernobai  
+[Telegram](https://t.me/igor_chernoaby) | [Email](mailto:chernobay.i2112@gmail.com)
